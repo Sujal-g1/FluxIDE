@@ -1,8 +1,10 @@
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../firebase";
 import { login } from "../features/login";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserData } from "../redux/userSlice";
 
 const Icon = ({ name, className = "" }) => {
   const shapes = {
@@ -47,6 +49,8 @@ const Icon = ({ name, className = "" }) => {
 const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const dispatch = useDispatch()
+  const  {userData} = useSelector((state) => state.user)
 
   const handleLogin = async () => {
     if (loading) return;
@@ -58,15 +62,14 @@ const Dashboard = () => {
       const result = await signInWithPopup(auth, googleProvider);
       const token = await result.user.getIdToken();
       const data = await login(token);
+      dispatch(setUserData(data))
 
       if (!data) {
         throw new Error("Unable to start your Flux session.");
       }
-
       console.log("FluxIDE login successful:", data);
 
-      // Change this to your actual editor route if necessary.
-      window.location.assign("/workspace");
+      // window.location.assign("/workspace");
     } catch (err) {
       console.error("FluxIDE authentication error:", err);
 
@@ -87,7 +90,9 @@ const Dashboard = () => {
     }
   };
 
-  return (
+
+  if(!userData){
+     return (
     <main className="flux-page relative flex min-h-screen flex-col overflow-hidden bg-[#08090a] text-white selection:bg-amber-300/30">
       
 
@@ -271,6 +276,16 @@ const Dashboard = () => {
 
     </main>
   );
+  }
+
+  return(
+    <div>
+      sujal
+    </div>
+  )
+
+
+ 
 };
 
 export default Dashboard;
