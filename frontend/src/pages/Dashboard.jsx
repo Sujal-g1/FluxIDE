@@ -6,6 +6,7 @@ import { login } from "../features/login";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../redux/userSlice";
 import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 
 const Icon = ({ name, className = "" }) => {
   const shapes = {
@@ -49,7 +50,8 @@ const Icon = ({ name, className = "" }) => {
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); 
+  const [activeSession, setActiveSession] = useState("projects")
   const dispatch = useDispatch()
   const  {userData} = useSelector((state) => state.user)
 
@@ -287,6 +289,10 @@ const Dashboard = () => {
 
     <div className="relative flex min-h-0 flex-1 flex-col">
     <Navbar />
+    <div className="flex min-h-0 flex-1">
+        <Sidebar activeSession={activeSession} setActiveSession={setActiveSession}/>
+    </div>
+
     </div>
       
     </div>

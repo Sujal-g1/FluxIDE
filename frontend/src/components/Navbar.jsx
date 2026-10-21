@@ -4,7 +4,6 @@ import { FiSun } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux"
 import { ChevronDown, LogOut } from "lucide-react"
 import { logout } from "../features/logout";
-import { useDispatch } from "react-redux"
 import { setUserData } from "../redux/userSlice";
  
 const Navbar = () => {
