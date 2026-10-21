@@ -5,6 +5,7 @@ import { auth, googleProvider } from "../firebase";
 import { login } from "../features/login";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../redux/userSlice";
+import Navbar from "../components/Navbar";
 
 const Icon = ({ name, className = "" }) => {
   const shapes = {
@@ -279,8 +280,15 @@ const Dashboard = () => {
   }
 
   return(
-    <div>
-      sujal
+    <div className="relative flex h-screen w-full flex-col overflow-hidden bg-slate-50 transition-colors duration-300 dark:bg-[#07070c]">
+
+    <div className="pointer-events-none absolute -top-40 left-1/3 hidden h-[700px] w-[700px] rounded-full bg-white/[0.05] blur-[140px] dark:block "/>
+    <div className="pointer-events-none absolute top-1/3 right-0 hidden h-[500px] w-[500px] rounded-full bg-white/[0.04] blur-[130px] dark:block "/>
+
+    <div className="relative flex min-h-0 flex-1 flex-col">
+    <Navbar />
+    </div>
+      
     </div>
   )
 
