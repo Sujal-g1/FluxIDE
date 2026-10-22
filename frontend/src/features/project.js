@@ -9,7 +9,7 @@ export const createProject = async( name, description )=>{
  } catch (error) {
    console.error("Login request failed:", error.response?.data);
    console.error("HTTP status:", error.response?.status);
-   return null;
+   return data;
  }
 }
 

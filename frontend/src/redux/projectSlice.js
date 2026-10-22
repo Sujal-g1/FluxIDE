@@ -4,7 +4,6 @@ const projectSlice = createSlice({
     name:"user",
     initialState: {
         projects: [],
-        starredProjects: []
     },
     reducers:{
         setProjects:(state, action )=>{
@@ -13,9 +12,6 @@ const projectSlice = createSlice({
 
         addNewProject:(state,action)=>{
             state.projects.unshift(action.payload)
-        },
-        setStarredProjects:(state, action )=>{
-            state.starredProjects = action.payload
         },
 
     }

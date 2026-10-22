@@ -10,12 +10,15 @@ import Sidebar from "../components/Sidebar";
 import LoginPage from "./LoginPage";
 import { Folder, Loader2, Plus } from "lucide-react";
 import { getProjects, getStarredProjects } from "../features/project";
-import { setProjects, setStarredProjects } from "../redux/projectSlice";
+import { setProjects  } from "../redux/projectSlice";
+import ProjectCard from "../components/ProjectCard";
+import CreateProjectModel from "../components/CreateProjectModel";
 
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [loadingProjects, setLoadingProjects] = useState(false);
+  const [openModel, setOpenModel] = useState(false)
   const [error, setError] = useState(""); 
   const [activeSession, setActiveSession] = useState("projects")
   const dispatch = useDispatch()
@@ -70,10 +73,7 @@ const starredProjects = Array.isArray(projectState?.starredProjects)
 
     try {
       const data = await getStarredProjects();
-
-      dispatch(
-        setStarredProjects(Array.isArray(data) ? data : [])
-      );
+      dispatch(setProjects(Array.isArray(data) ? data : []));
     } catch (error) {
       console.error("Failed to fetch starred projects:", error);
       setError(
@@ -133,7 +133,9 @@ const starredProjects = Array.isArray(projectState?.starredProjects)
 
     </div>
 
-    <button className="flex shrink-0 items-center gap-1.5 rounded-lg bg-slate-900 px-4 py-2.5 text-[12.5px] font-semibold text-white shadow-sm transition-opacity duration-150 hover:opacity-90 dark:bg-white dark:text-slate-900">
+    <button 
+    onClick={()=>setOpenModel(true)}
+    className="flex shrink-0 items-center gap-1.5 rounded-lg bg-slate-900 px-4 py-2.5 text-[12.5px] font-semibold text-white shadow-sm transition-opacity duration-150 hover:opacity-90 dark:bg-white dark:text-slate-900">
     <Plus size={16}/>
     New Project
     </button>
@@ -169,15 +171,25 @@ const starredProjects = Array.isArray(projectState?.starredProjects)
 
   </div>
   )
-  :<></>
-
+  :
+  ( <div className="mb-8 grid grid-cols-1 gap-4 sm-grid-cols-2 lg:grid-cols-4">
+    {projects.map((key,idx)=>{
+    <ProjectCard />
+    })}
+  </div>
+  )
   }
     </div>
     </div>
 
-
-
     </div>
+
+   { openModel &&
+    <CreateProjectModel 
+    openModel={openModel}
+    onClose={()=>setOpenModel(false)}
+    />
+    }
       
     </div>
   )
