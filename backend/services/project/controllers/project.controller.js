@@ -42,7 +42,7 @@ export const getProjects = async(req , res)=>{
         owner:userId,
     }).sort({updatedAt: -1})
 
-    await redis.set(JSON.stringify(project))
+    await redis.set(key, JSON.stringify(project), "EX", 3600);
 
     return res.status(200).json(project)
     } catch (error) {
@@ -85,7 +85,7 @@ export const getStarredProjects = async(req, res)=>{
         starred:true
     }).sort({updatedAt: -1})
 
-    await redis.set(JSON.stringify(project))  
+    await redis.set(key, JSON.stringify(project), "EX", 3600);
 
     return res.status(200).json(project)
     } catch (error) {
@@ -94,41 +94,84 @@ export const getStarredProjects = async(req, res)=>{
 }
 
 // star toggle
-export const toggleStar = async(req, res)=>{
-    try {  
-    const {id} = req.params
-     
-        const project = await Project.findById(id)
-        if(!project){
-            res.status(404).json({message: "project not found"})
-        }
-        project.starred = !project.starred
-        await project.save()
 
-        const key=`starred-projects-${userId}`  
-        await redis.del(key)
-    
-        return res.status(200).json(project)
-        } catch (error) {
-            return res.status(500).json({message: `toggle star error, ${error}`})
-        } 
-}
+export const toggleStar = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.headers["x-user-id"];
+  
+      if (!userId) {
+        return res.status(401).json({
+          message: "User ID is required",
+        });
+      }
+  
+      const project = await Project.findOne({
+        _id: id,
+        owner: userId,
+      });
+  
+      if (!project) {
+        return res.status(404).json({
+          message: "Project not found",
+        });
+      }
+  
+      project.starred = !project.starred;
+      await project.save();
+  
+      // Invalidate both caches
+      await redis.del(`projects-${userId}`);
+      await redis.del(`starred-projects-${userId}`);
+  
+      return res.status(200).json(project);
+    } catch (error) {
+      console.error("TOGGLE STAR ERROR:", error);
+  
+      return res.status(500).json({
+        message: `Toggle star error: ${error.message}`,
+      });
+    }
+  };
+  
 
 // delete project
-export const deleteProject = async(req, res)=>{
-    try { 
-        const {id} = req.params
-     
-        const project = await Project.findByIdAndDelete(id)
-        if(!project){
-            res.status(404).json({message: "project not found"})
-        }
 
-        const key=`projects-${userId}`  
-        await redis.del(key)
-    
-        return res.status(200).json(project)
-        } catch (error) {
-            return res.status(500).json({message: `project delete error error, ${error}`})
-        } 
-}
+export const deleteProject = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.headers["x-user-id"];
+  
+      if (!userId) {
+        return res.status(401).json({
+          message: "User ID is required",
+        });
+      }
+  
+      const project = await Project.findOneAndDelete({
+        _id: id,
+        owner: userId,
+      });
+  
+      if (!project) {
+        return res.status(404).json({
+          message: "Project not found",
+        });
+      }
+  
+      await redis.del(`projects-${userId}`);
+      await redis.del(`starred-projects-${userId}`);
+  
+      return res.status(200).json({
+        message: "Project deleted successfully",
+        project,
+      });
+    } catch (error) {
+      console.error("DELETE PROJECT ERROR:", error);
+  
+      return res.status(500).json({
+        message: `Delete project error: ${error.message}`,
+      });
+    }
+  };
+  

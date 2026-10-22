@@ -47,7 +47,7 @@ const dispatch = useDispatch()
         {/* left */}
     <div className='flex items-center gap-2.5 shrink-0'>
         <span className='text-slate-900 dark:text-white font-bold text-[17px] tracking-tight'>
-        FluxIDE
+        flux.ide
         </span>
     </div>
 
