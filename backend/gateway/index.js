@@ -24,7 +24,11 @@ app.use(cookieParser())
 app.use(morgan("dev"))
 
 app.use("/api/auth",proxy(process.env.AUTH_SERVICE)) 
-app.use("/api/project", protect, proxyWithHeader(process.env.PROJECT_SERVICE)) 
+app.use(
+    "/api/project",
+    protect,
+    proxyWithHeader(process.env.PROJECT_SERVICE)
+  );
 app.get("/api/me",protect, getCurrentUser)
 
 app.get("/",(req, res)=>{

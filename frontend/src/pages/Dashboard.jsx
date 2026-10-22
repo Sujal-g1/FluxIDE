@@ -10,7 +10,7 @@ import Sidebar from "../components/Sidebar";
 import LoginPage from "./LoginPage";
 import { Folder, Loader2, Plus } from "lucide-react";
 import { getProjects, getStarredProjects } from "../features/project";
-import { setProjects  } from "../redux/projectSlice";
+import { setProjects , setStarredProjects } from "../redux/projectSlice";
 import ProjectCard from "../components/ProjectCard";
 import CreateProjectModel from "../components/CreateProjectModel";
 
@@ -33,6 +33,9 @@ const projects = Array.isArray(projectState?.projects)
 const starredProjects = Array.isArray(projectState?.starredProjects)
   ? projectState.starredProjects
   : [];
+
+  const displayedProjects =
+  activeSession === "starred" ? starredProjects : projects;
 
   // const fetchAllProjects = async()=>{
   //   setLoadingProjects(true)
@@ -70,16 +73,21 @@ const starredProjects = Array.isArray(projectState?.starredProjects)
   const fetchStarredProjects = async () => {
     setLoadingProjects(true);
     setError("");
-
+  
     try {
       const data = await getStarredProjects();
-      dispatch(setProjects(Array.isArray(data) ? data : []));
+  
+      dispatch(
+        setStarredProjects(Array.isArray(data) ? data : [])
+      );
     } catch (error) {
       console.error("Failed to fetch starred projects:", error);
+  
       setError(
         error.response?.data?.message ||
           "Failed to load starred projects."
       );
+  
       dispatch(setStarredProjects([]));
     } finally {
       setLoadingProjects(false);
@@ -123,7 +131,7 @@ const starredProjects = Array.isArray(projectState?.starredProjects)
     <div>
     <h1 className="flex items-center gap-2 text-[26px] font-bold text-slate-900 dark:text-white ">
     Welcome Back, {" "}
-    {(userData?.name).split(" ")[0] || "User "}
+    {(userData?.name || "User").split(" ")[0]}
     <span>👋</span>
     </h1>
 
@@ -148,37 +156,44 @@ const starredProjects = Array.isArray(projectState?.starredProjects)
     </h2>
     </div>
 
-  { loadingProjects ? 
-  (<div className="flex min-h-[300px] items-center justify-center">
-  <Loader2 size={28}
-  className="animate-spin text-slate-400 dark:text-slate-500"/>
-  </div>)
-  :
-  projects.length==0?(
+ 
+{loadingProjects ? (
+  <div className="flex min-h-[300px] items-center justify-center">
+    <Loader2
+      size={28}
+      className="animate-spin text-slate-400 dark:text-slate-500"
+    />
+  </div>
+) : error ? (
+  <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600 dark:border-red-400/20 dark:bg-red-400/5 dark:text-red-300">
+    {error}
+  </div>
+) : displayedProjects.length === 0 ? (
   <div className="mb-8 flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white/40 py-16 text-center dark:border-white/[0.1] dark:bg-white/[0.01]">
+    <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-900/5 dark:bg-white/10">
+      <Folder size={24} className="text-slate-500 dark:text-white" />
+    </div>
 
-  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-900/5 dark:bg-white/10">
-  <Folder size={24}
-  className="text-slate-500 dark:text-white"/>
-  </div>
+    <h3 className="mb-1.5 text-base font-semibold text-slate-900 dark:text-white">
+      {activeSession === "starred"
+        ? "No starred projects"
+        : "No projects yet"}
+    </h3>
 
-  <h3 className="mb-1.5 text-[16px] font-semibold text-slate-900 dark:text-white ">
-  {activeSession=="starred" ? "No starred Projects" : "No projects yet"} </h3>
-  <p className="mb-5 max-w-xs text-[13px] text-slate-500 dark:text-slate-500">
-    {activeSession=="starred" ? "Star a project to see it here." :
-    "Create your first project & start building something amazing!"}
-  </p>
+    <p className="mb-5 max-w-xs text-[13px] text-slate-500 dark:text-slate-400">
+      {activeSession === "starred"
+        ? "Star a project to see it here."
+        : "Create your first project and start building something amazing!"}
+    </p>
+  </div>
+) : (
+  <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    {displayedProjects.map((project) => (
+      <ProjectCard key={project._id} project={project} />
+    ))}
+  </div>
+)}
 
-  </div>
-  )
-  :
-  ( <div className="mb-8 grid grid-cols-1 gap-4 sm-grid-cols-2 lg:grid-cols-4">
-    {projects.map((key,idx)=>{
-    <ProjectCard />
-    })}
-  </div>
-  )
-  }
     </div>
     </div>
 

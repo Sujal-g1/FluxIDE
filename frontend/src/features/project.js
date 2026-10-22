@@ -18,52 +18,56 @@ export const getProjects = async( )=>{
     const {data} = await api.get("/api/project")
     return data
  } catch (error) {
-   console.error("Login request failed:", error.response?.data);
    console.error("HTTP status:", error.response?.status);
-   return null;
+   console.error("GET PROJECTS ERROR:", error.response?.data || error.message);
+    throw error;
  }
 }
 
-export const getProjectsById = async(id)=>{
- try {
-    const {data} = await api.get("/api/project/${id}")
-    return data
- } catch (error) {
-   console.error("Login request failed:", error.response?.data);
-   console.error("HTTP status:", error.response?.status);
-   return null;
- }
-}
+export const getProjectsById = async (id) => {
+   try {
+     const { data } = await api.get(`/api/project/${id}`);
+     return data;
+   } catch (error) {
+     console.error(
+       "Get project by ID failed:",
+       error.response?.data || error.message
+     );
+ 
+     throw error;
+   }
+ };
 
-export const getStarredProjects = async()=>{
- try {
-    const {data} = await api.get("/api/project/starred")
-    return data
- } catch (error) {
-   console.error("Login request failed:", error.response?.data);
-   console.error("HTTP status:", error.response?.status);
-   return null;
- }
-}
+export const getStarredProjects = async () => {
+   try {
+     const { data } = await api.get("/api/project/starred");
+     return data;
+   } catch (error) {
+     console.error(
+       "Get starred projects failed:",
+       error.response?.data || error.message
+     );
+ 
+     throw error;
+   }
+ };
 
 export const toggleStar = async(id)=>{
     try {
-       const {data} = await api.patch("/api/project/${id}")
+       const {data} = await api.patch(`/api/project/${id}`)
        return data
     } catch (error) {
-      console.error("Login request failed:", error.response?.data);
-      console.error("HTTP status:", error.response?.status);
-      return null;
+      console.error("Toggle star failed:", error.response?.data);
+    throw error;
     }
  }
 
 export const deleteProject = async(id)=>{
     try {
-       const {data} = await api.delete("/api/project/${id}")
+       const {data} = await api.delete(`/api/project/${id}`)
        return data
     } catch (error) {
-      console.error("Login request failed:", error.response?.data);
-      console.error("HTTP status:", error.response?.status);
-      return null;
+      console.error("Delete project failed:", error.response?.data);
+    throw error;
     }
  }

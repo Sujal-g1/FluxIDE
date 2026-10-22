@@ -19,7 +19,7 @@ app.use(
   })
 );
 
-app.get("/", (req, res) => {
+app.get("/health", (req, res) => {
   res.json("hello from services/project");
 });
 
