@@ -7,8 +7,10 @@ export const createProject = async( name, description )=>{
     const {data} = await api.post("/api/project",{name, description})
     return data
  } catch (error) {
-   console.error("Login request failed:", error.response?.data);
-   console.error("HTTP status:", error.response?.status);
+  console.error(
+    "create project failed:",
+    error.response?.data || error.message
+  );
    return data;
  }
 }

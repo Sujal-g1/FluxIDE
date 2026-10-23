@@ -37,18 +37,7 @@ const starredProjects = Array.isArray(projectState?.starredProjects)
   const displayedProjects =
   activeSession === "starred" ? starredProjects : projects;
 
-  // const fetchAllProjects = async()=>{
-  //   setLoadingProjects(true)
-  //   const data = await getProjects()
-  //   dispatch(setProjects(data))
-  //   setLoadingProjects(false)
-  // }
-  // const fetchStarredProjects = async()=>{
-  //    setLoadingProjects(true)
-  //    const data = await getStarredProjects()
-  //    dispatch(setStarredProjects(data))
-  //    setLoadingProjects(false)
-  // }
+
 
 
   const fetchAllProjects = async () => {

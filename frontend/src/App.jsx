@@ -7,6 +7,9 @@ import Dashboard from "./pages/Dashboard";
 import FluxIntro from "./pages/FluxIntro";
 import { me } from "./features/me";
 import { setUserData } from "./redux/userSlice";
+import ProjectPage from "./pages/ProjectPage";
+import NotFound from "./pages/NotFound";
+
 
 const App = () => {
   const dispatch = useDispatch();
@@ -60,6 +63,8 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/project/:id" element={<ProjectPage />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

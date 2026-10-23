@@ -1,5 +1,5 @@
-import File from "../models/file.model"
-import { buildTree } from "../utils/buildTree";
+import File from "../models/file.model.js"
+import { buildTree } from "../utils/buildTree.js";
 
 const getFileExtension = (filename = "") => {
     const baseName = filename.split(/[\\/]/).pop();
@@ -147,7 +147,7 @@ export const createFile = async(req, res)=>{
 }
 
 
-export const updateFile = async(req, res)=>{
+export const updateFile = async(req, res)=>{ 
     try {
         const { name, content} = req.body
         const userId = req.headers["x-user-id"]

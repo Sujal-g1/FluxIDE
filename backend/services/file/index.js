@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { connectDb } from "./config/db.js";
+import router from "./routes/file.route.js";
 
 
 dotenv.config();
@@ -11,6 +12,7 @@ const port = process.env.PORT || 5006;
 const app = express();
 
 app.use(express.json());
+app.use("/",router)
 
 app.use(
   cors({
