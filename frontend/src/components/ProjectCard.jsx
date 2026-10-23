@@ -63,7 +63,7 @@ const ProjectCard = ({ project }) => {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.97 }}
-      whileHover={{ y: -3 }}
+      whileHover={{ y: -3 }} 
       transition={{ duration: 0.18, ease: "easeOut" }}
       onClick={()=> {
         navigate(`/project/${project._id}`)

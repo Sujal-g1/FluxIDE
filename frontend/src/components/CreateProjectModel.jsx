@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { addNewProject } from "../redux/projectSlice"
 import { createProject } from "../features/project"
+import { createRootFolder } from "../features/file"
 
 const CreateProjectModel = ({openModel, onClose}) => {
 
@@ -22,17 +23,20 @@ const handleCreateProject = async () => {
     try {
       const data = await createProject(
         name.trim(),
-        description.trim()
+        description.trim() 
       );
   
       if (!data) {
         throw new Error("Project creation failed");
       }
-  
+      const rootFolder = await createRootFolder({projectId:data._id, projectName:data.name})
+      console.log("Created root folder:", rootFolder);
+      onClose();
       dispatch(addNewProject(data));
       setName("");
       setDescription("");
-      onClose();
+      setLoading(false)
+
     } catch (error) {
       console.error("Create project failed:", error);
     } finally {

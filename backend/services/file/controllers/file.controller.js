@@ -297,46 +297,101 @@ export const getFile = async( req, res) =>{
 }
 
 
-export const getTree = async( req, res) =>{
-    try {
-        const userId = req.headers["x-user-id"]
-        const { projectId } = req.params
+// export const getTree = async( req, res) =>{
+//     try {
+//         const userId = req.headers["x-user-id"]
+//         const { projectId } = req.params
 
-        if (!userId) {
-            return res.status(401).json({
-              message: "User ID is required",
-            });
-          }
+
+//         if (!userId) {
+//             return res.status(401).json({
+//               message: "User ID is required",
+//             });
+//           }
         
-        const files = await File.find({
-            projectId,
-            owner:userId,
-            isDeleted:false
-        }).sort({
-            name:1,
-            type:-1
-        })
+//         const files = await File.find({
+//             projectId,
+//             owner:userId,
+//             isDeleted:false
+//         }).sort({
+//             name:1,
+//             type:-1
+//         })
   
 
-        const tree =  buildTree(files)
+//         const tree =  buildTree(files)
 
-        if (!tree) {
-            return res.status(404).json({
-                message: "tree not found",
-            });
-        }      
+//         if (!tree) {
+//             return res.status(404).json({
+//                 message: "tree not found",
+//             });
+//         }      
 
-        return res.status(200).json({ 
-            message: "file tree retrieved successfully", 
-            tree
-          });
+//         return res.status(200).json({ 
+//             message: "file tree retrieved successfully", 
+//             tree
+//           });
 
-    } catch (error) {
-        return res.status(500).json({ 
-            message: "Failed to retrieve file tree",
-            error
-          });
+//     } catch (error) {
+//         return res.status(500).json({ 
+//             message: "Failed to retrieve file tree",
+//             error
+//           });
+//     }
+// }
+
+
+
+
+export const getTree = async (req, res) => {
+  try {
+    const userId = req.headers["x-user-id"];
+    const { projectId } = req.params;
+
+    console.log("Project ID:", projectId);
+    console.log("User ID:", userId);
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "User ID is required",
+      });
     }
-}
 
+    const files = await File.find({
+      projectId,
+      owner: userId,
+      isDeleted: false,
+    }).sort({
+      name: 1,
+      type: -1,
+    });
 
+    console.log("Files found:", files.length);
+    console.log(
+      "Matched files:",
+      files.map((file) => ({
+        id: file._id,
+        name: file.name,
+        projectId: file.projectId,
+        owner: file.owner,
+        type: file.type,
+        parentId: file.parentId,
+      }))
+    );
+
+    const tree = buildTree(files);
+
+    console.log("Generated tree:", JSON.stringify(tree, null, 2));
+
+    return res.status(200).json({
+      message: "File tree retrieved successfully",
+      tree,
+    });
+  } catch (error) {
+    console.error("getTree failed:", error);
+
+    return res.status(500).json({
+      message: "Failed to retrieve file tree",
+    });
+  }
+};
