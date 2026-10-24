@@ -73,7 +73,8 @@ const ActivityBar = ({showTerminal, showAiChat, showExplorer, setShowAiChat, set
   
 
   return (
-    <div className='flex w-14 shrink-0 flex-col items-center gap-2 border-r border-white/[0.06] bg-[#111113]/90 py-3'>
+<div className="flex w-14 shrink-0 flex-col items-center gap-2 border-r border-white/[0.08] bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.035),transparent_55%),linear-gradient(160deg,#111113_0%,#09090b_50%,#050506_100%)] py-3">
+{/* <div className="flex w-14 shrink-0 flex-col items-center gap-2 border-r border-white/[0.06] bg-[radial-gradient(ellipse_at_top,rgba(79,70,229,0.20),transparent_65%),linear-gradient(180deg,#12121f_0%,#0d0d16_55%,#141421_100%)] py-3"> */}
         <ActivityIcon
         icon={Files}
         label={"explorer"}

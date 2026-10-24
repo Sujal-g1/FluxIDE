@@ -2,7 +2,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight, File, FileIcon, FilePlus, FilePlus2, FolderClosed, FolderOpen, FolderPlus, FolderPlusIcon, Pencil, Trash, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { getFolderIcon, getFileIcon } from "../utils/customisedIcon";
+import { getFolderIcon, getFileIcon } from "../utils/customisedIcon.js";
 import { createFile, createFolder, renameFolder, updateFile, deleteFile, deleteFolder } from "../features/file";
 import { createPortal } from "react-dom"
 

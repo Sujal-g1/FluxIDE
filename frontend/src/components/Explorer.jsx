@@ -10,7 +10,9 @@ const Explorer = ({ projectId, tree, reloadTree, openFile }) => {
     exit={{ opacity: 0, x: -16, width:0 }}
     whileHover={{ y: -3 }}
     transition={{ duration: 0.2, ease: "easeOut" }}
-    className='flex flex-col overflow-hidden border-r border-white/[0.06] bg-[#111113]/90 backdrop-blur-xl'>
+
+    className="flex flex-col overflow-hidden border-r border-white/[0.08] bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.035),transparent_55%),linear-gradient(160deg,#111113_0%,#09090b_50%,#050506_100%)] backdrop-blur-xl">
+    {/* className='flex flex-col overflow-hidden border-r border-white/[0.06] bg-[#111113]/90 backdrop-blur-xl'> */}
 
       {/* top bar */}
     <div className="flex h-10 w-72 shrink-0 items-center justify-between border-b border-white/[0.06] px-3">
