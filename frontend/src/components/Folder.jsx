@@ -221,9 +221,10 @@ const Folder = ({ projectId, node, tree, reloadTree, openFile}) => {
           transition={{ duration:0.16, ease:"easeOut"}}
           className="ml-5 overflow-hidden border-1 border-white/[0.05] pl-1"
           >
-            { node.children.map((child)=>(
-                 <Folder 
-                projectId={projectId} node={child} tree={tree} reloadTree={reloadTree}
+        { node.children.map((child)=>(
+          <Folder 
+          projectId={projectId} node={child} tree={tree} reloadTree={reloadTree}
+          openFile={openFile}
                  />
             ))}
     
@@ -457,6 +458,7 @@ const Folder = ({ projectId, node, tree, reloadTree, openFile}) => {
              <Folder 
              key={child._id}
             projectId={projectId} node={child} tree={tree} reloadTree={reloadTree}
+            openFile={openFile}
              />
         ))}
 
