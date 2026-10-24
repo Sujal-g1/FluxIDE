@@ -10,7 +10,7 @@ import { setCurrentProject } from "../redux/projectSlice"
 import { getTree } from "../features/file"
 import { Code2, Eye, Maximize2, Minimize2 } from "lucide-react";
 import Preview from "../components/Preview";
-import Editor from "../components/Editor";
+import Editor from "../components/EditorDashboard";
 
 
 

@@ -4,7 +4,83 @@ import { Check, Loader2, Save, X } from "lucide-react";
 import { useState } from "react";
 import { updateFile } from "../features/file";
 
-const Editor = ({ activeTab,
+import Editor, { useMonaco } from "@monaco-editor/react";
+import { useEffect } from "react"; 
+
+const getEditorLanguage = (name = "") => {
+  const extension = name.split(".").pop()?.toLowerCase();
+
+  const languages = {
+    js: "javascript",
+    jsx: "javascript",
+    mjs: "javascript",
+    cjs: "javascript",
+    ts: "typescript",
+    tsx: "typescript",
+    html: "html",
+    css: "css",
+    json: "json",
+    py: "python",
+    java: "java",
+  };
+
+  return languages[extension] || "plaintext";
+};
+
+let monacoConfigured = false;
+
+const setupMonaco = (monaco) => {
+  monaco.editor.defineTheme("flux-dark", {
+    base: "vs-dark",
+    inherit: true,
+    rules: [],
+    colors: {
+      "editor.background": "#00000000",
+      "editorGutter.background": "#00000000",
+      "editor.foreground": "#D4D4D8",
+      "editorLineNumber.foreground": "#52525B",
+      "editorLineNumber.activeForeground": "#A1A1AA",
+      "editorCursor.foreground": "#7DD3FC",
+      "editor.selectionBackground": "#3730A355",
+      "editor.lineHighlightBackground": "#FFFFFF05",
+      "editorWidget.background": "#111118",
+      "editorWidget.border": "#27272A",
+    },
+  });
+
+  if (monacoConfigured) return; // don't register twice
+  monacoConfigured = true;
+
+  const snippet = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
+  const Kind = monaco.languages.CompletionItemKind;
+
+  ["javascript", "typescript"].forEach((language) => {
+    monaco.languages.registerCompletionItemProvider(language, {
+      triggerCharacters: ["."],
+      provideCompletionItems(model, position) {
+        const word = model.getWordUntilPosition(position);
+        const range = {
+          startLineNumber: position.lineNumber,
+          endLineNumber: position.lineNumber,
+          startColumn: word.startColumn,
+          endColumn: word.endColumn,
+        };
+
+        return {
+          suggestions: [
+            { label: "clg", kind: Kind.Snippet, insertText: "console.log($1);", insertTextRules: snippet, detail: "console.log", range },
+            { label: "console.log", kind: Kind.Snippet, insertText: "console.log($1);", insertTextRules: snippet, detail: "Log output", range },
+            { label: "useState", kind: Kind.Snippet, insertText: "const [${1:state}, set${2:State}] = useState($3);", insertTextRules: snippet, detail: "React state hook", range },
+            { label: "useEffect", kind: Kind.Snippet, insertText: "useEffect(() => {\n\t$1\n}, [$2]);", insertTextRules: snippet, detail: "React effect hook", range },
+            { label: "function", kind: Kind.Snippet, insertText: "function ${1:name}($2) {\n\t$0\n}", insertTextRules: snippet, detail: "Function declaration", range },
+          ],
+        };
+      },
+    });
+  });
+};
+
+const EditorDashboard = ({ activeTab,
     openTabs,
     setOpenTabs,
     setActiveTab }) => {
@@ -12,6 +88,11 @@ const Editor = ({ activeTab,
     const [saving, setSaving] = useState(false)
     const [justSaved, setJustSaved] = useState(false)
     const [code, setCode] = useState("")
+
+    useEffect(() => {
+      setCode(activeTab?.content || "");
+    }, [activeTab?._id, activeTab?.content]);
+
 
     const ActiveIcon = getFolderIcon(activeTab?.name).icon
     const activeColor = getFileIcon(activeTab?.name).color
@@ -38,20 +119,22 @@ const Editor = ({ activeTab,
             console.log("save error",error);
         }
     }
-     
 
+     
   return (
-    <div className="flex flex-1 flex-col bg-[radial-gradient(ellipse_at_top_left,_rgba(79,70,229,0.08),_transparent_45%),radial-gradient(ellipse_at_bottom_right,_rgba(56,189,248,0.04),_transparent_40%),linear-gradient(135deg,_#0c0c12_0%,_#09090d_55%,_#10101a_100%)]">
+
+    <div className="flex flex-1 flex-col bg-[radial-gradient(ellipse_at_top_left,rgba(79,70,229,0.08),transparent_45%),radial-gradient(ellipse_at_bottom_right,rgba(56,189,248,0.04),transparent_40%),linear-gradient(135deg,#0c0c12_0%,#09090d_55%,#10101a_100%)]">
 
     {/* tabs */}
     <div className='flex h-10 shrink-0 items-center overflow-x-auto border-b border-white/[0.06] bg-[#111113]/90'>
     <AnimatePresence initial={false}>
-    {openTabs.map((tab)=>{
+    {openTabs.map((tab, idx)=>{
         const active = activeTab?._id == tab?._id
         const { icon:Icon, color} = getFileIcon(tab?.name)
 
         return(
             <motion.div
+            key={tab._id || `${tab.name}-${idx}`}
             initial={{ opacity:0, width:0 }}
             animate={{ opacity:1, width:"auto"}}
             exit={{opacity:0, width:0}}
@@ -86,11 +169,14 @@ const Editor = ({ activeTab,
     {/* save button */}
    <div className="flex h-10 shrink-0 items-center gap-4 border-b border-white/[0.06] px-4">
 
+   {activeTab && (
     <div className="flex items-center gap-2 text-zinc-400">
     <ActiveIcon size={14} className={`${activeColor}`} />
     <span className="text-[13px]"> {activeTab?.name} </span>
     </div>
+   )}
 
+    {activeTab && (
     <motion.div 
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
@@ -144,10 +230,41 @@ const Editor = ({ activeTab,
 
  
     </motion.div>
+    )}
    </div>
 
+   {/* editor area */}
+   <div className="min-h-0 flex-1 overflow-hidden bg-transparent">
+        <Editor
+          height="100%"
+          theme="flux-dark"
+          path={activeTab?._id || "untitled"}
+          language={getEditorLanguage(activeTab?.name)}
+          value={code}
+          beforeMount={setupMonaco}
+          onChange={(value) => setCode(value ?? "")}
+          options={{
+            fontSize: 14,
+            automaticLayout: true,
+            minimap: { enabled: false },
+            wordWrap: "on",
+            scrollBeyondLastLine: false,
+            padding: { top: 12 },
+            quickSuggestions: { other: true, comments: false, strings: true },
+            suggestOnTriggerCharacters: true,
+            acceptSuggestionOnEnter: "on",
+            tabCompletion: "on",
+            wordBasedSuggestions: "currentDocument",
+            snippetSuggestions: "inline",
+            parameterHints: { enabled: true },
+            hover: { enabled: true },
+            lightbulb: { enabled: true },
+          }}
+        />
+  
+  </div>
     </div> 
   )
 }
 
-export default Editor
+export default EditorDashboard
