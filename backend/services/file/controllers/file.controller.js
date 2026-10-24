@@ -211,6 +211,71 @@ export const updateFile = async(req, res)=>{
 }
 
 
+export const renameFolder = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const userId = req.headers["x-user-id"];
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "User ID is required",
+      });
+    }
+
+    if (typeof name !== "string" || !name.trim()) {
+      return res.status(400).json({
+        message: "Folder name cannot be empty",
+      });
+    }
+
+    const trimmedName = name.trim();
+
+    const existingFolder = await File.findOne({
+      _id: req.params.id,
+      owner: userId,
+      type: "folder",
+      isDeleted: false,
+    });
+
+    if (!existingFolder) {
+      return res.status(404).json({
+        message: "Folder not found",
+      });
+    }
+
+    const duplicateFolder = await File.findOne({
+      _id: { $ne: existingFolder._id },
+      owner: userId,
+      projectId: existingFolder.projectId,
+      parentId: existingFolder.parentId,
+      name: trimmedName,
+      type: "folder",
+      isDeleted: false,
+    });
+
+    if (duplicateFolder) {
+      return res.status(409).json({
+        message: "A folder with this name already exists",
+      });
+    }
+
+    existingFolder.name = trimmedName;
+
+    await existingFolder.save();
+
+    return res.status(200).json({
+      message: "Folder renamed successfully",
+      folder: existingFolder,
+    });
+  } catch (error) {
+    console.error("Folder rename failed:", error);
+
+    return res.status(500).json({
+      message: "Folder rename failed",
+    });
+  }
+};
+
 export const deleteFile = async(req, res)=>{
     try {
         const userId = req.headers["x-user-id"]
@@ -244,11 +309,9 @@ export const deleteFile = async(req, res)=>{
             });
           }
       
-
-
         return res.status(201).json({ 
             message: "file deleted successfully", 
-            file : existingFile
+            file
           });
 
     } catch (error) {
@@ -259,6 +322,73 @@ export const deleteFile = async(req, res)=>{
     }
 }
 
+export const deleteFolder = async (req, res) => {
+  try {
+    const userId = req.headers["x-user-id"];
+    const { id } = req.params;
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "User ID is required",
+      });
+    }
+
+    const folder = await File.findOne({
+      _id: id,
+      owner: userId,
+      type: "folder",
+      isDeleted: false,
+    });
+
+    if (!folder) {
+      return res.status(404).json({
+        message: "Folder not found",
+      });
+    }
+
+    // Find all descendants recursively
+    const folderIds = [folder._id];
+    let parentIds = [folder._id];
+
+    while (parentIds.length > 0) {
+      const children = await File.find({
+        parentId: { $in: parentIds },
+        owner: userId,
+        isDeleted: false,
+      }).select("_id type");
+
+      parentIds = children
+        .filter((child) => child.type === "folder")
+        .map((child) => child._id);
+
+      folderIds.push(...parentIds);
+    }
+
+    await File.updateMany(
+      {
+        $or: [
+          { _id: { $in: folderIds } },
+          { parentId: { $in: folderIds } },
+        ],
+        owner: userId,
+        isDeleted: false,
+      },
+      {
+        $set: { isDeleted: true },
+      }
+    );
+
+    return res.status(200).json({
+      message: "Folder and its contents deleted successfully",
+    });
+  } catch (error) {
+    console.error("Folder deletion failed:", error);
+
+    return res.status(500).json({
+      message: "Folder deletion failed",
+    });
+  }
+};
 
 export const getFile = async( req, res) =>{
     try {
@@ -295,51 +425,6 @@ export const getFile = async( req, res) =>{
           });
     }
 }
-
-
-// export const getTree = async( req, res) =>{
-//     try {
-//         const userId = req.headers["x-user-id"]
-//         const { projectId } = req.params
-
-
-//         if (!userId) {
-//             return res.status(401).json({
-//               message: "User ID is required",
-//             });
-//           }
-        
-//         const files = await File.find({
-//             projectId,
-//             owner:userId,
-//             isDeleted:false
-//         }).sort({
-//             name:1,
-//             type:-1
-//         })
-  
-
-//         const tree =  buildTree(files)
-
-//         if (!tree) {
-//             return res.status(404).json({
-//                 message: "tree not found",
-//             });
-//         }      
-
-//         return res.status(200).json({ 
-//             message: "file tree retrieved successfully", 
-//             tree
-//           });
-
-//     } catch (error) {
-//         return res.status(500).json({ 
-//             message: "Failed to retrieve file tree",
-//             error
-//           });
-//     }
-// }
-
 
 
 

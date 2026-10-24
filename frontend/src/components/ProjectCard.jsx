@@ -1,5 +1,5 @@
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Star, Trash2, FolderCode } from "lucide-react";
 import { deleteProject, toggleStar } from "../features/project";
 import { useState } from "react";
@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 const ProjectCard = ({ project }) => {
   const [loadingStar, setLoadingStar] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const navigate = useNavigate()
 
@@ -36,29 +37,39 @@ const ProjectCard = ({ project }) => {
     }
   };
 
-  const handleDelete = async (e) => {
+  const handleDelete = (e) => {
     e.stopPropagation();
-  
     if (loadingDelete) return;
-  
-    const confirmed = window.confirm(
-      `Delete "${project.name}"?`
-    );
-  
-    if (!confirmed) return;
+    setShowDeleteModal(true);
+  };
+
+
+  const handleConfirmDelete = async () => {
+    if (loadingDelete) return;
   
     setLoadingDelete(true);
   
     try {
       await deleteProject(project._id);
       dispatch(removeProject(project._id));
+      setShowDeleteModal(false);
     } catch (error) {
-      console.error("Failed to delete project:", error);
+      console.error(
+        "Failed to delete project:",
+        error.response?.data || error.message
+      );
     } finally {
       setLoadingDelete(false);
     }
   };
+
+  const handleCancelDelete = () => {
+    if (loadingDelete) return;
+    setShowDeleteModal(false);
+  };
+
   return (
+    <>
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
@@ -120,7 +131,69 @@ const ProjectCard = ({ project }) => {
           : "recently"}
       </div>
     </motion.div>
-  );
-};
+<AnimatePresence>
+  {showDeleteModal && (
+    <motion.div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget && !loadingDelete) {
+          handleCancelDelete();
+        }
+      }}
+    >
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="delete-project-title"
+        initial={{ opacity: 0, scale: 0.95, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 8 }}
+        className="w-full max-w-md rounded-2xl border border-white/10 bg-[#151518] p-5 shadow-2xl"
+      >
+        <h2
+          id="delete-project-title"
+          className="text-lg font-semibold text-white"
+        >
+          Delete project?
+        </h2>
 
-export default ProjectCard;
+        <p className="mt-3 text-sm leading-6 text-zinc-400">
+          Are you sure you want to delete{" "}
+          <span className="font-medium text-zinc-200">
+            "{project.name}"
+          </span>
+          ? This action cannot be undone.
+        </p>
+
+        <div className="mt-6 flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={handleCancelDelete}
+            disabled={loadingDelete}
+            className="rounded-lg border border-white/10 px-4 py-2 text-sm text-zinc-300 hover:bg-white/5 disabled:opacity-50"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            onClick={handleConfirmDelete}
+            disabled={loadingDelete}
+            className="rounded-lg bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-400 disabled:opacity-50"
+          >
+            {loadingDelete ? "Deleting..." : "Delete project"}
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
+</>
+
+);}
+
+
+export default ProjectCard

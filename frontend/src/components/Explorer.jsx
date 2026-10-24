@@ -55,6 +55,7 @@ const Explorer = ({ projectId, tree, reloadTree}) => {
       (
        tree.map((node)=>(
         <Folder
+        key={node._id}
       projectId={projectId}
       node={node}
      tree={tree}
