@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { FolderTree, RefreshCcw } from "lucide-react";
 import Folder from "./Folder";
 
-const Explorer = ({ projectId, tree, reloadTree}) => {
+const Explorer = ({ projectId, tree, reloadTree, openFile }) => {
   return (
     <motion.div 
     initial={{ opacity: 0, x: -16, width:0 }}
@@ -59,6 +59,7 @@ const Explorer = ({ projectId, tree, reloadTree}) => {
       projectId={projectId}
       node={node}
      tree={tree}
+     openFile={openFile}
      reloadTree={reloadTree}
          />
        ))

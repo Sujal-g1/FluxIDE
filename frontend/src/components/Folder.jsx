@@ -6,7 +6,7 @@ import { getFolderIcon, getFileIcon } from "../utils/customisedIcon";
 import { createFile, createFolder, renameFolder, updateFile, deleteFile, deleteFolder } from "../features/file";
 import { createPortal } from "react-dom"
 
-const Folder = ({ projectId, node, tree, reloadTree}) => {
+const Folder = ({ projectId, node, tree, reloadTree, openFile}) => {
 
     const [open, setOpen] = useState(false)
     const [folderName, setFolderName] = useState("")
@@ -141,6 +141,7 @@ const Folder = ({ projectId, node, tree, reloadTree}) => {
     }
 
 
+    // file
    if(node.type == "file"){
 
     const { icon: FileTypeIcon, color: fileColor } = getFileIcon(
@@ -153,6 +154,7 @@ const Folder = ({ projectId, node, tree, reloadTree}) => {
             e.preventDefault()
             setMenu({x:e.clientX, y:e.clientY})
         }}
+        onClick={()=> openFile(node)}
         className="group flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-white/[0.05] transition-colors"
        >
     
@@ -432,7 +434,7 @@ const Folder = ({ projectId, node, tree, reloadTree}) => {
  { node.parentId!= null && (
     <button
     className="mx-1 flex w-[cal(100%-8px)] items-center gap-2 rounded-md px-3 py-1 text-left text-[12px] text-zinc-300 transition-colors hover:bg-white/[0.06] hover:text-white"
-     onClick={handleDeleteItem}
+       onClick={handleDeleteItem}
         >
         <Trash  size={13}/>
         Delete  
