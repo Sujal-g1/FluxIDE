@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { LuMoon } from "react-icons/lu";
 import { FiSun } from "react-icons/fi"; 
 import { useDispatch, useSelector } from "react-redux"
-import { ChevronDown, LogOut } from "lucide-react"
+import { ChevronDown, Code2, LogOut } from "lucide-react"
 import { logout } from "../features/logout";
 import { setUserData } from "../redux/userSlice";
  
@@ -45,11 +45,15 @@ const dispatch = useDispatch()
   return (
     <div className='w-full h-16 bg-white/70 dark:bg-white/[0.03] backdrop-blur-xl border-b border-slate-200/70 dark:border-white/[0.07] flex items-center px-6 gap-6 font-sans transition-colors duration -300'>
         {/* left */}
-    <div className='flex items-center gap-2.5 shrink-0'>
-        <span className='text-slate-900 dark:text-white font-bold text-[17px] tracking-tight'>
-        flux.ide
-        </span>
-    </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-500/15">
+            <Code2 size={17} className="text-indigo-400" />
+          </div>
+
+          <span className="text-base font-semibold tracking-tight text-white">
+            flux<span className="text-indigo-400">.ide</span>
+          </span>
+        </div>
 
     {/* right */}
     <div className="flex-1"/>

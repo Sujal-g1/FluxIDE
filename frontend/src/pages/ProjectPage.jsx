@@ -11,6 +11,7 @@ import { getTree } from "../features/file"
 import { Code2, Eye, Maximize2, Minimize2 } from "lucide-react";
 import Preview from "../components/Preview";
 import Editor from "../components/EditorDashboard";
+import Terminal from "../components/Terminal";
 
 
 
@@ -25,6 +26,10 @@ const ProjectPage = () => {
     const [tree, setTree] = useState([])
     const [openTabs, setOpenTabs] = useState([])
     const [activeTab, setActiveTab] = useState(null)
+    const [showBottomPanel, setShowBottomPanel] = useState(false)
+    const [terminalHeight, setTerminalHeight] = useState(500);
+    const [resizeStart, setResizeStart] = useState(null);
+
 
     const { id } = useParams()
     const dispatch = useDispatch()
@@ -74,10 +79,49 @@ const ProjectPage = () => {
         loadTree()
     },[id]) 
 
+    // terminal resize
+    useEffect(() => {
+      if (!resizeStart) return;
+
+      const handlePointerMove = (event) => {
+        const delta = resizeStart.y - event.clientY;
+
+        // Keep the terminal within the available viewport height.
+        const maxHeight = Math.floor(window.innerHeight * 0.75);
+
+        setTerminalHeight(
+          Math.min(
+            maxHeight,
+            Math.max(120, resizeStart.height + delta)
+          )
+        );
+      };
+
+      const handlePointerUp = () => {
+        setResizeStart(null);
+      };
+
+      document.body.style.userSelect = "none";
+      document.body.style.cursor = "row-resize";
+
+      window.addEventListener("pointermove", handlePointerMove);
+      window.addEventListener("pointerup", handlePointerUp);
+
+      return () => {
+        window.removeEventListener("pointermove", handlePointerMove);
+        window.removeEventListener("pointerup", handlePointerUp);
+
+        document.body.style.userSelect = "";
+        document.body.style.cursor = "";
+      };
+    }, [resizeStart]);
+
+
   return (
     <div className="relative flex h-screen flex-col overflow-hidden bg-[#0a0a0c]">
 
     <div className="pointer-events-none absolute -top-40 left-1/3 h-96 w-96 rounded-full bg-sky-500/10 blur-[140px]"/>
+    
     <div className="pointer-events-none absolute -top-20 right-1/4 h-80 w-80 rounded-full bg-violet-500/10 blur-[140px]"/>
 
     {/* topbar */}
@@ -115,9 +159,9 @@ const ProjectPage = () => {
 
 
     {/* editor */}
-    {activeTab &&  (
+ 
     <div className={`${
-    mobilePanel === "editor" ? "flex" : "hidden"} relative w-full min-w-0 flex-1 flex-col overflow-hidden border-x  border-white/[0.05] md:flex`}>
+    mobilePanel === "editor" ? "flex" : "hidden"} relative flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden border-x  border-white/[0.05] md:flex`}>
 
     {/* max and min button, preview and editor buttons */}
     {isHtmlFile && (
@@ -126,60 +170,60 @@ const ProjectPage = () => {
         className="pointer-events-none absolute right-2 top-2 z-40 flex items-center gap-1.5 sm:right-4 sm:top-3 sm:gap-2"
         transition={{ type: "spring", stiffness: 380, damping: 32 }}
     >
-        <AnimatePresence initial={false} mode="popLayout">
-        { showPreview && (
-    <motion.button
-    key="preview-fullscreen"
-    layout
-    initial={{ opacity: 0, scale: 0.82, x: 10 }}
-    animate={{ opacity: 1, scale: 1, x: 0 }}
-    exit={{ opacity: 0, scale: 0.82, x: 10 }}
-    whileHover={{ scale: 1.06 }}
-    whileTap={{ scale: 0.94 }}
-    transition={{ type: "spring", stiffness: 420, damping: 28 }}
-    type="button"
-    onClick={()=> setIsPreviewFullScreen((v)=>!v)}
-    title={ isPreviewFullScreen ? "Exit fullscreen ": "Fullscreen preview"}
-    className="pointer-events-auto flex items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-[#111113]/95 p-1.5 text-zinc-400 shadow-lg shadow-black/40 backdrop-blur hover:text-white sm:p-2"
-    >
-     
-    <AnimatePresence mode="wait" initial={false}>
-  <motion.span
-    key={isPreviewFullScreen ? "minimize" : "maximize"}
-    initial={{ 
-      opacity: 0, 
-      y: isPreviewFullScreen ? 8 : -8, 
-      scale: 0.7 
-    }}
-    animate={{ 
-      opacity: 1, 
-      y: 0, 
-      scale: 1 
-    }}
-    exit={{ 
-      opacity: 0, 
-      y: isPreviewFullScreen ? -8 : 8, 
-      scale: 0.7 
-    }}
-    transition={{
-      type: "spring",
-      stiffness: 680,
-      damping: 30,
-      mass:0.4 
-    }}
-    className="flex items-center justify-center origin-center"
-  >
-    {isPreviewFullScreen ? (
-      <Minimize2 size={13} strokeWidth={1.8} />
-    ) : (
-      <Maximize2 size={13} strokeWidth={1.8} />
-    )}
-  </motion.span>
-</AnimatePresence>
-    
-    </motion.button>
-     )}
-  </AnimatePresence>
+      <AnimatePresence initial={false} mode="popLayout">
+            { showPreview && (
+        <motion.button
+        key="preview-fullscreen"
+        layout
+        initial={{ opacity: 0, scale: 0.82, x: 10 }}
+        animate={{ opacity: 1, scale: 1, x: 0 }}
+        exit={{ opacity: 0, scale: 0.82, x: 10 }}
+        whileHover={{ scale: 1.06 }}
+        whileTap={{ scale: 0.94 }}
+        transition={{ type: "spring", stiffness: 420, damping: 28 }}
+        type="button"
+        onClick={()=> setIsPreviewFullScreen((v)=>!v)}
+        title={ isPreviewFullScreen ? "Exit fullscreen ": "Fullscreen preview"}
+        className="pointer-events-auto flex items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-[#111113]/95 p-1.5 text-zinc-400 shadow-lg shadow-black/40 backdrop-blur hover:text-white sm:p-2"
+        >
+        
+        <AnimatePresence mode="wait" initial={false}>
+      <motion.span
+        key={isPreviewFullScreen ? "minimize" : "maximize"}
+        initial={{ 
+          opacity: 0, 
+          y: isPreviewFullScreen ? 8 : -8, 
+          scale: 0.7 
+        }}
+        animate={{ 
+          opacity: 1, 
+          y: 0, 
+          scale: 1 
+        }}
+        exit={{ 
+          opacity: 0, 
+          y: isPreviewFullScreen ? -8 : 8, 
+          scale: 0.7 
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 680,
+          damping: 30,
+          mass:0.4 
+        }}
+        className="flex items-center justify-center origin-center"
+      >
+        {isPreviewFullScreen ? (
+          <Minimize2 size={13} strokeWidth={1.8} />
+        ) : (
+          <Maximize2 size={13} strokeWidth={1.8} />
+        )}
+      </motion.span>
+    </AnimatePresence>
+        
+        </motion.button>
+        )}
+      </AnimatePresence>
 
     <motion.div
         layout
@@ -237,24 +281,99 @@ const ProjectPage = () => {
     )}
 
     {/* main screen */}
-    
-       <div className="flex min-h-0 flex-1 overflow-hidden">
-       {
-           showPreview ? ( <Preview tree={tree}  activeTab={activeTab} /> ): 
-           <Editor 
-           activeTab={activeTab}
-           openTabs={openTabs}
-           setOpenTabs={setOpenTabs}
-           setActiveTab={setActiveTab}
-           />
-       }
-       </div>
-   
+    <div className="flex min-h-0 flex-1 overflow-hidden">
+    {
+    showPreview ? (
+    <Preview tree={tree}  activeTab={activeTab} /> ): 
+    <Editor 
+    activeTab={activeTab}
+    openTabs={openTabs}
+    setOpenTabs={setOpenTabs}
+    setActiveTab={setActiveTab}
+    />  } 
+   </div>
+
+
+{/* VS Code-style bottom terminal */}
+<AnimatePresence initial={false}>
+  {showTerminal && (
+    <Terminal
+      key="project-terminal"
+      projectId={id}
+      height={terminalHeight}
+      onResizeStart={(event) => {
+        event.preventDefault();
+
+        setResizeStart({
+          y: event.clientY,
+          height: terminalHeight,
+        });
+      }}
+    />
+  )}
+</AnimatePresence>
+
     </div>
+
+    {/* max min screen button working */}
+    <AnimatePresence >
+    { showPreview && isPreviewFullScreen && (
+    <motion.div
+    initial={{opacity:0, scale:0.98}}
+    animate={{ opacity:1, scale:1}}
+    exit={{ opacity:0, scale:0.98}} 
+    transition={{ duration:0.18, ease:"easeOut"}}
+    className="fixed inset-0 z-[100] bg-white"
+    >
+
+    <Preview 
+    tree={tree}
+    activeTab={activeTab}
+    />
+
+    <motion.button
+    key="preview-fullscreen"
+    layout
+    initial={{ opacity: 0, scale: 0.82, x: 10 }}
+    animate={{ opacity: 1, scale: 1, x: 0 }}
+    exit={{ opacity: 0, scale: 0.82, x: 10 }}
+    whileHover={{ scale: 1.06 }}
+    whileTap={{ scale: 0.94 }}
+    transition={{ type: "spring", stiffness: 420, damping: 28 }}
+    type="button"
+    onClick={()=> setIsPreviewFullScreen(false)}
+    className="absolute right-2 top-2 z-[110] flex items-center gap-1.5 rounded-lg border border-white/10  px-2.5 py-1.5 text-[11px] font-medium text-zinc-300 shadow-lg shadow-black/40 backdrop-blur hover:text-white sm:right-4 sm:top-3 sm:px-3 sm:text-xs"
+    >
+      <Minimize2 size={13} strokeWidth={1.8} />
+    </motion.button>
+
+  </motion.div>
     )}
+  </AnimatePresence>
+
+
+  
+{/* Bottom terminal panel */}
+  {/* <AnimatePresence initial={false}>
+    {showTerminal && (
+      <Terminal
+        key="project-terminal"
+        projectId={id}
+        height={terminalHeight}
+        onResizeStart={(event) => {
+          event.preventDefault();
+
+          setResizeStart({
+            y: event.clientY,
+            height: terminalHeight,
+          });
+        }}
+      />
+    )}
+  </AnimatePresence> */}
+
 
     </div>
-
     </div> 
   )
 }

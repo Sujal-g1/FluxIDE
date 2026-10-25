@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { getFileIcon, getFolderIcon } from "../utils/customisedIcon";
-import { Check, Loader2, Save, X } from "lucide-react";
+import { Check, Loader2, Save, X, Code2 } from "lucide-react";
 import { useState } from "react";
 import { updateFile } from "../features/file";
 
@@ -32,10 +32,31 @@ const EditorDashboard = ({ activeTab,
     const ActiveIcon = getFolderIcon(activeTab?.name).icon
     const activeColor = getFileIcon(activeTab?.name).color
 
+    // const handleCloseTab = (id) => {
+    //   const remainingTabs = openTabs.filter(
+    //     (tab) => String(tab._id) !== String(id)
+    //   );
+    
+    //   setOpenTabs(remainingTabs);
+    
+    //   if (String(activeTab?._id) === String(id)) {
+    //     setActiveTab(
+    //       remainingTabs.length > 0
+    //         ? remainingTabs[remainingTabs.length - 1]
+    //         : null
+    //     );
+    //   }
+    // };
+
     const handleCloseTab = (id) => {
+      console.log("1. Close button clicked:", id);
+      console.log("2. Tabs before closing:", openTabs);
+    
       const remainingTabs = openTabs.filter(
         (tab) => String(tab._id) !== String(id)
       );
+    
+      console.log("3. Tabs after filtering:", remainingTabs);
     
       setOpenTabs(remainingTabs);
     
@@ -66,17 +87,21 @@ const EditorDashboard = ({ activeTab,
         }
     }
 
-
     useEffect(() => {
       syncMonacoFileNames(openTabs);
     }, [openTabs]);
      
+
+    console.log("openTabs:", openTabs);
+console.log("openTabs length:", openTabs?.length);
+console.log("activeTab:", activeTab);
+
   return (
 
     <div className="flex flex-1 flex-col bg-[radial-gradient(ellipse_at_top_left,rgba(79,70,229,0.08),transparent_45%),radial-gradient(ellipse_at_bottom_right,rgba(56,189,248,0.04),transparent_40%),linear-gradient(135deg,#0c0c12_0%,#09090d_55%,#10101a_100%)]">
 
     {/* tabs */}
-   <div className="flex h-10 shrink-0 items-center overflow-x-auto border-b border-white/[0.06] bg-[radial-gradient(ellipse_at_top,rgba(79,70,229,0.14),transparent_70%),linear-gradient(135deg,#12121f_0%,#0d0d16_55%,#151522_100%)]">
+   {/* <div className="flex h-10 shrink-0 items-center overflow-x-auto border-b border-white/[0.06] bg-[radial-gradient(ellipse_at_top,rgba(79,70,229,0.14),transparent_70%),linear-gradient(135deg,#12121f_0%,#0d0d16_55%,#151522_100%)]">
     <AnimatePresence initial={false}>
     {openTabs.map((tab, idx)=>{
         const active = activeTab?._id == tab?._id
@@ -113,7 +138,80 @@ const EditorDashboard = ({ activeTab,
         )
     })}
     </AnimatePresence>
-    </div>
+    </div> */}
+
+  
+
+<div className="flex h-10 shrink-0 items-center overflow-x-auto border-b border-white/[0.06] bg-[radial-gradient(ellipse_at_top,rgba(79,70,229,0.14),transparent_70%),linear-gradient(135deg,#12121f_0%,#0d0d16_55%,#151522_100%)]">
+  <AnimatePresence initial={false} mode="popLayout">
+    {openTabs.map((tab, idx) => {
+      const active = String(activeTab?._id) === String(tab?._id);
+      const { icon: Icon, color } = getFileIcon(tab?.name);
+
+      return (
+        <motion.div
+          key={tab._id || `${tab.name}-${idx}`}
+          layout
+          initial={{ opacity: 0, x: 12, width: 0 }}
+          animate={{ opacity: 1, x: 0, width: "auto" }}
+          exit={{ opacity: 0, x: -10, width: 0 }}
+          transition={{
+            opacity: { duration: 0.16 },
+            x: { type: "spring", stiffness: 400, damping: 30 },
+            width: { duration: 0.2, ease: "easeInOut" },
+            layout: { type: "spring", stiffness: 420, damping: 35 },
+          }}
+          onClick={() => setActiveTab(tab)}
+          className={`group relative flex h-full shrink-0 cursor-pointer items-center gap-2 overflow-hidden whitespace-nowrap border-r border-white/[0.06] px-3.5 transition-colors duration-200 ${
+            active
+              ? "bg-[#0a0a0c] text-white"
+              : "text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-300"
+          }`}
+        >
+          <Icon size={14} className={`${color} shrink-0`} />
+
+          <motion.span
+            layout="position"
+            className="text-[13px]"
+          >
+            {tab?.name}
+          </motion.span>
+
+          <motion.button
+            type="button"
+            initial={false}
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.85 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCloseTab(tab._id);
+            }}
+            className="rounded p-0.5 text-zinc-500 opacity-0 transition-colors hover:bg-white/10 hover:text-white group-hover:opacity-100"
+            aria-label={`Close ${tab.name}`}
+            title={`Close ${tab.name}`}
+          >
+            <X size={13} />
+          </motion.button>
+
+          <AnimatePresence>
+            {active && (
+              <motion.div
+                layoutId="active-tab-indicator"
+                className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-sky-400 to-violet-400"
+                transition={{
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 35,
+                }}
+              />
+            )}
+          </AnimatePresence>
+        </motion.div>
+      );
+    })}
+  </AnimatePresence>
+</div>
+
 
 
     {/* save button */}
@@ -184,35 +282,69 @@ const EditorDashboard = ({ activeTab,
    </div>
 
    {/* editor area */}
-   <div className="min-h-0 flex-1 overflow-hidden bg-transparent">
-        <Editor
-          height="100%"
-          theme="flux-dark"
-          path={activeTab?._id || "untitled"}
-          language={getEditorLanguage(activeTab?.name)}
-          value={code}
-          beforeMount={setupMonaco}
-          onChange={(value) => setCode(value ?? "")}
-          options={{
-            fontSize: 14,
-            automaticLayout: true,
-            minimap: { enabled: false },
-            wordWrap: "on",
-            scrollBeyondLastLine: false,
-            padding: { top: 12 },
-            quickSuggestions: { other: true, comments: false, strings: true },
-            suggestOnTriggerCharacters: true,
-            acceptSuggestionOnEnter: "on",
-            tabCompletion: "on",
-            wordBasedSuggestions: "currentDocument",
-            snippetSuggestions: "inline",
-            parameterHints: { enabled: true },
-            hover: { enabled: true },
-            lightbulb: { enabled: true },
-          }}
-        />
-  
-  </div>
+   
+{/* Editor area */}
+<div className="relative min-h-0 flex-1 overflow-hidden bg-[#0a0a0c]">
+  {openTabs.length === 0 ? (
+    <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+      <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.03]">
+        <Code2 size={30} className="text-violet-400" />
+      </div>
+
+      <h2 className="text-lg font-semibold tracking-tight text-zinc-200">
+        No files open
+      </h2>
+
+      <p className="mt-2 max-w-sm text-sm leading-6 text-zinc-500">
+        Open a file from the Explorer to start coding.
+        Your workspace is waiting for you.
+      </p>
+
+      <div className="mt-5 flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-xs text-zinc-500">
+        <span className="text-violet-400">Tip</span>
+        <span>Select any file from the sidebar to get started.</span>
+      </div>
+    </div>
+  ) : activeTab ? (
+    <Editor
+      height="100%"
+      theme="flux-dark"
+      path={String(activeTab._id)}
+      language={getEditorLanguage(activeTab.name)}
+      value={code}
+      beforeMount={setupMonaco}
+      onChange={(value) => setCode(value ?? "")}
+      options={{
+        fontSize: 14,
+        automaticLayout: true,
+        minimap: { enabled: false },
+        wordWrap: "on",
+        scrollBeyondLastLine: false,
+        padding: { top: 12 },
+        quickSuggestions: {
+          other: true,
+          comments: false,
+          strings: true,
+        },
+        suggestOnTriggerCharacters: true,
+        acceptSuggestionOnEnter: "on",
+        tabCompletion: "on",
+        wordBasedSuggestions: "currentDocument",
+        snippetSuggestions: "inline",
+        parameterHints: { enabled: true },
+        hover: { enabled: true },
+        lightbulb: { enabled: true },
+      }}
+    />
+  ) : (
+    <div className="flex h-full items-center justify-center text-sm text-zinc-500">
+      Select a file to continue.
+    </div>
+  )}
+</div>
+
+
+
     </div> 
   )
 }

@@ -287,15 +287,16 @@ const Preview = ({ tree = [], activeTab ,  filesLoading = false }) => {
   }
 
   return (
-    <div className="flex h-full w-full flex-col bg-white">
-      <div className="flex h-10 shrink-0 items-center justify-between border-b border-white/[0.06] bg-[#111113] px-4">
+    <div className="flex h-full w-full flex-col">
+
+      <div className="flex h-10 shrink-0 items-center justify-between border-b border-white/[0.06] px-4 bg-[radial-gradient(ellipse_at_top_left,rgba(79,70,229,0.08),transparent_45%),radial-gradient(ellipse_at_bottom_right,rgba(56,189,248,0.04),transparent_40%),linear-gradient(135deg,#0c0c12_0%,#09090d_55%,#10101a_100%)]">
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-emerald-400" />
           <span className="text-xs text-zinc-300">Preview</span>
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 bg-white">
+      <div className="min-h-0 flex-1">
         <iframe
           title="Project Preview"
           srcDoc={srcDoc}

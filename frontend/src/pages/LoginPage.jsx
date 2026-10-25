@@ -5,6 +5,7 @@ import { auth, googleProvider } from "../firebase";
 import { setUserData } from "../redux/userSlice";
 import { login } from "../features/login";
 
+
 const Icon = ({ name, className = "" }) => {
     const shapes = {
       arrow: (

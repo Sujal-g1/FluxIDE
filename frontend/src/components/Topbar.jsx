@@ -3,18 +3,21 @@ import { Folder, Code2, Eye } from "lucide-react";
 import { useSelector } from "react-redux";
 import {motion} from "framer-motion"
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Topbar = ({showPreview, setShowPreview}) => {
   const currentProject = useSelector(
     (state) => state.project.currentProject
   );
 
+  const navigate= useNavigate()
 
   return (
     <header className="flex h-12 shrink-0 items-center justify-between border-b border-white/[0.08] bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.035),transparent_55%),linear-gradient(160deg,#111113_0%,#09090b_50%,#050506_100%)] px-4 backdrop-blur-xl">
 
         {/* left side */} 
-      {/* <div className="flex min-w-0 items-center gap-4">
+      <div className="flex min-w-0 items-center gap-4"
+      onClick={()=> navigate("/")}>
         <div className="flex shrink-0 items-center gap-2">
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-500/15">
             <Code2 size={17} className="text-indigo-400" />
@@ -34,11 +37,11 @@ const Topbar = ({showPreview, setShowPreview}) => {
             {currentProject?.name || "No project selected"}
           </span>
         </div>
-      </div> */}
+      </div>
 
      
      {/* right side */}
-     <div className="flex items-center gap-1.5">
+     {/* <div className="flex items-center gap-1.5">
         <motion.button
         whileHover={{scale: 1.05}}
         whileTap={{ scale: 0.95}}
@@ -60,7 +63,8 @@ const Topbar = ({showPreview, setShowPreview}) => {
         </motion.button>
 
          
-     </div>
+     </div> */}
+
     </header>
   );
 };

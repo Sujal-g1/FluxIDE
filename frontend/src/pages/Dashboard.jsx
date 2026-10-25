@@ -37,9 +37,6 @@ const starredProjects = Array.isArray(projectState?.starredProjects)
   const displayedProjects =
   activeSession === "starred" ? starredProjects : projects;
 
-
-
-
   const fetchAllProjects = async () => {
     setLoadingProjects(true);
     setError("");
@@ -94,12 +91,10 @@ const starredProjects = Array.isArray(projectState?.starredProjects)
   }, [activeSession, userData]);
 
 
-
   if(!userData){
     return <LoginPage />  
    }
  
-
 
   return(
     <div className="relative flex h-screen w-full flex-col overflow-hidden bg-slate-50 transition-colors duration-300 dark:bg-[#07070c]">
