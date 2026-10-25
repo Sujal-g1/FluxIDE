@@ -34,6 +34,11 @@ const ProjectPage = () => {
         dispatch(setCurrentProject(data))
     }
 
+    const isHtmlFile = activeTab?.name
+    ?.trim()
+    .toLowerCase()
+    .endsWith(".html");
+
     const loadTree = async()=>{
         if (!id) return;
 
@@ -46,12 +51,22 @@ const ProjectPage = () => {
         }
     }
 
-    const openFile=(file)=>{
-        const exist = openTabs.find(tab=>tab._id== file._id)
-        if(!exist)setOpenTabs(prev=>[...prev, file])
-        setActiveTab(file)
-        setShowPreview(false)  
-    }
+    const openFile = (file) => {
+      const exists = openTabs.find(
+        (tab) => String(tab._id) === String(file._id)
+      );
+    
+      if (!exists) {
+        setOpenTabs((prev) => [...prev, file]);
+      }
+    
+      setActiveTab(file);
+    
+      if (!file?.name?.trim().toLowerCase().endsWith(".html")) {
+        setShowPreview(false);
+        setIsPreviewFullScreen(false);
+      }
+    };
 
     useEffect(()=>{
         if (!id) return;
@@ -100,11 +115,12 @@ const ProjectPage = () => {
 
 
     {/* editor */}
-
+    {activeTab &&  (
     <div className={`${
-            mobilePanel === "editor" ? "flex" : "hidden"} relative w-full min-w-0 flex-1 flex-col overflow-hidden border-x  border-white/[0.05] md:flex`}>
+    mobilePanel === "editor" ? "flex" : "hidden"} relative w-full min-w-0 flex-1 flex-col overflow-hidden border-x  border-white/[0.05] md:flex`}>
 
     {/* max and min button, preview and editor buttons */}
+    {isHtmlFile && (
     <motion.div
         layout
         className="pointer-events-none absolute right-2 top-2 z-40 flex items-center gap-1.5 sm:right-4 sm:top-3 sm:gap-2"
@@ -126,8 +142,7 @@ const ProjectPage = () => {
     title={ isPreviewFullScreen ? "Exit fullscreen ": "Fullscreen preview"}
     className="pointer-events-auto flex items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-[#111113]/95 p-1.5 text-zinc-400 shadow-lg shadow-black/40 backdrop-blur hover:text-white sm:p-2"
     >
-    
-        
+     
     <AnimatePresence mode="wait" initial={false}>
   <motion.span
     key={isPreviewFullScreen ? "minimize" : "maximize"}
@@ -162,10 +177,9 @@ const ProjectPage = () => {
   </motion.span>
 </AnimatePresence>
     
-
     </motion.button>
      )}
-        </AnimatePresence>
+  </AnimatePresence>
 
     <motion.div
         layout
@@ -220,25 +234,24 @@ const ProjectPage = () => {
 
 
     </motion.div>
+    )}
 
     {/* main screen */}
-    <div className="flex min-h-0 flex-1 overflow-hidden">
-
-    {
-        showPreview ? ( <Preview tree={tree} /> ): 
-        <Editor 
-        activeTab={activeTab}
-        openTabs={openTabs}
-        setOpenTabs={setOpenTabs}
-        setActiveTab={setActiveTab}
-        />
-    }
-
+    
+       <div className="flex min-h-0 flex-1 overflow-hidden">
+       {
+           showPreview ? ( <Preview tree={tree}  activeTab={activeTab} /> ): 
+           <Editor 
+           activeTab={activeTab}
+           openTabs={openTabs}
+           setOpenTabs={setOpenTabs}
+           setActiveTab={setActiveTab}
+           />
+       }
+       </div>
+   
     </div>
- 
-    </div>
-
-
+    )}
 
     </div>
 

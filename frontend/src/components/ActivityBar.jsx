@@ -1,107 +1,108 @@
-import { Bot, Files, SquareTerminal } from "lucide-react"
-import { useState } from "react"
-import {AnimatePresence, motion} from "framer-motion"
+import { Bot, Files, SquareTerminal } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 
-function ActivityIcon({icon:Icon, label, active, onClick}){
-    const [hovered, setHovered] = useState(false)
-
-    return(
-        <div className="relative"
-        onMouseEnter={()=> setHovered(true)}
-        onMouseLeave={()=> setHovered(false)}
-        >
-        <motion.button
-        whileHover={{ scale: 1.08}}
-        whileTap={{ scale: 0.94}}
-        onClick={onClick}
-        className="relative flex h-9 w-9 items-center justify-center rounded-lg"
-        >
-        <AnimatePresence>
-        { active && (
-          <motion.div 
-          initial={{opacity:0, scale:0.8}}
-          animate={{ opacity:1, scale:1}}
-          exit={{opacity:0, scale:0.8}}
-          transition={{duration:0.35}}
-          className="absolute inset-0 rounded-lg bg-white/[0.07] ring-1 ring-white/10"
-          />  
-        )
-        }
-        </AnimatePresence>
-
-        <Icon 
-        size={19}
-        className={`relative z-10 transition-colors ${active ? "text-sky-400" : "text-zinc-500 hover:text-zinc-300"}`}
-        /> 
-
-        {/* ---------    */}
-        {/* vertical */}
-        <AnimatePresence>
-        { active && (
-          <motion.div 
-          className="absolute left-0 top-1/2 h-4 w-[2px] rounded-full -translate-y-1/2 bg-gradient-to-b from-sky-400 to-violet-400"
-          transition={{ type:"spring", duration:0.35, bounce:0.15}}/>  
-        )
-        }
-        </AnimatePresence>
-
-        {/* -------------------- */}
-
-        <AnimatePresence>
-        { hovered && (
-          <motion.div 
-          initial={{opacity:0, x: -4}}
-          animate={{ opacity:1, x:0}}
-          exit={{opacity:0, x:-4}}
-          transition={{duration:0.12}}
-          className="pointer-events-none absolute left-11 top-1/2 z-50 -translate-y-1/2 whitespace-nowrap rounded-md border border-white/[0.08] bg-[#17171a] px-2 py-1 text-[11px] font-medium text-zinc-300 shadow-lg shadow-black/40"
-          >  
-          {label}
-
-          </motion.div>
-        )
-        }
-        </AnimatePresence>
-
-       
-        </motion.button>
-        </div>
-    )
-}
-
-const ActivityBar = ({showTerminal, showAiChat, showExplorer, setShowAiChat, setShowTerminal, setShowExplorer}) => {
-  
-
+function ActivityIcon({ icon: Icon, label, active, onClick }) {
   return (
-<div className="flex w-14 shrink-0 flex-col items-center gap-2 border-r border-white/[0.08] bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.035),transparent_55%),linear-gradient(160deg,#111113_0%,#09090b_50%,#050506_100%)] py-3">
-{/* <div className="flex w-14 shrink-0 flex-col items-center gap-2 border-r border-white/[0.06] bg-[radial-gradient(ellipse_at_top,rgba(79,70,229,0.20),transparent_65%),linear-gradient(180deg,#12121f_0%,#0d0d16_55%,#141421_100%)] py-3"> */}
-        <ActivityIcon
-        icon={Files}
-        label={"explorer"}
-        active={showExplorer}
-        onClick={()=> setShowExplorer(v=>!v)}
-        /> 
+    <div className="group relative flex w-full justify-center">
+      <motion.button
+        type="button"
+        aria-label={label}
+        aria-pressed={active}
+        title={label}
+        onClick={onClick}
+        whileHover={{ scale: 1.06, x: 1 }}
+        whileTap={{ scale: 0.94 }}
+        transition={{ type: "spring", stiffness: 420, damping: 24 }}
+        className={`relative flex h-11 w-11 items-center justify-center rounded-xl transition-all duration-200 ${
+          active
+            ? "bg-gradient-to-br from-sky-400/[0.16] to-violet-400/[0.10] text-sky-300 shadow-[0_0_24px_rgba(56,189,248,0.08)] ring-1 ring-sky-300/20"
+            : "text-zinc-500 hover:bg-white/[0.055] hover:text-zinc-200"
+        }`}
+      >
+        <AnimatePresence>
+          {active && (
+            <motion.span
+              layoutId="flux-activity-active-bg"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              className="absolute inset-0 rounded-xl bg-gradient-to-br from-sky-400/[0.07] to-violet-400/[0.06]"
+            />
+          )}
+        </AnimatePresence>
 
-        <ActivityIcon
-        icon={Bot}
-        label={"AI Chat"}
-        active={showAiChat}
-        onClick={()=> setShowAiChat (v=>!v)}
-        /> 
+        <Icon
+          size={21}
+          strokeWidth={active ? 2 : 1.7}
+          className="relative z-10"
+        />
 
-        <div className="mt-auto flex flex-col items-center gap-2">
-        <div  className="mb-1 h-px w-6 bg-white/[0.06]"/>
-        <ActivityIcon
-        icon={SquareTerminal}
-        label={"Terminal"}
-        active={showTerminal}
-        onClick={()=> setShowTerminal(v=>!v)}
-        /> 
+        <AnimatePresence>
+          {active && (
+            <motion.span
+              initial={{ opacity: 0, scaleY: 0.4 }}
+              animate={{ opacity: 1, scaleY: 1 }}
+              exit={{ opacity: 0, scaleY: 0.4 }}
+              transition={{ duration: 0.18 }}
+              className="absolute -left-[9px] h-5 w-[3px] origin-center rounded-r-full bg-gradient-to-b from-sky-300 to-violet-400 shadow-[0_0_10px_rgba(56,189,248,0.45)]"
+            />
+          )}
+        </AnimatePresence>
+      </motion.button>
 
+      {/* Hover tooltip */}
+      <div className="pointer-events-none absolute left-[calc(100%+12px)] top-1/2 z-[100] -translate-y-1/2 translate-x-1 opacity-0 transition-all duration-150 group-hover:translate-x-0 group-hover:opacity-100">
+        <div className="whitespace-nowrap rounded-lg border border-white/[0.09] bg-[#18181d]/95 px-3 py-2 shadow-xl shadow-black/40 backdrop-blur-xl">
+          <p className="text-xs font-medium text-zinc-100">{label}</p>
         </div>
-
+      </div>
     </div>
-  )
+  );
 }
 
-export default ActivityBar
+const ActivityBar = ({
+  showTerminal,
+  showAiChat,
+  showExplorer,
+  setShowAiChat,
+  setShowTerminal,
+  setShowExplorer,
+}) => {
+  return (
+    <aside className="relative z-30 flex h-full w-[68px] shrink-0 flex-col items-center border-r border-white/[0.08] bg-gradient-to-b from-[#111112] via-[#0c0c0e] to-[#080809] py-4">
+
+      {/* Main navigation */}
+      <div className="flex w-full flex-col items-center gap-3 px-2">
+        <ActivityIcon
+          icon={Files}
+          label="Explorer"
+          active={showExplorer}
+          onClick={() => setShowExplorer((v) => !v)}
+        />
+
+        <ActivityIcon
+          icon={Bot}
+          label="AI Assistant"
+          active={showAiChat}
+          onClick={() => setShowAiChat((v) => !v)}
+        />
+      </div>
+
+      {/* Bottom utilities */}
+      <div className="mt-auto flex w-full flex-col items-center gap-3 px-2">
+        <div className="mb-1 h-px w-8 bg-gradient-to-r from-transparent via-white/[0.13] to-transparent" />
+
+        <ActivityIcon
+          icon={SquareTerminal}
+          label="Terminal"
+          active={showTerminal}
+          onClick={() => setShowTerminal((v) => !v)}
+        />
+
+        <div className="mt-2 flex h-1.5 w-1.5 items-center justify-center rounded-full bg-emerald-400/80 shadow-[0_0_8px_rgba(52,211,153,0.35)]" />
+      </div>
+    </aside>
+  );
+};
+
+export default ActivityBar;

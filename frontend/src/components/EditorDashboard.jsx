@@ -32,10 +32,21 @@ const EditorDashboard = ({ activeTab,
     const ActiveIcon = getFolderIcon(activeTab?.name).icon
     const activeColor = getFileIcon(activeTab?.name).color
 
-    const handleCloseTab=(id)=>{
-        const result = openTabs.filter(tab=> tab._id != id)
-        setOpenTabs(result)
-    }
+    const handleCloseTab = (id) => {
+      const remainingTabs = openTabs.filter(
+        (tab) => String(tab._id) !== String(id)
+      );
+    
+      setOpenTabs(remainingTabs);
+    
+      if (String(activeTab?._id) === String(id)) {
+        setActiveTab(
+          remainingTabs.length > 0
+            ? remainingTabs[remainingTabs.length - 1]
+            : null
+        );
+      }
+    };
 
     const save= async()=>{
         if(!activeTab) return
