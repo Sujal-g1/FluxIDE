@@ -4,81 +4,16 @@ import { Check, Loader2, Save, X } from "lucide-react";
 import { useState } from "react";
 import { updateFile } from "../features/file";
 
+import {
+  setupMonaco,
+  syncMonacoFileNames,
+  getEditorLanguage,
+} from "../monaco/monacoConfig";
+
+
 import Editor, { useMonaco } from "@monaco-editor/react";
 import { useEffect } from "react"; 
 
-const getEditorLanguage = (name = "") => {
-  const extension = name.split(".").pop()?.toLowerCase();
-
-  const languages = {
-    js: "javascript",
-    jsx: "javascript",
-    mjs: "javascript",
-    cjs: "javascript",
-    ts: "typescript",
-    tsx: "typescript",
-    html: "html",
-    css: "css",
-    json: "json",
-    py: "python",
-    java: "java",
-  };
-
-  return languages[extension] || "plaintext";
-};
-
-let monacoConfigured = false;
-
-const setupMonaco = (monaco) => {
-  monaco.editor.defineTheme("flux-dark", {
-    base: "vs-dark",
-    inherit: true,
-    rules: [],
-    colors: {
-      "editor.background": "#00000000",
-      "editorGutter.background": "#00000000",
-      "editor.foreground": "#D4D4D8",
-      "editorLineNumber.foreground": "#52525B",
-      "editorLineNumber.activeForeground": "#A1A1AA",
-      "editorCursor.foreground": "#7DD3FC",
-      "editor.selectionBackground": "#3730A355",
-      "editor.lineHighlightBackground": "#FFFFFF05",
-      "editorWidget.background": "#111118",
-      "editorWidget.border": "#27272A",
-    },
-  });
-
-  if (monacoConfigured) return; // don't register twice
-  monacoConfigured = true;
-
-  const snippet = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
-  const Kind = monaco.languages.CompletionItemKind;
-
-  ["javascript", "typescript"].forEach((language) => {
-    monaco.languages.registerCompletionItemProvider(language, {
-      triggerCharacters: ["."],
-      provideCompletionItems(model, position) {
-        const word = model.getWordUntilPosition(position);
-        const range = {
-          startLineNumber: position.lineNumber,
-          endLineNumber: position.lineNumber,
-          startColumn: word.startColumn,
-          endColumn: word.endColumn,
-        };
-
-        return {
-          suggestions: [
-            { label: "clg", kind: Kind.Snippet, insertText: "console.log($1);", insertTextRules: snippet, detail: "console.log", range },
-            { label: "console.log", kind: Kind.Snippet, insertText: "console.log($1);", insertTextRules: snippet, detail: "Log output", range },
-            { label: "useState", kind: Kind.Snippet, insertText: "const [${1:state}, set${2:State}] = useState($3);", insertTextRules: snippet, detail: "React state hook", range },
-            { label: "useEffect", kind: Kind.Snippet, insertText: "useEffect(() => {\n\t$1\n}, [$2]);", insertTextRules: snippet, detail: "React effect hook", range },
-            { label: "function", kind: Kind.Snippet, insertText: "function ${1:name}($2) {\n\t$0\n}", insertTextRules: snippet, detail: "Function declaration", range },
-          ],
-        };
-      },
-    });
-  });
-};
 
 const EditorDashboard = ({ activeTab,
     openTabs,
@@ -120,6 +55,10 @@ const EditorDashboard = ({ activeTab,
         }
     }
 
+
+    useEffect(() => {
+      syncMonacoFileNames(openTabs);
+    }, [openTabs]);
      
   return (
 
