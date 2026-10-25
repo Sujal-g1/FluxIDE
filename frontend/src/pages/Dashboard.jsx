@@ -106,9 +106,9 @@ const starredProjects = Array.isArray(projectState?.starredProjects)
     <Navbar />
 
     <div className="flex min-h-0 flex-1">
-        <Sidebar activeSession={activeSession} setActiveSession={setActiveSession}/>
+    <Sidebar activeSession={activeSession} setActiveSession={setActiveSession}/>
 
-          {/* working area*/}
+     {/* working area */}
     <div className="min-h-0 flex-1 overflow-y-auto px-8 py-8 [scrollbar-width:thin] [scrollbar-color:rgba(100,116,139,0.35)_transparent]]">
 
     <div className="mb-8 flex items-start justify-between">

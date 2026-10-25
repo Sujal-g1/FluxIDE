@@ -12,6 +12,7 @@ import { Code2, Eye, Maximize2, Minimize2 } from "lucide-react";
 import Preview from "../components/Preview";
 import Editor from "../components/EditorDashboard";
 import Terminal from "../components/Terminal";
+import AIChat from "../components/AIChat";
 
 
 
@@ -130,7 +131,7 @@ const ProjectPage = () => {
     setShowPreview={setShowPreview}
     />
 
-    <div className="flex flex-1 overflow-hidden">
+    <div className="flex flex-1 gap-2 overflow-hidden px-2 pb-2">
 
     <div className="hidden md:block ">
         <ActivityBar 
@@ -144,7 +145,7 @@ const ProjectPage = () => {
         </div>
 
         <div className={`${
-            mobilePanel === "explorer" ? "flex" : "hidden"} w-full md:flex md:w-auto`}>
+         mobilePanel === "explorer" ? "flex" : "hidden"} h-full shrink-0 md:flex md:w-auto`}>
         <AnimatePresence initial={false}>
         {showExplorer &&
         <Explorer 
@@ -161,7 +162,7 @@ const ProjectPage = () => {
     {/* editor */}
  
     <div className={`${
-    mobilePanel === "editor" ? "flex" : "hidden"} relative flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden border-x  border-white/[0.05] md:flex`}>
+    mobilePanel === "editor" ? "flex" : "hidden"} relative flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border border-white/[0.06] md:flex`}>
 
     {/* max and min button, preview and editor buttons */}
     {isHtmlFile && (
@@ -294,7 +295,7 @@ const ProjectPage = () => {
    </div>
 
 
-{/* VS Code-style bottom terminal */}
+{/*  bottom terminal */}
 <AnimatePresence initial={false}>
   {showTerminal && (
     <Terminal
@@ -351,26 +352,19 @@ const ProjectPage = () => {
     )}
   </AnimatePresence>
 
-
+    {/* ai chat  */}
+<div
+  className={`${
+    mobilePanel === "chat" ? "flex w-full" : "hidden"
+  } h-full shrink-0 md:flex md:w-auto`}
+>
+  <AnimatePresence initial={false}>
+    {showAiChat && <AIChat key="ai-chat" projectId={id} />}
+  </AnimatePresence>
+</div>
   
-{/* Bottom terminal panel */}
-  {/* <AnimatePresence initial={false}>
-    {showTerminal && (
-      <Terminal
-        key="project-terminal"
-        projectId={id}
-        height={terminalHeight}
-        onResizeStart={(event) => {
-          event.preventDefault();
 
-          setResizeStart({
-            y: event.clientY,
-            height: terminalHeight,
-          });
-        }}
-      />
-    )}
-  </AnimatePresence> */}
+
 
 
     </div>

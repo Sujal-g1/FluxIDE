@@ -1,5 +1,6 @@
 import { Bot, Files, SquareTerminal } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useSelector } from "react-redux";
 
 function ActivityIcon({ icon: Icon, label, active, onClick }) {
   return (
@@ -68,8 +69,11 @@ const ActivityBar = ({
   setShowTerminal,
   setShowExplorer,
 }) => {
+
+  const {userData} = useSelector((state) => state.user)
+
   return (
-    <aside className="relative z-30 flex h-full w-[68px] shrink-0 flex-col items-center border-r border-white/[0.08] bg-gradient-to-b from-[#111112] via-[#0c0c0e] to-[#080809] py-4">
+    <aside className="relative z-30 flex h-full w-[68px] shrink-0 flex-col items-center bg-gradient-to-b from-[#111112] via-[#0c0c0e] to-[#080809] py-4">
 
       {/* Main navigation */}
       <div className="flex w-full flex-col items-center gap-3 px-2">
@@ -99,7 +103,23 @@ const ActivityBar = ({
           onClick={() => setShowTerminal((v) => !v)}
         />
 
-        <div className="mt-2 flex h-1.5 w-1.5 items-center justify-center rounded-full bg-emerald-400/80 shadow-[0_0_8px_rgba(52,211,153,0.35)]" />
+    <motion.p
+      whileHover={{ scale: 1.03 }}
+      transition={{ duration: 0.2 }}
+      title={userData?.name || "User"}
+      className="flex w-fit items-center gap-2 rounded-full border border-white/10 bg-gradient-to-r from-white/[0.08] to-white/[0.03] py-1.5 pl-1.5 pr-3 text-sm font-medium text-zinc-100 shadow-lg shadow-black/10 backdrop-blur-xl transition-colors hover:border-white/20 hover:bg-white/[0.08]"
+    >
+      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-zinc-500/30 to-zinc-800/60 text-xs font-semibold text-white ring-1 ring-white/15">
+        {(userData?.name || "User")
+          .trim()
+          .charAt(0)
+          .toUpperCase()}
+      </span>
+
+      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
+    </motion.p>
+
+    {/* <div className="mt-2 flex h-1.5 w-1.5 items-center justify-center rounded-full bg-emerald-400/80 shadow-[0_0_8px_rgba(52,211,153,0.35)]" /> */}
       </div>
     </aside>
   );

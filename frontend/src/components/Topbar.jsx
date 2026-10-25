@@ -13,7 +13,7 @@ const Topbar = ({showPreview, setShowPreview}) => {
   const navigate= useNavigate()
 
   return (
-    <header className="flex h-12 shrink-0 items-center justify-between border-b border-white/[0.08] bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.035),transparent_55%),linear-gradient(160deg,#111113_0%,#09090b_50%,#050506_100%)] px-4 backdrop-blur-xl">
+    <header className="flex h-12 shrink-0 items-center justify-between bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.035),transparent_55%),linear-gradient(160deg,#111113_0%,#09090b_50%,#050506_100%)] px-4 backdrop-blur-xl">
 
         {/* left side */} 
       <div className="flex min-w-0 items-center gap-4"
