@@ -8,7 +8,7 @@ import { getProjectsById } from "../features/project"
 import { useDispatch } from "react-redux"
 import { setCurrentProject } from "../redux/projectSlice"
 import { getTree } from "../features/file"
-import { Code2, Eye, Maximize2, Minimize2 } from "lucide-react";
+import { Code2, Eye, File, Maximize2, Minimize2 } from "lucide-react";
 import Preview from "../components/Preview";
 import Editor from "../components/EditorDashboard";
 import Terminal from "../components/Terminal";
@@ -363,11 +363,26 @@ const ProjectPage = () => {
   </AnimatePresence>
 </div>
   
-
-
-
-
     </div>
+
+  {/* <div className="flex items-center justify-around border-t border-white/[0.06] bg-[#0f0f12] py-2 md:hidden">
+    <button
+    onClick={()=> setMobilePanel("explorer")}
+    className={`flex flex-col items-center gap-1 px-4 py-1 text-[11px] font-medium transition-colors ${mobilePanel === "explorer" ? "text-white" : "text-zinc-500"}`}
+    > 
+    <File  size={18}/>
+    </button>
+
+    <button>
+
+    </button>
+
+    <button>
+
+    </button>
+  </div> */}
+
+
     </div> 
   )
 }

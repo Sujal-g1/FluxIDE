@@ -19,6 +19,7 @@ const getFileExtension = (filename = "") => {
     return baseName.slice(lastDotIndex + 1).toLowerCase();
   };
 
+
 export const createRootFolder = async(req, res)=>{
     try {
         const { projectId, projectName } = req.body
@@ -58,7 +59,7 @@ export const createRootFolder = async(req, res)=>{
     }
 }
 
-
+ 
 export const createFolder = async(req, res)=>{
     try {
         const { projectId, name, parentId } = req.body
@@ -276,6 +277,7 @@ export const renameFolder = async (req, res) => {
   }
 };
 
+
 export const deleteFile = async(req, res)=>{
     try {
         const userId = req.headers["x-user-id"]
@@ -390,6 +392,7 @@ export const deleteFolder = async (req, res) => {
   }
 };
 
+
 export const getFile = async( req, res) =>{
     try {
         const userId = req.headers["x-user-id"]
@@ -425,7 +428,6 @@ export const getFile = async( req, res) =>{
           });
     }
 }
-
 
 
 export const getTree = async (req, res) => {
