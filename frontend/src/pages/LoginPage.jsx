@@ -65,7 +65,7 @@ const LoginPage = () => {
           const result = await signInWithPopup(auth, googleProvider);
           const token = await result.user.getIdToken();
           const data = await login(token);
-          useDispatchh(setUserData(data))
+          useDispatch(setUserData(data))
     
           if (!data) {
             throw new Error("Unable to start your Flux session.");

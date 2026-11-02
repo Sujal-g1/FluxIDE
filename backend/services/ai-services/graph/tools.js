@@ -1,6 +1,6 @@
 
 import { tool } from "@langchain/core/tools"
-import { getFile, getTree } from "../utils/fetchFileApis";
+import { createFile, createFolder, deleteFile, getFile, getTree, updateFile } from "../utils/fetchFileApis";
 import z from "zod/v3";
 
 const compactTree =(items=[])=>{
@@ -16,11 +16,10 @@ const compactTree =(items=[])=>{
             item.children || []
         )
     }))
-}
+} 
 
 
-export const FileTools=({ projectId, userId })=>{
-
+export const fileTools=({ projectId, userId })=>{
 
     const getTreeTool = tool( async() =>{
         console.log("ai tool, get-tree");
@@ -62,7 +61,7 @@ export const FileTools=({ projectId, userId })=>{
 
 
     const getFileTool = tool( async({fileId}) =>{
-        console.log("ai tool, get-tree");
+        console.log("ai tool, get-file");
         const file = await getFile({ userId, id:fileId})
 
         if(file || file.type!="file"){
@@ -116,13 +115,181 @@ export const FileTools=({ projectId, userId })=>{
     })
    }
 
+    )
+
+    const createFolderTool = tool( async({ name, parentId }) =>{
+        console.log("ai tool, create-folder");
+        const folder = await createFolder({ projectId, userId, parentId, name })
+
+        return JSON.stringify({
+            success:true,
+            operation: "folder-created",
+            folder:{
+                _id: folder._id,
+                name: folder.name,
+                type: folder.type,
+                parentId: folder.parentId
+            }
+        })
+    },
+   {
+    name:"create_folder",
+    description:`
+    created a new folder.
+
+    RULES:
+
+    1. Create parent folders first.
+    2. Use exact parentId from get_tree.
+    3. Never create duplicate folders.
+    4. A folder directly inside another folder must use that folder's ID as parentId.
+    5. After creation continue with the remaining files.
+    6. Do not call get_tree again just to verify the folder.
+    `,
+
+    schema: z.object({
+        name:z.string(),
+        parentId:z.string().nullable()
+    })
+   }
+
+    )
+
+    const createFileTool = tool( async({ name, parentId, content, language }) =>{
+        console.log("ai tool, create-file");
+        const file = await createFile({ projectId, userId, parentId, name, content, language: language || "plaintext" })
+
+        return JSON.stringify({
+            success:true,
+            operation: "file-created",
+            file:{
+                _id: file._id,
+                name: file.name,
+                type: file.type,
+                parentId: file.parentId,
+                language: file.language,
+                content: file.content
+            }
+        })
+    },
+   {
+    name:"create_file",
+    description:`
+    created a NEW FILE.
+
+    RULES:
+
+    1. Use get_tree first when project structure is unknown.
+    2. Use exact folder ID as parentId.
+    3. Never create duplicate files.
+    4. Send complete file content.
+    5. Create folders before files inside them.
+    6. Never use terminal commands to create files.
+    7. Do not call get_file immediately after creating a file.
+    8. Continue creating all required files.
+    9. Do not stop after creating only one file.
+
+    For a React/Vite project, create All required files.
+    `,
+
+    schema: z.object({
+        name:z.string(),
+        parentId:z.string(),
+        language:z.string().optional(),
+        content: z.string() 
+    })
+   }
+
+    )
+ 
+    const updateFileTool = tool( async({ name, content, fileId}) =>{
+        console.log("ai tool, file-updated");
+        const file = await updateFile({ userId, name, content, id:fileId })
+
+        return JSON.stringify({
+            success:true,
+            operation: "file-updated",
+            file:{
+                _id: file._id,
+                name: file.name,
+                type: file.type,
+                parentId: file.parentId,
+                language: file.language,
+                content: file.content
+            } 
+        })
+    },
+   {
+    name:"update_file",
+    description:`
+    Update an EXISTING FILE.
+
+    RULES:
+
+    1. Call get_file before updating.
+    2. fileId must be an actual file ID.
+    3. NEVER use a folder ID.
+    4. Send the complete updated file content.
+    5. Do not update files that do not exist.
+    6. After successful update continue with remaining work.
+    7. Do not call get_file again unless another modification is needed.
+
+    `,
+
+    schema: z.object({
+        name:z.string(),
+        fileId: z.string(),
+        content: z.string() 
+    })
+   }
+
+    )
+
+    const deleteFileTool = tool( async({ fileId}) =>{
+        console.log("ai tool, file-deleted");
+        const file = await deleteFile({ userId, id:fileId })
+
+        return JSON.stringify({
+            success:true,
+            operation: "file-deleted",
+            file:{
+                _id: file._id,
+            } 
+        })
+    },
+   {
+    name:"delete_file",
+    description:`
+    DELETE an EXISTING FILE from the project.
+
+    STRICT RULES:
+
+    1. fileId must belong to an actual file.
+    2. NEVER pass a folder ID.
+    3. Use the exact file ID from get_tree.
+    4. Before deleting, make sure the target is actually a file.
+    5. Do not delete a file unless the user's request requires it.
+    6. Never use terminal commands to delete files.
+    7. After successful deletion, continue with the remaining work.
+    8. Do not call get_file after deletion.
+    `,
+
+    schema: z.object({
+        fileId: z.string(),
+    })
+   }
+
+    ) 
 
 
-        )
-
-
-
-    
+    return [
+        getTreeTool,
+        getFileTool,
+        createFolderTool,
+        createFileTool,
+        updateFileTool,
+        deleteFileTool
+    ]
 }
 
 
