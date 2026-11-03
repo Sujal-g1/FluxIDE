@@ -51,7 +51,7 @@ const ProjectPage = () => {
         try {
             const data = await getTree({ projectId: id });
             setTree(data.tree || [])
-            console.log("Project file tree:", data);
+            // console.log("Project file tree:", data);
         } catch (error) {
             console.error("Failed to load project tree:", error);
         }

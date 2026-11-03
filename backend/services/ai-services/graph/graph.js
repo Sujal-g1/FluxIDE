@@ -1,7 +1,8 @@
 import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages"
 import {  MessagesAnnotation, StateGraph,  } from "@langchain/langgraph";
 import { ToolNode } from "@langchain/langgraph/prebuilt";
-import { fileTools } from "./tools"
+import { fileTools } from "./tools.js"
+import llm from "../utils/llm.js";
 
 const system_prompt=`
 You are an expert coding agent inside a Cursor-like IDE.

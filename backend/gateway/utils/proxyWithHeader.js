@@ -5,7 +5,7 @@ export const proxyWithHeader = (serviceUrl) => {
   return proxy(serviceUrl, {
     proxyReqPathResolver: (req) => {
       const path = req.originalUrl.replace(
-        /^\/api\/(?:project|file)/,
+        /^\/api\/(?:project|file|ai)/,
         ""
       );
 
@@ -23,5 +23,5 @@ export const proxyWithHeader = (serviceUrl) => {
 
       return proxyReqOpts;
     },
-  }); 
+  });
 };

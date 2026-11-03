@@ -1,5 +1,5 @@
 import { AIMessage, HumanMessage } from "@langchain/core/messages"
-import { graph } from "../graph/graph"
+import { graph } from "../graph/graph.js"
 import { _success } from "zod/v4/core"
 
 const buildHistory=(history)=>{
@@ -50,24 +50,10 @@ try {
         })
     }
 
-    res.setHeaders(
-        "Content-Type",
-        "text/event-stream; charset=utf-8" )
-
-    res.setHeaders(
-        "Cache-Control",
-        "no-cache, no-transform"
-    )
-
-    res.setHeaders(
-        "Connection",
-        "keep-alive"
-    )
-    
-    res.setHeaders(
-        "X-Accel-Buffering",
-        "no"
-    )
+    res.setHeader("Content-Type", "text/event-stream; charset=utf-8");
+    res.setHeader("Cache-Control", "no-cache, no-transform");
+    res.setHeader("Connection", "keep-alive");
+    res.setHeader("X-Accel-Buffering", "no");
 
     res.flushHeaders?.()
 
@@ -95,7 +81,7 @@ try {
 
         let finalMessage = ""
 
-    for await (const chunk of object) {
+    for await (const chunk of stream) {
 
         if(disconnected || res.writableEnded) break
 

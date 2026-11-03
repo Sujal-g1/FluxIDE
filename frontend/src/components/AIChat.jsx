@@ -3,9 +3,100 @@ import { motion } from "framer-motion";
 import { Code2, Send, Sparkles } from "lucide-react";
 import { useState } from "react";
 
-const AIChat = ({ id }) => {
+const AIChat = ({ projectId, history=[] }) => {
 
     const [messages, setMessages] = useState([])
+    const [message, setMessage] = useState("")
+
+  
+  const handleChat = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/api/ai/chat`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "text/event-stream",
+          },
+          credentials: "include",
+          body: JSON.stringify({ projectId, message, history }),
+        }
+      );
+
+      if (!response.ok) {
+        let msg = "AI request failed";
+
+        try {
+          const data = await response.json();
+          msg = data?.message || msg;
+        } catch (error) {}
+
+        throw new Error(msg);
+      }
+
+      if (!response.body) {
+        throw new Error("AI streaming not supported");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      try {
+        while (true) {
+          const { value, done } = await reader.read();
+
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+
+          const events = buffer.split("\n\n");
+          buffer = events.pop() || "";
+
+          for (const eventText of events) {
+            if (!eventText.trim()) continue;
+
+            let eventType = "message";
+            let dataText = "";
+
+            for (const line of eventText.split("\n")) {
+              if (line.startsWith("event:")) {
+                eventType = line.slice(6).trim();
+              }
+
+              if (line.startsWith("data:")) {
+                dataText += line.slice(5).trim();
+              }
+            }
+
+            if (!dataText) continue;
+
+            let data;
+
+            try {
+              data = JSON.parse(dataText);
+            } catch {
+              data = { content: dataText };
+            }
+
+            // Handle streamed events here
+            console.log("AI Event:", eventType, data);
+          }
+        }
+
+        // Process any remaining buffered event
+        if (buffer.trim()) {
+          console.log("Remaining stream data:", buffer);
+        }
+      } finally {
+        reader.releaseLock();
+      }
+    } catch (error) {
+      console.error("AI chat request failed:", error.message);
+    }
+  };
+
 
   return (
     <motion.div
@@ -63,6 +154,8 @@ const AIChat = ({ id }) => {
       <textarea
         placeholder="Ask Motion-AI ..."
         rows={2}
+        onChange={(e)=> setMessage(e.target.value)}
+        value={message}
         className="block max-h-40 min-h-[60px] w-full resize-none bg-transparent px-3.5 pt-3 text-[13px] leading-5 text-zinc-100 outline-none placeholder:text-zinc-500"
       />
 
@@ -74,6 +167,8 @@ const AIChat = ({ id }) => {
           whileTap={{ scale: 0.94 }}
           transition={{ type: "spring", stiffness: 400, damping: 22 }}
           className="group/send relative flex h-7 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-white/15 bg-gradient-to-b from-[#f5f5f5] to-[#c9c9c9] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)] transition-all duration-200 hover:from-white hover:to-[#e5e5e5] disabled:cursor-not-allowed disabled:opacity-40"
+
+          onClick={handleChat}
         >
           <span className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/50 to-transparent opacity-0 transition-opacity group-hover/send:opacity-100" />
 

@@ -5,8 +5,6 @@ import dotenv from "dotenv";
 import { connectDb } from "./config/db.js";
 import router from "./routes/ai.routes.js";
 
-
-
 dotenv.config();
 
 const port = process.env.PORT || 5007;
@@ -14,6 +12,13 @@ const app = express();
 
 app.use(express.json());
 app.use("/", router)
+
+// Add this temporary log
+app.use((req, res, next) => {
+  console.log("AI SERVICE RECEIVED:", req.method, req.url);
+  next();
+});
+
 
 
 app.use(

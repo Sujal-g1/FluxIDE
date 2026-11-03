@@ -1,6 +1,6 @@
 
 import { tool } from "@langchain/core/tools"
-import { createFile, createFolder, deleteFile, getFile, getTree, updateFile } from "../utils/fetchFileApis";
+import { createFile, createFolder, deleteFile, getFile, getTree, updateFile } from "../utils/fetchFileApis.js";
 import z from "zod/v3";
 
 const compactTree =(items=[])=>{
@@ -24,7 +24,7 @@ export const fileTools=({ projectId, userId })=>{
     const getTreeTool = tool( async() =>{
         console.log("ai tool, get-tree");
         const result = await getTree({projectId, userId})
-        const tree = compactTree(result)
+        const tree = compactTree(result.tree || []);
         return JSON.stringify({
             success:true,
             tree
@@ -59,19 +59,24 @@ export const fileTools=({ projectId, userId })=>{
    }
 )
 
-
     const getFileTool = tool( async({fileId}) =>{
         console.log("ai tool, get-file");
         const file = await getFile({ userId, id:fileId})
 
-        if(file || file.type!="file"){
-            console.log("get file blocked, id is folder"); 
+        if (!file) {
             return JSON.stringify({
-            success:false,
-            error: "The provided ID belongs to a folder, not a file.",
-            instruction: "Do not call get_file for folders. Use the folder ID as parentId"
-            })
-        }
+              success: false,
+              error: "File not found.",
+            });
+          }
+          
+          if (file.type !== "file") {
+            return JSON.stringify({
+              success: false,
+              error: "The provided ID belongs to a folder, not a file.",
+              instruction: "Do not call get_file for folders. Use the folder ID as parentId.",
+            });
+          }
 
         if(!file){
             console.log("file not found");
@@ -154,7 +159,7 @@ export const fileTools=({ projectId, userId })=>{
    }
 
     )
-
+ 
     const createFileTool = tool( async({ name, parentId, content, language }) =>{
         console.log("ai tool, create-file");
         const file = await createFile({ projectId, userId, parentId, name, content, language: language || "plaintext" })
@@ -291,24 +296,4 @@ export const fileTools=({ projectId, userId })=>{
         deleteFileTool
     ]
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

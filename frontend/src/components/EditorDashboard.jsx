@@ -92,9 +92,9 @@ const EditorDashboard = ({ activeTab,
     }, [openTabs]);
      
 
-    console.log("openTabs:", openTabs);
-console.log("openTabs length:", openTabs?.length);
-console.log("activeTab:", activeTab);
+//     console.log("openTabs:", openTabs);
+// console.log("openTabs length:", openTabs?.length);
+// console.log("activeTab:", activeTab);
 
   return (
 
