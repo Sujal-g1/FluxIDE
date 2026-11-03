@@ -34,6 +34,11 @@ app.use(
     protect,
     proxyWithHeader(process.env.FILE_SERVICE)
   );
+app.use(
+    "/api/ai",
+    protect,
+    proxyWithHeader(process.env.AI_SERVICE)
+  );
 app.get("/api/me",protect, getCurrentUser)
 
 app.get("/",(req, res)=>{
