@@ -366,7 +366,7 @@ export const deleteFolder = async (req, res) => {
       folderIds.push(...parentIds);
     }
 
-    await File.updateMany(
+    await File.updateMany(  
       {
         $or: [
           { _id: { $in: folderIds } },

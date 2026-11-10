@@ -1,6 +1,10 @@
 
 import { tool } from "@langchain/core/tools"
-import { createFile, createFolder, deleteFile, getFile, getTree, updateFile } from "../utils/fetchFileApis.js";
+import { createFile,
+         createFolder, 
+         deleteFile, 
+         deleteFolder,
+         getFile, getTree, updateFile } from "../utils/fetchFileApis.js";
 import z from "zod/v3";
 
 const compactTree =(items=[])=>{
@@ -78,13 +82,6 @@ export const fileTools=({ projectId, userId })=>{
             });
           }
 
-        if(!file){
-            console.log("file not found");
-            return JSON.stringify({
-            success:false,
-            error: "ile not found",
-        })   
-        }
         return JSON.stringify({
             success:true,
             file:{
@@ -154,19 +151,19 @@ export const fileTools=({ projectId, userId })=>{
 
     schema: z.object({
         name:z.string(),
-        parentId:z.string().nullable()
+        parentId:z.string()
     })
    }
 
     )
  
-    const createFileTool = tool( async({ name, parentId, content, language }) =>{
+    const createFileTool = tool( async({ name, parentId, content, language }) =>{ 
         console.log("ai tool, create-file");
         const file = await createFile({ projectId, userId, parentId, name, content, language: language || "plaintext" })
 
         return JSON.stringify({
             success:true,
-            operation: "file-created",
+            operation: "file_created",
             file:{
                 _id: file._id,
                 name: file.name,
@@ -250,7 +247,7 @@ export const fileTools=({ projectId, userId })=>{
 
     )
 
-    const deleteFileTool = tool( async({ fileId}) =>{
+    const deleteFileTool = tool( async({ fileId}) =>{ 
         console.log("ai tool, file-deleted");
         const file = await deleteFile({ userId, id:fileId })
 
@@ -259,6 +256,7 @@ export const fileTools=({ projectId, userId })=>{
             operation: "file-deleted",
             file:{
                 _id: file._id,
+                name: file.name
             } 
         })
     },
@@ -287,13 +285,54 @@ export const fileTools=({ projectId, userId })=>{
     ) 
 
 
+    const deleteFolderTool = tool(
+        async ({ folderId }) => {
+        console.log("ai tool, folder-deleted");
+    
+        const result = await deleteFolder({
+            userId,
+            id: folderId,
+        });
+    
+        return JSON.stringify({
+            success: true,
+            operation: "folder-deleted",
+            message: result.message,
+            folderId,
+        });
+        },
+        {
+        name: "delete_folder",
+        description: `
+        Delete an existing folder and all its contents recursively.
+    
+        STRICT RULES:
+    
+        1. folderId must belong to an actual folder.
+        2. NEVER pass a file ID.
+        3. Use the exact folder ID from get_tree.
+        4. Check the folder's type before deleting.
+        5. Deleting a folder also deletes all nested folders and files.
+        6. Do not delete unless explicitly required by the user's request.
+        7. Never use terminal commands to delete folders.
+        8. Do not call get_tree repeatedly just to verify deletion.
+        `,
+        schema: z.object({
+            folderId: z.string().describe("ID of the folder to delete"),
+        }),
+        }
+    );
+  
+
+
     return [
         getTreeTool,
         getFileTool,
         createFolderTool,
         createFileTool,
         updateFileTool,
-        deleteFileTool
+        deleteFileTool,
+        deleteFolderTool,
     ]
 }
 

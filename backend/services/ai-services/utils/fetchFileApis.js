@@ -64,23 +64,20 @@ export const updateFile = async( { name, content="", userId, id } )=>{
 }
 
 
-export const deleteFile = async( { userId, id } )=>{
+export const deleteFile = async ({ userId, id }) => {
     try {
-
-    const {data} = await axios.delete(`${File_url}/folder/${id}`,
-        { headers:{
-            "x-user-id":String(userId)
-        }}
-    )
-
-    return data
-        
+      const { data } = await axios.delete(`${File_url}/${id}`, {
+        headers: {
+          "x-user-id": String(userId),
+        },
+      });
+  
+      return data.file;
     } catch (error) {
-        console.log(error);
-        throw new Error(error)
-        
+      console.error("Delete file API error:", error.response?.data || error.message);
+      throw error;
     }
-}
+  };
 
 
 export const getTree = async( { userId, projectId } )=>{
@@ -102,20 +99,36 @@ export const getTree = async( { userId, projectId } )=>{
 }
 
 
-export const getFile = async( { userId, id } )=>{
+export const getFile = async ({ userId, id }) => {
     try {
-
-    const {data} = await axios.get(`${File_url}/${projectId}`,
-        { headers:{
-            "x-user-id":String(userId)
-        }}
-    )
-
-    return data
-        
+      const { data } = await axios.get(`${File_url}/${id}`, {
+        headers: {
+          "x-user-id": String(userId),
+        },
+      });
+  
+      return data.file;
     } catch (error) {
-        console.log(error);
-        throw new Error(error)
-        
+      console.error("Get file API error:", error.response?.data || error.message);
+      throw error;
     }
-}
+  };
+
+
+  export const deleteFolder = async ({ userId, id }) => {
+    try {
+      const { data } = await axios.delete(`${File_url}/folder/${id}`, {
+        headers: {
+          "x-user-id": String(userId),
+        },
+      });
+  
+      return data.folder || data;
+    } catch (error) {
+      console.error(
+        "Delete folder API error:",
+        error.response?.data || error.message
+      );
+      throw error;
+    }
+  };

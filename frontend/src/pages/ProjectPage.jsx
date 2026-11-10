@@ -296,23 +296,23 @@ const ProjectPage = () => {
 
 
 {/*  bottom terminal */}
-<AnimatePresence initial={false}>
-  {showTerminal && (
-    <Terminal
-      key="project-terminal"
-      projectId={id}
-      height={terminalHeight}
-      onResizeStart={(event) => {
-        event.preventDefault();
+  <AnimatePresence initial={false}>
+    {showTerminal && (
+      <Terminal
+        key="project-terminal"
+        projectId={id}
+        height={terminalHeight}
+        onResizeStart={(event) => {
+          event.preventDefault();
 
-        setResizeStart({
-          y: event.clientY,
-          height: terminalHeight,
-        });
-      }}
-    />
-  )}
-</AnimatePresence>
+          setResizeStart({
+            y: event.clientY,
+            height: terminalHeight,
+          });
+        }}
+      />
+    )}
+  </AnimatePresence>
 
     </div>
 
@@ -359,7 +359,10 @@ const ProjectPage = () => {
   } h-full shrink-0 md:flex md:w-auto`}
 >
   <AnimatePresence initial={false}>
-    {showAiChat && <AIChat key="ai-chat" projectId={id} />}
+    {showAiChat && 
+    <AIChat key="ai-chat" projectId={id} 
+    reloadTree={loadTree} />
+      }
   </AnimatePresence>
 </div>
   

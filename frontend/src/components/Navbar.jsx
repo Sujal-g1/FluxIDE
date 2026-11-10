@@ -50,7 +50,7 @@ const dispatch = useDispatch()
             <Code2 size={17} className="text-indigo-400" />
           </div>
 
-          <span className="text-base font-semibold tracking-tight text-white">
+          <span className="text-base font-semibold tracking-tight dark:text-white text-black">
             flux<span className="text-indigo-400">.ide</span>
           </span>
         </div>
@@ -92,7 +92,7 @@ const dispatch = useDispatch()
   <div className="absolute right-0 mt-2 w-56 bg-white/95 dark:bg-[#12121c]/95 backdrop-blur-xl border border-slate-200 dark:border-white/[0.08] rounded-2xl shadow-xl py-2 z-50 animate-[fadeIn_0.15s_ease-out]">
     
     {/* User Info Header */}
-    <div className="flex items-center gap-3 px-3.5 py-2.5 mx-1.5 bg-slate-50/80 dark:bg-white/[0.03] rounded-xl border border-slate-100 dark:border-white/[0.04]">
+    <div className="flex items-center gap-3 px-3.5 py-2.5 mx-1.5 bg-slate-50/80 dark:bg-black/50 rounded-xl border border-slate-100 dark:border-white/[0.04]">
       <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-500 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
         {initials}
       </div>

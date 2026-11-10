@@ -119,22 +119,18 @@ try {
 
         const toolMessages = chunk.tools?.messages || []
         for (const toolMessage of toolMessages) {
-            let result = null
+            let result = toolMessage.content
         try {
-            result = typeof toolMessage=="string"? JSON.parse(toolMessage.content): toolMessage.content
+            result = typeof result=="string"? JSON.parse(result): result
         } catch (error) {
-            result = null
+            continue
         }
 
         if(result?.operation){
             sendEvent(res, result.operation, result)
-            continue
         }
-
-        sendEvent(res, "tool_result", typeof toolMessage=="string"? toolMessage.content : JSON.stringify(toolMessage.content))
-
+        // sendEvent(res, "tool_result", typeof toolMessage=="string"? toolMessage.content : JSON.stringify(toolMessage.content))
         }
-
         }
     }
 
