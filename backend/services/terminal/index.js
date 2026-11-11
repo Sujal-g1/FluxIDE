@@ -28,11 +28,13 @@ app.use(
 );
 
 const fileServiceUrl =process.env.FILE_SERVICE_URL || "http://localhost:5006"
-
 const WORKSPACE_ROOT =path.join(os.tmpdir(), "flux.ide")
-
-const SHELL =process.platform==="win32"? "powershell.exe" : "bash"
-
+const SHELL =
+  process.platform === "win32"
+    ? "powershell.exe"
+    : process.platform === "darwin"
+      ? "/bin/zsh"
+      : "/bin/bash";
 const server = http.createServer(app)
 
 const io = new Server( server, {
@@ -57,9 +59,11 @@ const safeName =(name)=>{
   return name
 }
 
-const workspace=(projectId)=>{
-  return path.join(WORKSPACE_ROOT, String(projectId))
-}
+// const workspace=(projectId)=> {return path.join(WORKSPACE_ROOT, String(projectId))}
+const workspace = (projectName) => {
+  const safeProjectName = safeName(projectName);
+  return path.join(WORKSPACE_ROOT, safeProjectName);
+};
 
 const normaliseCols =(cols)=>{
   const value = Number(cols)
@@ -75,24 +79,71 @@ const normaliseRows =(rows)=>{
   return Math.max(5, Math.min(Math.floor(value),200))
 }
 
-const getTree = async ( projectId, userId )=>{
-  const url = `${fileServiceUrl}/tree/${projectId}`
-  const response = await fetch(url,{
-    headers:{ "x-user-id" : String(userId) }
-  })
+// const getTree = async ( projectId, userId )=>{
+//   const url = `${fileServiceUrl}/tree/${projectId}`
+//   const response = await fetch(url,{
+//     headers:{ "x-user-id" : String(userId) }
+//   })
 
-  const text = await response.text()
-  let data = {}
+//   const text = await response.text()
+//   let data = {}
+//   try {
+//     data = text ? JSON.parse(text) : {}
+//   } catch (error) {
+//       data = {message:text}
+//   }
+//   if(!response.ok) throw new Error(data?.message || `File service returned ${response.status}`)
+
+
+//     return Array.isArray(data.tree) ? data.tree : []
+// } 
+
+const getTree = async (projectId, userId) => {
+  const url = `${fileServiceUrl}/tree/${encodeURIComponent(projectId)}`;
+
   try {
-    data = text ? JSON.parse(text) : {}
+    console.log("Fetching tree:", {
+      url,
+      projectId,
+      userId,
+    });
+
+    const response = await fetch(url, {
+      headers: {
+        "x-user-id": String(userId),
+      },
+    });
+
+    const responseText = await response.text();
+
+    let data;
+
+    try {
+      data = responseText ? JSON.parse(responseText) : {};
+    } catch {
+      data = { message: responseText };
+    }
+
+    console.log("File service status:", response.status);
+    console.log("File service response:", data);
+
+    if (!response.ok) {
+      throw new Error(
+        data?.message || `File service returned ${response.status}`
+      );
+    }
+
+    if (!Array.isArray(data.tree)) {
+      throw new Error("Invalid file tree response from File Service");
+    }
+
+    return data.tree;
+
   } catch (error) {
-      data = {message:text}
+    console.error("File tree retrieval failed:", error);
+    throw error;
   }
-  if(!response.ok) throw new Error(data?.message || `File service returned ${response.status}`)
-
-
-    return Array.isArray(data.tree) ? data.tree : []
-} 
+};
 
  const writeNodes = async(nodes, directory)=>{
     if(!Array.isArray(nodes)) return
@@ -114,10 +165,10 @@ const getTree = async ( projectId, userId )=>{
     }
  }
 
- const syncProject = async( projectId, userId)=>{
+ const syncProject = async( projectId, projectName, userId)=>{
   const tree = await getTree(projectId, userId)
 
-  const root = workspace(projectId)
+  const root = workspace(projectName)
   await  fs.mkdir(root, {recursive:true})
 
   if(tree.length == 1 && tree[0].type=="folder"){
@@ -125,21 +176,21 @@ const getTree = async ( projectId, userId )=>{
   }else{
     await writeNodes(tree, root)
   }
-
   return  { tree, root}
- 
  }
  
   io.on("connection", (socket)=>{
     console.log("Terminal Connected", socket?.id)
      
-  socket.on("terminal:init", async(projectId, userId, cols=80, rows=30)=>{
+  socket.on("terminal:init", async({projectId, projectName, userId, cols=80, rows=30})=>{
     try {
-       projectId = String(projectId)
-       userId = String(userId)
+      console.log("terminal initialised");
+       projectId = String(projectId || "").trim();
+       projectName = String(projectName || "").trim();
+       userId = String(userId || "").trim();
 
-       if(!projectId || userId ){
-        throw new Error( "Project Id & user id are req!" )
+       if(!projectId || !projectName || !userId ){
+        throw new Error( "Project Id, project name & user id are req!" )
        }
 
     const existingSession = sessions.get(socket.id)
@@ -153,22 +204,24 @@ const getTree = async ( projectId, userId )=>{
     cols = normaliseCols(cols)
     rows = normaliseRows(rows)
 
-    const {root} = await syncProject(projectId, userId)
+    const {root} = await syncProject(projectId, projectName, userId)
     const ptyProcess = pty.spawn(
-      SHELL, 
-      [],
+      SHELL,
+      process.platform === "win32" ? [] : ["-l"],
       {
-        name:"xterm-256color",
+        name: "xterm-256color",
         cols,
         rows,
-        cwd:root, 
-        env:{
+        cwd: root,
+        env: {
           ...process.env,
+          HOME: process.env.HOME,
+          PATH: process.env.PATH,
+          TERM: "xterm-256color",
           FORCE_COLOR: "1",
-
-        }
+        },
       }
-    )
+    );
 
     ptyProcess.onData((data)=>{
       send(socket, data)
@@ -211,7 +264,7 @@ const getTree = async ( projectId, userId )=>{
     cols = Number(cols)
     rows = Number(rows)
 
-    if(!Number.isFinite(cols) || !NumberisFinite(rows)) return
+    if(!Number.isFinite(cols) || !Number.isFinite(rows)) return
     cols = normaliseCols(cols)
     rows = normaliseRows(rows)
     session.ptyProcess.resize(cols, rows)

@@ -31,6 +31,10 @@ const ProjectPage = () => {
     const [terminalHeight, setTerminalHeight] = useState(500);
     const [resizeStart, setResizeStart] = useState(null);
 
+    const [explorerWidth, setExplorerWidth] = useState(288);
+    const [aiChatWidth, setAiChatWidth] = useState(320);
+    const [sideResizeStart, setSideResizeStart] = useState(null);
+
 
     const { id } = useParams()
     const dispatch = useDispatch()
@@ -117,6 +121,45 @@ const ProjectPage = () => {
       };
     }, [resizeStart]);
 
+    // explorer , ai-chat resize
+    useEffect(() => {
+      if (!sideResizeStart) return;
+
+      const handlePointerMove = (event) => {
+        const delta = event.clientX - sideResizeStart.x;
+
+        if (sideResizeStart.panel === "explorer") {
+          setExplorerWidth(
+            Math.min(520, Math.max(200, sideResizeStart.width + delta))
+          );
+        }
+
+        if (sideResizeStart.panel === "aiChat") {
+          setAiChatWidth(
+            Math.min(520, Math.max(240, sideResizeStart.width - delta))
+          );
+        }
+      };
+
+      const handlePointerUp = () => {
+        setSideResizeStart(null);
+      };
+
+      document.body.style.userSelect = "none";
+      document.body.style.cursor = "col-resize";
+
+      window.addEventListener("pointermove", handlePointerMove);
+      window.addEventListener("pointerup", handlePointerUp);
+
+      return () => {
+        window.removeEventListener("pointermove", handlePointerMove);
+        window.removeEventListener("pointerup", handlePointerUp);
+
+        document.body.style.userSelect = "";
+        document.body.style.cursor = "";
+      };
+    }, [sideResizeStart]);
+
 
   return (
     <div className="relative flex h-screen flex-col overflow-hidden bg-[#0a0a0c]">
@@ -148,12 +191,22 @@ const ProjectPage = () => {
          mobilePanel === "explorer" ? "flex" : "hidden"} h-full shrink-0 md:flex md:w-auto`}>
         <AnimatePresence initial={false}>
         {showExplorer &&
-        <Explorer 
-        projectId={id}
-        tree={tree}
-        openFile={openFile}
-        reloadTree={loadTree}
-        />
+       <Explorer
+       projectId={id}
+       tree={tree}
+       openFile={openFile}
+       reloadTree={loadTree}
+       width={explorerWidth}
+       onResizeStart={(event) => {
+         event.preventDefault();
+     
+         setSideResizeStart({
+           panel: "explorer",
+           x: event.clientX,
+           width: explorerWidth,
+         });
+       }}
+     />
         }
         </AnimatePresence>
     </div>
@@ -172,7 +225,7 @@ const ProjectPage = () => {
         transition={{ type: "spring", stiffness: 380, damping: 32 }}
     >
       <AnimatePresence initial={false} mode="popLayout">
-            { showPreview && (
+        { showPreview && (
         <motion.button
         key="preview-fullscreen"
         layout
@@ -360,8 +413,21 @@ const ProjectPage = () => {
 >
   <AnimatePresence initial={false}>
     {showAiChat && 
-    <AIChat key="ai-chat" projectId={id} 
-    reloadTree={loadTree} />
+   <AIChat
+   key="ai-chat"
+   projectId={id}
+   reloadTree={loadTree}
+   width={aiChatWidth}
+   onResizeStart={(event) => {
+     event.preventDefault();
+ 
+     setSideResizeStart({
+       panel: "aiChat",
+       x: event.clientX,
+       width: aiChatWidth,
+     });
+   }}
+ />
       }
   </AnimatePresence>
 </div>

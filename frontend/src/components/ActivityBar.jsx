@@ -1,6 +1,7 @@
 import { Bot, Files, SquareTerminal } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 
 function ActivityIcon({ icon: Icon, label, active, onClick }) {
   return (
@@ -69,24 +70,58 @@ const ActivityBar = ({
   setShowTerminal,
   setShowExplorer,
 }) => {
+  const { userData } = useSelector((state) => state.user);
+  const [isSwapped, setIsSwapped] = useState(false);
 
-  const {userData} = useSelector((state) => state.user)
+  const initialLetter = (userData?.name || "User")
+    .trim()
+    .charAt(0)
+    .toUpperCase();
+
+  // Keyboard shortcut listener
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Check if user pressed Ctrl (Windows/Linux) or Cmd (Mac)
+      const isModifierPressed = e.ctrlKey || e.metaKey;
+
+      if (isModifierPressed) {
+        switch (e.key.toLowerCase()) {
+          case "o": // Ctrl+B to toggle Explorer
+            e.preventDefault();
+            setShowExplorer((v) => !v);
+            break;
+          case "i": // Ctrl+J to toggle Terminal
+            e.preventDefault();
+            setShowTerminal((v) => !v);
+            break;
+          case "p": // Ctrl+I to toggle AI Assistant
+            e.preventDefault();
+            setShowAiChat((v) => !v);
+            break;
+          default:
+            break;
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [setShowExplorer, setShowTerminal, setShowAiChat]);
 
   return (
     <aside className="relative z-30 flex h-full w-[68px] shrink-0 flex-col items-center bg-gradient-to-b from-[#111112] via-[#0c0c0e] to-[#080809] py-4">
-
       {/* Main navigation */}
       <div className="flex w-full flex-col items-center gap-3 px-2">
         <ActivityIcon
           icon={Files}
-          label="Explorer"
+          label="Explorer (Cmd+B)"
           active={showExplorer}
           onClick={() => setShowExplorer((v) => !v)}
         />
 
         <ActivityIcon
           icon={Bot}
-          label="AI Assistant"
+          label="AI Assistant (Cmd+I)"
           active={showAiChat}
           onClick={() => setShowAiChat((v) => !v)}
         />
@@ -98,28 +133,56 @@ const ActivityBar = ({
 
         <ActivityIcon
           icon={SquareTerminal}
-          label="Terminal"
+          label="Terminal (Cmd+J)"
           active={showTerminal}
           onClick={() => setShowTerminal((v) => !v)}
         />
 
-    <motion.p
-      whileHover={{ scale: 1.03 }}
-      transition={{ duration: 0.2 }}
-      title={userData?.name || "User"}
-      className="flex w-fit items-center gap-2 rounded-full border border-white/10 bg-gradient-to-r from-white/[0.08] to-white/[0.03] py-1.5 pl-1.5 pr-3 text-sm font-medium text-zinc-100 shadow-lg shadow-black/10 backdrop-blur-xl transition-colors hover:border-white/20 hover:bg-white/[0.08]"
-    >
-      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-zinc-500/30 to-zinc-800/60 text-xs font-semibold text-white ring-1 ring-white/15">
-        {(userData?.name || "User")
-          .trim()
-          .charAt(0)
-          .toUpperCase()}
-      </span>
-
-      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
-    </motion.p>
-
-    {/* <div className="mt-2 flex h-1.5 w-1.5 items-center justify-center rounded-full bg-emerald-400/80 shadow-[0_0_8px_rgba(52,211,153,0.35)]" /> */}
+        <motion.p
+          whileHover={{ scale: 1.03 }}
+          transition={{ duration: 0.2 }}
+          title={userData?.name || "User"}
+          onClick={() => setIsSwapped((prev) => !prev)}
+          className="flex w-fit cursor-pointer items-center gap-2 rounded-full border border-white/10 bg-gradient-to-r from-white/[0.08] to-white/[0.03] py-1.5 pl-2 pr-2.5 text-sm font-medium text-zinc-100 shadow-lg shadow-black/10 backdrop-blur-xl transition-colors hover:border-white/20 hover:bg-white/[0.08]"
+        >
+          <AnimatePresence mode="popLayout" initial={false}>
+            {isSwapped ? (
+              <>
+                <motion.span
+                  key="dot"
+                  layout
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  className="ml-1 h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"
+                />
+                <motion.span
+                  key="avatar"
+                  layout
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-zinc-500/30 to-zinc-800/60 text-xs font-semibold text-white ring-1 ring-white/15"
+                >
+                  {initialLetter}
+                </motion.span>
+              </>
+            ) : (
+              <>
+                <motion.span
+                  key="avatar"
+                  layout
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-zinc-500/30 to-zinc-800/60 text-xs font-semibold text-white ring-1 ring-white/15"
+                >
+                  {initialLetter}
+                </motion.span>
+                <motion.span
+                  key="dot"
+                  layout
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"
+                />
+              </>
+            )}
+          </AnimatePresence>
+        </motion.p>
       </div>
     </aside>
   );

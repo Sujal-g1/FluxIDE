@@ -66,7 +66,7 @@ const ToolBadge = ({toolType, detail})=>{
   ) 
 }
 
-const AIChat = ({ projectId, history=[], reloadTree }) => {
+const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart, }) => {
 
     const [messages, setMessages] = useState([])
     const [message, setMessage] = useState("")
@@ -297,12 +297,12 @@ const AIChat = ({ projectId, history=[], reloadTree }) => {
 
   return (
     <motion.div
-      initial={{ width: 0, opacity: 0, x: 16 }}
-      animate={{ width: 288, opacity: 1, x: 0 }}
-      exit={{ width: 0, opacity: 0, x: 12 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
-      className="relative isolate flex h-full w-80 shrink-0 flex-col items-center gap-2 overflow-hidden rounded-l-4xl border-l border-white/10 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.035),transparent_55%),linear-gradient(160deg,#111113_0%,#09090b_50%,#050506_100%)] backdrop-blur-xl"
-    >
+    initial={{ width: 0, opacity: 0, x: 16 }}
+    animate={{ width, opacity: 1, x: 0 }}
+    exit={{ width: 0, opacity: 0, x: 12 }}
+    transition={{ duration: 0.2, ease: "easeOut" }}
+    className="relative isolate flex h-full min-w-0 shrink-0 flex-col items-center gap-2 overflow-hidden rounded-l-4xl border-l border-white/10 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.035),transparent_55%),linear-gradient(160deg,#111113_0%,#09090b_50%,#050506_100%)] backdrop-blur-xl"
+  >
 
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
 
@@ -316,7 +316,7 @@ const AIChat = ({ projectId, history=[], reloadTree }) => {
           </span>
        </div> */}
 
-    <div className="flex h-10 w-72 shrink-0 items-center justify-end border-b border-white/[0.06] px-3">
+    <div className="flex h-10 w-full shrink-0 items-center justify-end border-b border-white/[0.06] px-3">
         <span className="text-[11px] font-semibold tracking-wider text-zinc-500">
         Motion-AI
         </span>
@@ -434,6 +434,17 @@ const AIChat = ({ projectId, history=[], reloadTree }) => {
     </div>
   </div>
 </div>
+
+
+    {/* Horizontal resize handle */}
+    <div
+      onPointerDown={onResizeStart}
+      className="group absolute left-0 top-0 z-40 flex h-full w-1 cursor-col-resize touch-none items-center justify-center"
+    >
+      <motion.div
+        className="h-full w-[2px] bg-gradient-to-b from-sky-400 via-violet-500 to-fuchsia-400 opacity-0 shadow-[0_0_10px_rgba(139,92,246,0.6)] transition-opacity duration-200 group-hover:opacity-80"
+      />
+    </div>
 
 
 
