@@ -391,7 +391,7 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
     {loading && (
       <div className="flex items-center gap-2 pl-8 text-xs text-zinc-500">
           <Loader2 size={13} className="animate-spin" />
-          <span>"motion-AI working..."</span>
+          <span>"working..."</span>
       </div>
     )}
 
@@ -400,7 +400,7 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
    </div>
 
     {/* input */}
-   
+    
 <div className="border-t w-full min-w-0 border-white/[0.07] bg-gradient-to-b from-[#111111]/40 to-[#080808]/80 p-3">
   <div className="group relative rounded-xl bg-gradient-to-br from-white/[0.10] via-white/[0.04] to-white/[0.02] p-px transition-all duration-300 focus-within:from-white/20 focus-within:via-white/10 focus-within:to-white/[0.04]">
     <div className="rounded-xl bg-[#111112]/95 backdrop-blur-2xl">

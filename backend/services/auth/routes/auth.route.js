@@ -6,5 +6,7 @@ const router = express.Router()
 
 router.post("/login",login)
 router.get("/logout",logout)
+router.post("/user/deduct-credits")
+router.post("/user/add-credits")
 
 export default router
