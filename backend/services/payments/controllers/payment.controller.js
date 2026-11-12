@@ -1,7 +1,7 @@
-import razorpay from "../config/razorpay"
-import Payment from "../models/payment.model"
+import razorpay from "../config/razorpay.js"
+import Payment from "../models/payment.model.js"
 import crypto from "crypto"
-import { addCredits } from "../utils/updateCredits"
+import { addCredits } from "../utils/updateCredits.js"
 
 
  
@@ -63,7 +63,7 @@ import { addCredits } from "../utils/updateCredits"
     }
  }
 
- 
+
  export const verify = async(req,res)=>{
     try {
     const userId = req.headers["x-user-id"]

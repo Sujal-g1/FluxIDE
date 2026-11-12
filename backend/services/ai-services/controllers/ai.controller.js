@@ -1,6 +1,7 @@
 import { AIMessage, HumanMessage } from "@langchain/core/messages"
 import { graph } from "../graph/graph.js"
 import { _success } from "zod/v4/core"
+import { deductCredits } from "../utils/deductCredits.js"
 
 const buildHistory=(history)=>{
     if(!Array.isArray(history)) return []
@@ -17,6 +18,7 @@ const buildHistory=(history)=>{
     })
 
 }
+
 
 const sendEvent= (res, type, data)=>{
     if( res.writableEnded || res.destroyed ) return false
@@ -76,10 +78,14 @@ try {
         { messages }, 
         {
         streamMode: "updates",
-        recursionLimit: 40
+        recursionLimit: 40 
         })
 
-        let finalMessage = ""
+    
+    await deductCredits({userId, amount:10})
+
+
+    let finalMessage = ""
 
     for await (const chunk of stream) {
 
@@ -169,3 +175,4 @@ try {
     })
 }
 }
+
