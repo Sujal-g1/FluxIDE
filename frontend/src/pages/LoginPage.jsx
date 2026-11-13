@@ -1,9 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../firebase";
 import { setUserData } from "../redux/userSlice";
 import { login } from "../features/login";
+import logo from "../assets/images/fluxLogo.webp"
 
 
 const Icon = ({ name, className = "" }) => {
@@ -95,37 +97,29 @@ const LoginPage = () => {
 
     return (
       <main className="flux-page relative flex min-h-screen flex-col overflow-hidden bg-[#08090a] text-white selection:bg-blue-400/30">
-          
-          {/* Ambient light */}
-      {/* <div className="flux-glow pointer-events-none absolute -left-48 top-[36%] h-[460px] w-[460px] rounded-full bg-blue-800/20 blur-[150px]" />
-
-      <div className="pointer-events-none absolute -bottom-64 right-[10%] h-[520px] w-[520px] rounded-full bg-blue-700/[0.12] blur-[160px]" />
-    
-          <div className="flux-glow pointer-events-none absolute -left-48 top-[36%] h-[460px] w-[460px] rounded-full bg-orange-700/15 blur-[150px]" />
-    
-          <div className="pointer-events-none absolute -bottom-64 right-[10%] h-[520px] w-[520px] rounded-full bg-amber-700/[0.12] blur-[160px]" /> */}
       
       <div className="flux-glow pointer-events-none absolute -left-48 top-[36%] h-[460px] w-[460px] rounded-full bg-blue-800/20 blur-[150px]" />
-
       <div className="pointer-events-none absolute -bottom-64 right-[10%] h-[520px] w-[520px] rounded-full bg-blue-600/[0.12] blur-[160px]" />
-
       <div className="flux-glow pointer-events-none absolute -left-48 top-[36%] h-[460px] w-[460px] rounded-full bg-blue-800/20 blur-[150px]" />
 
-<div className="pointer-events-none absolute -bottom-64 right-[10%] h-[520px] w-[520px] rounded-full bg-blue-600/[0.12] blur-[160px]" />
-
-
+    <div className="pointer-events-none absolute -bottom-64 right-[10%] h-[520px] w-[520px] rounded-full bg-blue-600/[0.12] blur-[160px]" />
     
           {/* Header */}
           <header className="relative z-20 flex h-[76px] shrink-0 items-center justify-between border-b border-white/[0.07] px-5 sm:px-9 lg:px-12">
-            <a href="/" className="group flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/[0.035] shadow-[0_0_25px_rgba(255,255,255,0.025)] transition-all duration-300group-hover:border-blue-400/30 group-hover:shadow-[0_0_25px_rgba(59,130,246,0.1)]">
-                <Icon name="code" className="h-[18px] w-[18px] text-zinc-200" />
-              </div>
-              <span className="text-[15px] font-medium tracking-[-0.045em]">
-                flux<span className="text-zinc-500">.ide</span>
-              </span>
+          <a href="/" className="group flex items-center gap-2.5">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.035] shadow-[0_0_25px_rgba(255,255,255,0.025)] transition-all duration-300 group-hover:border-blue-400/30 group-hover:shadow-[0_0_25px_rgba(59,130,246,0.1)]">
+                <img
+                src={logo}
+                alt="Flux"
+                className="h-7 w-7 object-contain"
+                />
+            </div>
+
+            <span className="text-[20px] font-medium tracking-[-0.045em]">
+                flux<span className="text-blue-500">.ide</span>
+            </span>
             </a>
-    
+                
             <button
               type="button"
               onClick={handleLogin}
@@ -147,17 +141,39 @@ const LoginPage = () => {
     
           {/* Hero */}
           <section className="relative z-10 flex flex-1 flex-col items-center justify-center px-5 pb-16 pt-16 text-center sm:pb-20 sm:pt-20">
+
             {/* Animated IDE motif */}
-            
-            <div className="flux-reveal relative mb-9 flex h-14 w-14 items-center justify-center sm:mb-12">
-              <div className="flux-orbit absolute inset-0 rounded-2xl border border-white/[0.12] bg-white/[0.025] shadow-[0_0_50px_rgba(255,255,255,.035)] backdrop-blur-xl" />
-    
-              <div className="absolute inset-[7px] rounded-xl border border-blue-300/[0.15] bg-gradient-to-br from-blue-300/[0.08] to-transparent" />
+            <motion.div
+            className="flux-reveal relative mb-9 flex h-22 w-22 shrink-0 items-center justify-center sm:mb-12"
+            animate={{ y: [0, -9, 0] }}
+            transition={{
+                duration: 3.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+            }}
+            >
+            {/* Outer orbit */}
+            <div className="flux-orbit absolute inset-0 rounded-2xl border border-white/[0.12] bg-white/[0.025] shadow-[0_0_50px_rgba(255,255,255,.035)] backdrop-blur-xl" />
 
-            <Icon name="code" className="relative h-6 w-6 text-blue-300" />
+            {/* Inner accent */}
+            <div className="absolute inset-[7px] rounded-xl border border-blue-300/[0.15] bg-gradient-to-br from-blue-300/[0.08] to-transparent" />
 
-           <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,.8)]" />
-            </div>
+            {/* Flux logo */}
+            <motion.img
+            src={logo}
+            alt="Flux"
+            className="relative z-10 h-11 w-11 object-contain"
+            animate={{ rotate: 40 }}
+            transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "linear",
+            }}
+        />
+
+            {/* Status indicator */}
+            <span className="absolute -right-1 -top-1 z-20 h-2 w-2 rounded-full bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,.8)]" />
+            </motion.div>
     
 
         <h1 className="flux-reveal flux-delay-1 max-w-[1200px] font-['Rethink_Sans'] font-normal tracking-[-0.035em] text-black">
@@ -186,12 +202,12 @@ const LoginPage = () => {
           </span>
         </h1>
     
-            <p className="flux-reveal flux-delay-2 mt-7 max-w-[330px] text-[2px] leading-6 text-zinc-400 sm:mt-9 sm:max-w-md sm:text-base sm:leading-7">
+            <p className="flux-reveal flux-delay-2 mt-7 max-w-[330px] text-[12px] leading-6 text-zinc-400 sm:mt-9 sm:max-w-md sm:text-base sm:leading-7">
               Your ideas, accelerated by AI.
             </p>
     
             {/* Main CTA */}
-            <div className="flux-reveal flux-delay-3 mt-8 flex flex-col items-center gap-4 hidden md:flex">
+            {/* <div className="flux-reveal flux-delay-3 mt-8 flex flex-col items-center gap-4 hidden md:flex">
               <button
                 type="button"
                 onClick={handleLogin}
@@ -223,7 +239,7 @@ const LoginPage = () => {
                   {error}
                 </p>
               )}
-            </div>
+            </div> */}
     
             {/* Floating code window */}
             <div className="flux-reveal flux-delay-3 relative mt-16 w-full max-w-[420px] text-left sm:mt-20 lg:absolute lg:bottom-[8%] lg:right-[7%] lg:mt-0 lg:max-w-[340px]">

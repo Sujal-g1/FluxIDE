@@ -38,6 +38,7 @@ const Dashboard = () => {
   const [activeSession, setActiveSession] = useState("projects");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isBackgroundHovered, setIsBackgroundHovered] = useState(false);
 
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.user);
@@ -149,13 +150,56 @@ const Dashboard = () => {
         </AnimatePresence>
 
         {/* Main */}
-        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden">
+        <main
+      onMouseEnter={() => setIsBackgroundHovered(true)}
+      onMouseLeave={() => setIsBackgroundHovered(false)}
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+
+        e.currentTarget.style.setProperty(
+          "--mouse-x",
+          `${e.clientX - rect.left}px`
+        );
+
+        e.currentTarget.style.setProperty(
+          "--mouse-y",
+          `${e.clientY - rect.top}px`
+        );
+      }}
+      className="relative isolate min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden bg-[#090A0C]"
+>
+  {/* Subtle dotted background */}
+  <div  aria-hidden="true"
+    className="pointer-events-none absolute inset-0 z-0"
+    style={{
+      backgroundImage:
+        "radial-gradient(circle, rgba(255, 255, 255, 0) 1px, transparent 1.2px)",
+      backgroundSize: "13px 13px",
+    }}
+  />
+
+ {/* Blue dots revealed only on hover */}
+<div
+  aria-hidden="true"
+  className={`pointer-events-none absolute inset-0 z-0 transition-opacity duration-200 ${
+    isBackgroundHovered ? "opacity-40" : "opacity-0"
+  }`}
+  style={{
+    backgroundImage:
+      "radial-gradient(circle, rgba(59, 131, 246, 0.73) 1px, transparent 1.5px)",
+    backgroundSize: "15px 15px",
+    maskImage:
+  "radial-gradient(140px circle at var(--mouse-x, 50%) var(--mouse-y, 30%), black 0%, transparent 100%)",
+WebkitMaskImage:
+  "radial-gradient(140px circle at var(--mouse-x, 50%) var(--mouse-y, 30%), black 0%, transparent 100%)",
+    
+  }}
+/>
           <motion.div
             variants={pageVariants}
             initial={reduceMotion ? "visible" : "hidden"}
             animate="visible"
-            className="mx-auto w-full max-w-[1520px] px-4 pb-16 pt-6 sm:px-6 sm:pt-8 lg:px-10 lg:pt-12"
-          >
+           className="relative z-10 mx-auto w-full max-w-[1520px] px-4 pb-16 pt-6 sm:px-6 sm:pt-8 lg:px-10 lg:pt-12">
             {/* Hero */}
             <motion.section
               variants={sectionVariants}
@@ -251,7 +295,7 @@ const Dashboard = () => {
             }}
           />
 
-    <div className="relative z-10 flex h-full min-h-[110px] flex-col justify-between rounded-[11px] border border-[#292929] bg-[#141414] p-4 transition-colors duration-300">
+    <div className="relative z-10 flex h-full min-h-[110px] flex-col justify-between rounded-[11px] border border-[#292929] bg-[#141414] p-4 transition-colors duration-300 ">
       <div className="flex items-center justify-between">
         <span className="text-sm text-gray-400 group-hover:text-blue-300">
           Total projects

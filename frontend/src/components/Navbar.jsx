@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Code2, LogOut, Menu } from "lucide-react";
 import { logout } from "../features/logout";
 import { setUserData } from "../redux/userSlice";
+import logo from "../assets/images/fluxLogo.webp"
 
 const Navbar = ({ onMenuClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -69,10 +70,14 @@ const Navbar = ({ onMenuClick }) => {
         aria-label="Flux IDE home"
       >
         <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#3B82F6]">
-          <Code2 size={17} strokeWidth={1.75} className="text-white" />
+        <img
+        src={logo}
+        alt="Flux"
+        className="h-7 w-7 object-contain"
+        />
         </div>
         <span className="text-[15px] font-medium tracking-tight text-[#FAFAFA]">
-          flux<span className="text-[#3B82F6]">.ide</span>
+          flux<span className="text-blue-500">.ide</span>
         </span>
       </button>
 
@@ -173,4 +178,4 @@ const Navbar = ({ onMenuClick }) => {
   );
 };
 
-export default Navbar;
+export default Navbar;``

@@ -10,6 +10,7 @@ import { setUserData } from "./redux/userSlice";
 import ProjectPage from "./pages/ProjectPage";
 import NotFound from "./pages/NotFound";
 import Plan from "./pages/Plan";
+import ProjectCardSkeleton from "./components/ProjectCardSkeleton";
 
 
 const App = () => {
@@ -57,7 +58,7 @@ const App = () => {
 
   // Wait for both the intro and the authentication check.
   if (!introDone || !authChecked) {
-    return <FluxIntro />;
+    return <FluxIntro />; 
   }
 
   return (
@@ -67,6 +68,8 @@ const App = () => {
         <Route path="/project/:id" element={<ProjectPage />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/plan" element={<Plan />} />
+        {/* <Route path="/intro" element={<FluxIntro />} /> */}
+        {/* <Route path="/skel" element={<ProjectCardSkeleton />} /> */}
       </Routes>
     </BrowserRouter>
   );

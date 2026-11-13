@@ -1,5 +1,7 @@
 
 import { useEffect, useState } from "react";
+import logo from "../assets/images/fluxLogo.webp"
+import { motion } from "framer-motion";
 
 const FluxIntro = () => {
   const [showTagline, setShowTagline] = useState(false);
@@ -29,26 +31,24 @@ const FluxIntro = () => {
         <div className="relative mb-8 flex h-[76px] w-[76px] animate-[introLogo_800ms_ease-out_both] items-center justify-center rounded-[24px] border border-white/10 bg-white/[0.035] shadow-[0_0_60px_rgba(59,130,246,0.12)]">
           <div className="absolute inset-2 rounded-[18px] border border-blue-400/20" />
 
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-9 w-9 text-blue-300"
-          >
-            <path d="m8 8-4 4 4 4" />
-            <path d="m16 8 4 4-4 4" />
-            <path d="m14 4-4 16" />
-          </svg>
+          <motion.img
+            src={logo}
+            alt="Flux"
+            className="relative z-10 h-11 w-11 object-contain"
+            animate={{ rotate: 40 }}
+            transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "linear",
+            }}
+        />
 
           <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-blue-400 shadow-[0_0_14px_rgba(96,165,250,0.8)]" />
         </div>
 
         {/* Brand */}
         <h1 className="animate-[introText_900ms_ease-out_both] text-5xl font-medium tracking-[-0.075em] sm:text-7xl">
-          flux<span className="text-zinc-500">.ide</span>
+          flux<span className="text-blue-500">.ide</span>
         </h1>
 
         {/* Tagline */}

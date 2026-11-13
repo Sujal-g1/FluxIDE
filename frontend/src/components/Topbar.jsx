@@ -3,6 +3,7 @@ import { Folder, Code2, Eye } from "lucide-react";
 import { useSelector } from "react-redux";
 import {motion} from "framer-motion"
 import { useState } from "react";
+import logo from "../assets/images/fluxLogo.webp"
 import { useNavigate } from "react-router-dom";
 
 const Topbar = ({showPreview, setShowPreview}) => {
@@ -19,12 +20,12 @@ const Topbar = ({showPreview, setShowPreview}) => {
       <div className="flex min-w-0 items-center gap-4"
       onClick={()=> navigate("/")}>
         <div className="flex shrink-0 items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-500/15">
-            <Code2 size={17} className="text-indigo-400" />
-          </div>
+          {/* <div className="flex h-7 w-7 items-center justify-center rounded-lg">
+          <img src={logo} alt="Flux" className="h-5 w-5 object-contain"  />
+          </div> */}
 
           <span className="text-base font-semibold tracking-tight text-white">
-            flux<span className="text-indigo-400">.ide</span>
+            flux<span className="text-blue-500">.ide</span>
           </span>
         </div>
 
