@@ -9,7 +9,6 @@ import {
   Code2,
   Star,
   Layers3,
-  Menu,
 } from "lucide-react";
 
 import Navbar from "../components/Navbar";
@@ -20,15 +19,16 @@ import { setProjects, setStarredProjects } from "../redux/projectSlice";
 import ProjectCard from "../components/ProjectCard";
 import ProjectCardSkeleton from "../components/ProjectCardSkeleton";
 import CreateProjectModel from "../components/CreateProjectModel";
+import { EASE } from "../lib/motion";
 
 const pageVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.06, delayChildren: 0.04 } },
+  visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.03 } },
 };
 
 const sectionVariants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } },
+  hidden: { opacity: 0, y: 8 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } },
 };
 
 const Dashboard = () => {
@@ -37,6 +37,7 @@ const Dashboard = () => {
   const [error, setError] = useState("");
   const [activeSession, setActiveSession] = useState("projects");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.user);
@@ -48,8 +49,7 @@ const Dashboard = () => {
     ? projectState.starredProjects
     : [];
 
-  const displayedProjects =
-    activeSession === "starred" ? starredProjects : projects;
+  const displayedProjects = activeSession === "starred" ? starredProjects : projects;
 
   const fetchAllProjects = async () => {
     setLoadingProjects(true);
@@ -89,6 +89,7 @@ const Dashboard = () => {
   if (!userData) return <LoginPage />;
 
   const firstName = (userData?.name || "Developer").split(" ")[0];
+  const words = `Welcome back, ${firstName}`.split(" ");
 
   const tabs = [
     { id: "projects", label: "Projects", icon: Folder, count: projects.length },
@@ -96,24 +97,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="relative flex h-dvh min-h-[560px] w-full flex-col overflow-hidden bg-[#08090d] text-zinc-100">
-      {/* Ambient background */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-56 left-[18%] h-[520px] w-[520px] rounded-full bg-blue-600/[0.07] blur-[140px]" />
-        <div className="absolute -bottom-64 right-[-10%] h-[520px] w-[520px] rounded-full bg-fuchsia-600/[0.05] blur-[140px]" />
-        <div
-          className="absolute inset-0 opacity-[0.15]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0)",
-            backgroundSize: "22px 22px",
-            maskImage: "radial-gradient(ellipse at 50% 0%, black 40%, transparent 75%)",
-            WebkitMaskImage:
-              "radial-gradient(ellipse at 50% 0%, black 40%, transparent 75%)",
-          }}
-        />
-      </div>
-
+    <div className="relative flex h-dvh min-h-[560px] w-full flex-col overflow-hidden bg-[#0A0A0A] text-[#FAFAFA]">
       {/* Navbar */}
       <div className="relative z-40 shrink-0">
         <Navbar
@@ -165,73 +149,180 @@ const Dashboard = () => {
         </AnimatePresence>
 
         {/* Main */}
-        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.12)_transparent]">
+        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden">
           <motion.div
             variants={pageVariants}
             initial={reduceMotion ? "visible" : "hidden"}
             animate="visible"
-            className="mx-auto w-full max-w-[1520px] px-4 pb-12 pt-5 sm:px-6 sm:pt-7 lg:px-10 lg:pt-9"
+            className="mx-auto w-full max-w-[1520px] px-4 pb-16 pt-6 sm:px-6 sm:pt-8 lg:px-10 lg:pt-12"
           >
             {/* Hero */}
             <motion.section
               variants={sectionVariants}
-              className="mb-6 flex flex-col justify-between gap-4 sm:mb-8 sm:flex-row sm:items-center"
+              className="mb-8 flex flex-col justify-between gap-5 sm:mb-12 sm:flex-row sm:items-end"
             >
               <div className="min-w-0">
-                <div className="mb-2 flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/20 bg-blue-400/[0.08] px-2.5 py-1 text-[10px] font-semibold tracking-[0.14em] text-blue-300">
-                    <Sparkles size={10} />
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#262626] bg-[#141414] px-2.5 py-1 text-[10px] font-medium tracking-[0.14em] text-[#60A5FA]">
+                    <Sparkles size={10} strokeWidth={2} />
                     WORKSPACE
                   </span>
-                  <span className="hidden text-[11px] text-zinc-600 sm:inline">
+                  <span className="hidden text-[11px] text-[#8B8B8B] sm:inline">
                     / Dashboard
                   </span>
                 </div>
 
-                <h1 className="text-[24px] font-semibold tracking-[-0.02em] text-white sm:text-[30px]">
-                  Welcome back,{" "}
-                  <span className="bg-gradient-to-r from-blue-300 to-fuchsia-300 bg-clip-text text-transparent">
-                    {firstName}
-                  </span>
-                </h1>
-                <p className="mt-1.5 text-[13px] text-zinc-500">
+
+                <h1 className="...">
+              {words.map((w, i) => (
+                <span key={i} className="inline-block overflow-hidden align-bottom">
+                  <motion.span
+                    className="inline-block text-[32px] font-[450] leading-[1.1] "
+                    initial={{ y: "100%" }}
+                    animate={{ y: 0 }}
+                    transition={{ duration: 0.55, ease: EASE, delay: 0.08 * i }}
+                  >
+                    {w}&nbsp;
+                  </motion.span>
+                </span>
+              ))}
+            </h1>
+                <p className="mt-3 max-w-md text-[15px] leading-6 text-[#8B8B8B]">
                   Pick up where you left off, or start something new.
                 </p>
               </div>
 
               <motion.button
                 type="button"
-                whileHover={reduceMotion ? undefined : { y: -1.5 }}
-                whileTap={{ scale: 0.98 }}
                 onClick={() => setOpenModel(true)}
-                className="group inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-[12.5px] font-semibold text-[#08090d] shadow-lg shadow-white/[0.06] transition hover:bg-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 sm:w-auto"
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ duration: 0.15, ease: EASE }}
+                className="group inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#3B82F6] px-4 py-2.5 text-[13px] font-medium text-white transition-colors hover:bg-transparent hover:border-1 sm:w-auto"
               >
                 <Plus
                   size={16}
+                  strokeWidth={2}
                   className="transition-transform duration-300 group-hover:rotate-90"
                 />
                 New project
               </motion.button>
             </motion.section>
 
-            {/* Stats */}
-            <motion.section
-              variants={sectionVariants}
-              className="mb-7 grid grid-cols-2 gap-3 sm:mb-8"
-            >
-              <StatTile
-                label="Total projects"
-                value={projects.length}
-                icon={<Code2 size={16} />}
-                accent="blue"
-              />
-              <StatTile
-                label="Starred"
-                value={starredProjects.length}
-                icon={<Star size={16} />}
-                accent="amber"
-              />
-            </motion.section>
+          
+       {/* Stats */}
+<motion.section
+  variants={sectionVariants}
+  className="mb-8 grid grid-cols-2 gap-3 sm:mb-12"
+>
+  {/* Total Projects */}
+  <motion.div
+    onHoverStart={() => setIsHovered(true)}
+    onHoverEnd={() => setIsHovered(false)}
+    className="group relative isolate overflow-hidden rounded-xl p-[1px]"
+  >
+
+  <motion.div aria-hidden="true"
+            className="pointer-events-none absolute -inset-[100%] z-0"
+            style={{
+              background:
+                "conic-gradient(from 0deg, transparent 0deg, transparent 290deg, #2563eb 315deg, #60a5fa 325deg, #ffffff 330deg, #2563eb 338deg, transparent 355deg)",
+            }}
+            animate={
+              reduceMotion || !isHovered
+                ? {
+                    rotate: 0,
+                    opacity: 0,
+                  }
+                : {
+                    rotate: 360,
+                    opacity: 1,
+                  }
+            }
+            transition={{
+              rotate: {
+                duration: 3,
+                repeat: Infinity,
+                ease: "linear",
+              },
+              opacity: {
+                duration: 0.25,
+              },
+            }}
+          />
+
+    <div className="relative z-10 flex h-full min-h-[110px] flex-col justify-between rounded-[11px] border border-[#292929] bg-[#141414] p-4 transition-colors duration-300">
+      <div className="flex items-center justify-between">
+        <span className="text-sm text-gray-400 group-hover:text-blue-300">
+          Total projects
+        </span>
+        <Code2
+          size={16}
+          strokeWidth={1.75}
+          className="text-gray-500 transition-colors group-hover:text-blue-400"
+        />
+      </div>
+
+      <span className="text-2xl font-semibold tracking-tight text-white">
+        {projects.length}
+      </span>
+    </div>
+  </motion.div>
+
+  {/* Starred Projects */}
+  <motion.div
+    onHoverStart={() => setIsHovered(true)}
+    onHoverEnd={() => setIsHovered(false)}
+    className="group relative isolate overflow-hidden rounded-xl p-[1px]"
+  >
+   <motion.div aria-hidden="true"
+          className="pointer-events-none absolute -inset-[100%] z-0"
+          style={{
+            background:
+              "conic-gradient(from 0deg, transparent 0deg, transparent 290deg, #2563eb 315deg, #60a5fa 325deg, #ffffff 330deg, #2563eb 338deg, transparent 355deg)",
+          }}
+          animate={
+            reduceMotion || !isHovered
+              ? {
+                  rotate: 0,
+                  opacity: 0,
+                }
+              : {
+                  rotate: 360,
+                  opacity: 1,
+                }
+          }
+          transition={{
+            rotate: {
+              duration: 3,
+              repeat: Infinity,
+              ease: "linear",
+            },
+            opacity: {
+              duration: 0.25,
+            },
+          }}
+        />
+
+    <div className="relative z-10 flex h-full min-h-[110px] flex-col justify-between rounded-[11px] border border-[#292929] bg-[#141414] p-4 transition-colors duration-300">
+      <div className="flex items-center justify-between">
+        <span className="text-sm text-gray-400 group-hover:text-blue-300">
+          Starred
+        </span>
+        <Star
+          size={16}
+          strokeWidth={1.75}
+          className="text-gray-500 transition-colors group-hover:text-blue-400"
+        />
+      </div>
+
+      <span className="text-2xl font-semibold tracking-tight text-white">
+        {starredProjects.length}
+      </span>
+    </div>
+  </motion.div>
+</motion.section>
+
 
             {/* Mobile tabs */}
             <motion.div
@@ -240,7 +331,7 @@ const Dashboard = () => {
               role="tablist"
               aria-label="Project filter"
             >
-              <div className="flex items-center gap-1 rounded-xl border border-white/[0.07] bg-white/[0.025] p-1">
+              <div className="flex items-center gap-1 rounded-full border border-[#262626] bg-[#141414] p-1">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   const isActive = activeSession === tab.id;
@@ -251,29 +342,28 @@ const Dashboard = () => {
                       role="tab"
                       aria-selected={isActive}
                       onClick={() => setActiveSession(tab.id)}
-                      className={`relative flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-[12px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-400 ${
-                        isActive ? "text-white" : "text-zinc-500 hover:text-zinc-300"
+                      className={`relative flex flex-1 items-center justify-center gap-2 rounded-full px-3 py-2.5 text-[12px] font-medium transition-colors ${
+                        isActive
+                          ? "text-white"
+                          : "text-[#8B8B8B] hover:text-[#FAFAFA]"
                       }`}
                     >
                       {isActive && (
                         <motion.div
                           layoutId="mobile-tab-pill"
-                          className="absolute inset-0 rounded-lg border border-white/[0.08] bg-white/[0.06]"
+                          className="absolute inset-0 rounded-full bg-[#3B82F6]"
                           transition={{ type: "spring", stiffness: 420, damping: 32 }}
                         />
                       )}
-                      <Icon
-                        size={14}
-                        className={`relative ${
-                          isActive
-                            ? tab.id === "starred"
-                              ? "text-amber-300"
-                              : "text-blue-300"
-                            : ""
-                        }`}
-                      />
+                      <Icon size={14} strokeWidth={1.75} className="relative" />
                       <span className="relative">{tab.label}</span>
-                      <span className="relative rounded-md bg-white/[0.06] px-1.5 py-0.5 text-[10px] tabular-nums opacity-80">
+                      <span
+                        className={`relative rounded-md px-1.5 py-0.5 text-[10px] tabular-nums ${
+                          isActive
+                            ? "bg-white/20 text-white"
+                            : "bg-[#1C1C1C] text-[#8B8B8B]"
+                        }`}
+                      >
                         {tab.count}
                       </span>
                     </button>
@@ -284,25 +374,25 @@ const Dashboard = () => {
 
             {/* Projects */}
             <motion.section variants={sectionVariants}>
-              <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+              <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-[15px] font-semibold tracking-tight text-white">
+                    <h2 className="text-[15px] font-medium tracking-tight text-[#FAFAFA]">
                       {activeSession === "starred" ? "Starred projects" : "Your projects"}
                     </h2>
-                    <span className="rounded-md border border-white/[0.07] bg-white/[0.035] px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-zinc-400">
+                    <span className="rounded-md border border-[#262626] bg-[#141414] px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-[#8B8B8B]">
                       {displayedProjects.length}
                     </span>
                   </div>
-                  <p className="mt-1 text-[11.5px] text-zinc-500">
+                  <p className="mt-1.5 text-[12px] text-[#8B8B8B]">
                     {activeSession === "starred"
                       ? "Your favorite workspaces, all in one place."
                       : "All your development workspaces."}
                   </p>
                 </div>
 
-                <div className="hidden items-center gap-1.5 text-[10.5px] text-zinc-500 sm:flex">
-                  <Layers3 size={12} />
+                <div className="hidden items-center gap-1.5 text-[11px] text-[#8B8B8B] sm:flex">
+                  <Layers3 size={12} strokeWidth={1.75} />
                   {displayedProjects.length}{" "}
                   {displayedProjects.length === 1 ? "workspace" : "workspaces"}
                 </div>
@@ -326,12 +416,12 @@ const Dashboard = () => {
                     key="error"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="rounded-xl border border-red-400/20 bg-red-400/[0.05] p-5"
+                    className="rounded-lg border border-[#F87171]/20 bg-[#F87171]/[0.06] p-5"
                   >
-                    <p className="text-[13px] font-semibold text-red-300">
+                    <p className="text-[13px] font-medium text-[#F87171]">
                       Unable to load projects
                     </p>
-                    <p className="mt-1 text-[12px] text-red-300/70">{error}</p>
+                    <p className="mt-1 text-[12px] text-[#F87171]/80">{error}</p>
                     <button
                       type="button"
                       onClick={() =>
@@ -339,7 +429,7 @@ const Dashboard = () => {
                           ? fetchStarredProjects()
                           : fetchAllProjects()
                       }
-                      className="mt-3 rounded-lg border border-red-400/30 bg-red-400/10 px-3 py-1.5 text-[11.5px] font-medium text-red-200 transition hover:bg-red-400/20"
+                      className="mt-3 rounded-full bg-[#F87171] px-3.5 py-1.5 text-[11.5px] font-medium text-[#0A0A0A] transition-colors hover:bg-[#FCA5A5]"
                     >
                       Try again
                     </button>
@@ -347,32 +437,25 @@ const Dashboard = () => {
                 ) : displayedProjects.length === 0 ? (
                   <motion.div
                     key="empty"
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
-                    className="relative flex min-h-[260px] flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed border-white/[0.09] bg-white/[0.015] px-6 py-10 text-center"
+                    className="relative flex min-h-[260px] flex-col items-center justify-center overflow-hidden rounded-lg border border-dashed border-[#333333] bg-[#141414] px-6 py-10 text-center"
                   >
-                    <div className="pointer-events-none absolute -top-28 h-56 w-56 rounded-full bg-blue-500/[0.08] blur-[80px]" />
-
-                    <motion.div
-                      initial={reduceMotion ? false : { scale: 0.85, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                      className="relative mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/[0.09] bg-white/[0.04]"
-                    >
+                    <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg border border-[#262626] bg-[#0A0A0A]">
                       {activeSession === "starred" ? (
-                        <Star size={22} className="text-amber-300" />
+                        <Star size={22} strokeWidth={1.75} className="text-[#3B82F6]" />
                       ) : (
-                        <Folder size={22} className="text-blue-300" />
+                        <Folder size={22} strokeWidth={1.75} className="text-[#3B82F6]" />
                       )}
-                    </motion.div>
+                    </div>
 
-                    <h3 className="relative text-[14px] font-semibold text-white">
+                    <h3 className="text-[14px] font-medium text-[#FAFAFA]">
                       {activeSession === "starred"
                         ? "No starred projects yet"
                         : "Create your first project"}
                     </h3>
-                    <p className="relative mt-1.5 max-w-xs text-[12px] leading-5 text-zinc-500">
+                    <p className="mt-1.5 max-w-xs text-[12px] leading-5 text-[#8B8B8B]">
                       {activeSession === "starred"
                         ? "Star a project to keep important work close at hand."
                         : "Start with a blank workspace and bring your next idea to life."}
@@ -382,11 +465,11 @@ const Dashboard = () => {
                       <button
                         type="button"
                         onClick={() => setOpenModel(true)}
-                        className="relative mt-4 inline-flex items-center gap-2 rounded-lg border border-white/[0.1] bg-white/[0.07] px-3.5 py-2 text-[11.5px] font-medium text-white transition hover:bg-white/[0.12] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
+                        className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#262626] bg-[#1C1C1C] px-3.5 py-2 text-[11.5px] font-medium text-[#FAFAFA] transition-colors hover:border-[#333333] hover:bg-[#262626]"
                       >
-                        <Plus size={13} />
+                        <Plus size={13} strokeWidth={2} />
                         Create project
-                        <ArrowUpRight size={12} className="text-zinc-500" />
+                        <ArrowUpRight size={12} strokeWidth={1.75} className="text-[#8B8B8B]" />
                       </button>
                     )}
                   </motion.div>
@@ -414,9 +497,9 @@ const Dashboard = () => {
 
             {/* Footer */}
             {!loadingProjects && !error && displayedProjects.length > 0 && (
-              <div className="mt-10 flex items-center justify-center gap-2 border-t border-white/[0.05] pt-6">
-                <Sparkles size={11} className="text-blue-400/70" />
-                <p className="text-[10px] tracking-[0.14em] text-zinc-600">
+              <div className="mt-12 flex items-center justify-center gap-2 border-t border-[#262626] pt-6">
+                <Sparkles size={11} strokeWidth={2} className="text-[#3B82F6]" />
+                <p className="text-[10px] tracking-[0.14em] text-[#8B8B8B]">
                   BUILT FOR CREATORS · POWERED BY FLUX
                 </p>
               </div>
@@ -432,31 +515,21 @@ const Dashboard = () => {
   );
 };
 
-const StatTile = ({ label, value, icon, accent }) => {
-  const accents = {
-    blue: "border-blue-400/20 bg-blue-400/[0.08] text-blue-300",
-    amber: "border-amber-400/20 bg-amber-400/[0.08] text-amber-300",
-  };
+const StatTile = ({ label, value, icon }) => {
   return (
-    <motion.div
-      whileHover={{ y: -2 }}
-      transition={{ duration: 0.18 }}
-      className="flex items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.025] px-4 py-3.5 transition-colors hover:bg-white/[0.045]"
-    >
+    <div className="flex items-center justify-between rounded-lg border border-[#262626] bg-[#141414] px-4 py-3.5 transition-colors hover:border-[#333333]">
       <div>
-        <p className="text-[10.5px] font-medium uppercase tracking-wider text-zinc-500">
+        <p className="text-[10.5px] font-medium uppercase tracking-wider text-[#8B8B8B]">
           {label}
         </p>
-        <p className="mt-1 text-2xl font-semibold tracking-tight tabular-nums text-white">
+        <p className="mt-1 text-2xl font-medium tracking-tight tabular-nums text-[#FAFAFA]">
           {value}
         </p>
       </div>
-      <div
-        className={`flex h-9 w-9 items-center justify-center rounded-lg border ${accents[accent]}`}
-      >
+      <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#262626] bg-[#0A0A0A] text-[#3B82F6]">
         {icon}
       </div>
-    </motion.div>
+    </div>
   );
 };
 
