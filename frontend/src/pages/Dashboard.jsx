@@ -424,9 +424,9 @@ WebkitMaskImage:
                     <h2 className="text-[15px] font-medium tracking-tight text-[#FAFAFA]">
                       {activeSession === "starred" ? "Starred projects" : "Your projects"}
                     </h2>
-                    <span className="rounded-md border border-[#262626] bg-[#141414] px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-[#8B8B8B]">
+                    {/* <span className="rounded-md border border-[#262626] bg-[#141414] px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-[#8B8B8B]">
                       {displayedProjects.length}
-                    </span>
+                    </span> */}
                   </div>
                   <p className="mt-1.5 text-[12px] text-[#8B8B8B]">
                     {activeSession === "starred"
@@ -435,11 +435,11 @@ WebkitMaskImage:
                   </p>
                 </div>
 
-                <div className="hidden items-center gap-1.5 text-[11px] text-[#8B8B8B] sm:flex">
+                {/* <div className="hidden items-center gap-1.5 text-[11px] text-[#8B8B8B] sm:flex">
                   <Layers3 size={12} strokeWidth={1.75} />
                   {displayedProjects.length}{" "}
                   {displayedProjects.length === 1 ? "workspace" : "workspaces"}
-                </div>
+                </div> */}
               </div>
 
               <AnimatePresence mode="wait">

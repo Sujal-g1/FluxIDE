@@ -113,7 +113,7 @@ const ActivityBar = ({
       <div className="flex w-full flex-col items-center gap-2 px-2">
         <ActivityIcon
           icon={Files}
-          label="Explorer (Cmd+B)"
+          label="Explorer (Cmd+O)"
           active={showExplorer}
           onClick={() => setShowExplorer((v) => !v)}
         />
