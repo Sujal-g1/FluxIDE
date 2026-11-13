@@ -242,7 +242,7 @@ const LoginPage = () => {
             </div> */}
     
             {/* Floating code window */}
-            <div className="flux-reveal flux-delay-3 relative mt-16 w-full max-w-[420px] text-left sm:mt-20 lg:absolute lg:bottom-[8%] lg:right-[7%] lg:mt-0 lg:max-w-[340px]">
+            {/* <div className="flux-reveal flux-delay-3 relative mt-16 w-full max-w-[420px] text-left sm:mt-20 lg:absolute lg:bottom-[8%] lg:right-[7%] lg:mt-0 lg:max-w-[340px]">
               <div className="flux-orbit relative overflow-hidden rounded-2xl border border-white/[0.10] bg-[#111112]/70 shadow-[0_25px_100px_rgba(0,0,0,.45),0_0_45px_rgba(59,130,246,.05)] backdrop-blur-2xl">
                 <div className="flex h-10 items-center justify-between border-b border-white/[0.07] px-4">
                   <div className="flex items-center gap-1.5">
@@ -292,7 +292,7 @@ const LoginPage = () => {
                   <span className="text-[9px] text-zinc-600">FLUX ENGINE</span>
                 </div>
               </div>
-            </div>
+            </div> */}
     
           </section>
     
