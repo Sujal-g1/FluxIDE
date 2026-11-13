@@ -152,7 +152,7 @@ const ext = dotIndex > 0 ? key.slice(dotIndex + 1) : "";
      cs: { icon: FileCode2, color: "text-purple-400" },
      go: { icon: FileCode2, color: "text-cyan-400" },
      rs: { icon: FileCode2, color: "text-orange-400" },
-     php: { icon: FileCode2, color: "text-violet-400" },
+     php: { icon: FileCode2, color: "text-blue-400" },
      rb: { icon: FileCode2, color: "text-red-400" },
      swift: { icon: FileCode2, color: "text-orange-400" },
      kt: { icon: FileCode2, color: "text-purple-400" },
@@ -178,7 +178,7 @@ const ext = dotIndex > 0 ? key.slice(dotIndex + 1) : "";
      jpeg: { icon: FileImage, color: "text-pink-400" },
      gif: { icon: FileImage, color: "text-pink-300" },
      webp: { icon: FileImage, color: "text-pink-400" },
-     ico: { icon: FileImage, color: "text-violet-400" },
+     ico: { icon: FileImage, color: "text-blue-400" },
      bmp: { icon: FileImage, color: "text-pink-400" },
  
      // Audio and video
@@ -263,7 +263,7 @@ const ext = dotIndex > 0 ? key.slice(dotIndex + 1) : "";
      },
      lib: {
        icon: FolderCog,
-       color: "text-violet-400",
+       color: "text-blue-400",
      },
      helpers: {
        icon: FolderCog,
@@ -329,11 +329,11 @@ const ext = dotIndex > 0 ? key.slice(dotIndex + 1) : "";
      },
      styles: {
        icon: Palette,
-       color: "text-violet-400",
+       color: "text-blue-400",
      },
      css: {
        icon: Palette,
-       color: "text-violet-400",
+       color: "text-blue-400",
      },
      fonts: {
        icon: Languages,

@@ -38,6 +38,7 @@ import { addCredits } from "../utils/updateCredits.js"
     const payment = await Payment.create({
         userId,
         plan,
+        credits: selectedPlan.credits,
         amount: selectedPlan.amount,
         razorpayOrderId: order.id,
         currency:"INR",
@@ -83,7 +84,7 @@ import { addCredits } from "../utils/updateCredits.js"
 
     if(payment.status == "paid") return res.status(400).json({"message":"payment already verified"})
     
-    const generatedSignature = crypto.createHash("sha256", process.env.RAZORPAY_KEY_SECRET)
+    const generatedSignature = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
     .update(`${razorpay_order_id}|${razorpay_payment_id}`)
     .digest("hex")
 

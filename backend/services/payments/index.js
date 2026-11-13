@@ -12,7 +12,7 @@ const port = process.env.PORT || 5009;
 const app = express();
 
 app.use(express.json());
-app.use("/", router)
+
 
 app.use(
   cors({
@@ -20,6 +20,11 @@ app.use(
     credentials: true,
   })
 );
+
+
+
+// app.use("/", router)
+app.use("/api/payment", router);
 
 app.get("/health", (req, res) => {
   res.json("hello from services/payments");

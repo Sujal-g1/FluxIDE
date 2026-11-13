@@ -79,7 +79,7 @@ export const logout = async ( req, res) => {
 } 
 
 
-export const deductCredits = async()=>{
+export const deductCredits = async(req,res)=>{
     try {
     const {userId, amount} =  req.body
 
@@ -110,29 +110,112 @@ export const deductCredits = async()=>{
 }
 
 
-export const addCredits = async()=>{
-    try {
-    const {userId, credits} =  req.body
+// export const addCredits = async ({ userId, credits }) => {
+//     try {
+//       if (!userId) {
+//         throw new Error("userId not found");
+//       }
+  
+//       const creditAmount = Number(credits);
+  
+//       if (!Number.isFinite(creditAmount) || creditAmount <= 0) {
+//         throw new Error("Invalid credit amount");
+//       }
+  
+//       const user = await User.findById(userId);
+  
+//       if (!user) {
+//         throw new Error("User not found");
+//       }
+  
+//       user.credits = (user.credits || 0) + creditAmount;
+//       await user.save();
+  
+//       const sessionId = await redis.get(`user-session-${userId}`);
+  
+//       if (sessionId) {
+//         await redis.set(
+//           `session-${sessionId}`,
+//           JSON.stringify({
+//             name: user.name,
+//             _id: user._id,
+//             email: user.email,
+//             avatar: user.avatar,
+//             credits: user.credits,
+//           }),
+//           "EX",
+//           3 * 24 * 60 * 60
+//         );
+//       }
+  
+//       return {
+//         success: true,
+//         credits: user.credits,
+//       };
+//     } catch (error) {
+//       console.error("Add credits error:", error);
+//       throw error;
+//     }
+//   };
+  
 
-    if(!userId) return res.status(401).json({message:"userId not found"})
 
-    const user = await User.findById(userId)
-
-    if(!user) return res.status(401).json({message:"user not found"})
-    user.credits = ( user.credits || 0 ) + credits
-    user.save()
-
-    const sessionId = await redis.get(`user-session-${userId}`)
-    await redis.set(`session-${sessionId}`, JSON.stringify({
-        name: user.name,
-        _id: user._id,
-        email:user.email,
-        avatar:user.avatar,
-        credits: user.credits
-    }), "EX",3*24*60*60)
-    return res.status(200).json(user.credits)
-
-    } catch (error) {
-        return res.status(500).json({message:`add credits error ${error}`}) 
+const updateUserCredits = async (userId, credits) => {
+    if (!userId) {
+      throw new Error("userId not found");
     }
-}
+  
+    const creditAmount = Number(credits);
+  
+    if (!Number.isFinite(creditAmount) || creditAmount <= 0) {
+      throw new Error("Invalid credit amount");
+    }
+  
+    const user = await User.findById(userId);
+  
+    if (!user) {
+      throw new Error("User not found");
+    }
+  
+    user.credits = (user.credits || 0) + creditAmount;
+    await user.save();
+  
+    const sessionId = await redis.get(`user-session-${userId}`);
+  
+    if (sessionId) {
+      await redis.set(
+        `session-${sessionId}`,
+        JSON.stringify({
+          name: user.name,
+          _id: user._id,
+          email: user.email,
+          avatar: user.avatar,
+          credits: user.credits,
+        }),
+        "EX",
+        3 * 24 * 60 * 60
+      );
+    }
+  
+    return user.credits;
+  };
+  
+  export const addCredits = async (req, res) => {
+    try {
+      const { userId, credits } = req.body;
+  
+      const updatedCredits = await updateUserCredits(userId, credits);
+  
+      return res.status(200).json({
+        success: true,
+        credits: updatedCredits,
+      });
+    } catch (error) {
+      console.error("Add credits error:", error);
+  
+      return res.status(500).json({
+        message: error.message,
+      });
+    }
+  };
+  

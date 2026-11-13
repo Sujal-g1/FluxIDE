@@ -9,6 +9,7 @@ import { me } from "./features/me";
 import { setUserData } from "./redux/userSlice";
 import ProjectPage from "./pages/ProjectPage";
 import NotFound from "./pages/NotFound";
+import Plan from "./pages/Plan";
 
 
 const App = () => {
@@ -65,6 +66,7 @@ const App = () => {
         <Route path="/" element={<Dashboard />} />
         <Route path="/project/:id" element={<ProjectPage />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/plan" element={<Plan />} />
       </Routes>
     </BrowserRouter>
   );

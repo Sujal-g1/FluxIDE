@@ -130,7 +130,7 @@ const EditorDashboard = ({ activeTab,
 
         {active && (
         <motion.div 
-        className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-sky-400 to-violet-400"
+        className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-sky-400 to-blue-400"
         transition={{ duration:0.2, ease:"easeOut"}}
         />    
         )}
@@ -197,7 +197,7 @@ const EditorDashboard = ({ activeTab,
             {active && (
               <motion.div
                 layoutId="active-tab-indicator"
-                className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-sky-400 to-violet-400"
+                className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-sky-400 to-blue-400"
                 transition={{
                   type: "spring",
                   stiffness: 500,
@@ -288,7 +288,7 @@ const EditorDashboard = ({ activeTab,
   {openTabs.length === 0 ? (
     <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
       <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.03]">
-        <Code2 size={30} className="text-violet-400" />
+        <Code2 size={30} className="text-blue-400" />
       </div>
 
       <h2 className="text-lg font-semibold tracking-tight text-zinc-200">
@@ -301,7 +301,7 @@ const EditorDashboard = ({ activeTab,
       </p>
 
       <div className="mt-5 flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-xs text-zinc-500">
-        <span className="text-violet-400">Tip</span>
+        <span className="text-blue-400">Tip</span>
         <span>Select any file from the sidebar to get started.</span>
       </div>
     </div>

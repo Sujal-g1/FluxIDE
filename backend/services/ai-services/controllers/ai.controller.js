@@ -82,7 +82,7 @@ try {
         })
 
     
-    await deductCredits({userId, amount:10})
+    await deductCredits({userId, amount:50})
 
 
     let finalMessage = ""

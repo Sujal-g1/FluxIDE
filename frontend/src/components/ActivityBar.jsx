@@ -17,7 +17,7 @@ function ActivityIcon({ icon: Icon, label, active, onClick }) {
         transition={{ type: "spring", stiffness: 420, damping: 24 }}
         className={`relative flex h-11 w-11 items-center justify-center rounded-xl transition-all duration-200 ${
           active
-            ? "bg-gradient-to-br from-sky-400/[0.16] to-violet-400/[0.10] text-sky-300 shadow-[0_0_24px_rgba(56,189,248,0.08)] ring-1 ring-sky-300/20"
+            ? "bg-gradient-to-br from-sky-400/[0.16] to-blue-400/[0.10] text-sky-300 shadow-[0_0_24px_rgba(56,189,248,0.08)] ring-1 ring-sky-300/20"
             : "text-zinc-500 hover:bg-white/[0.055] hover:text-zinc-200"
         }`}
       >
@@ -28,7 +28,7 @@ function ActivityIcon({ icon: Icon, label, active, onClick }) {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="absolute inset-0 rounded-xl bg-gradient-to-br from-sky-400/[0.07] to-violet-400/[0.06]"
+              className="absolute inset-0 rounded-xl bg-gradient-to-br from-sky-400/[0.07] to-blue-400/[0.06]"
             />
           )}
         </AnimatePresence>
@@ -46,7 +46,7 @@ function ActivityIcon({ icon: Icon, label, active, onClick }) {
               animate={{ opacity: 1, scaleY: 1 }}
               exit={{ opacity: 0, scaleY: 0.4 }}
               transition={{ duration: 0.18 }}
-              className="absolute -left-[9px] h-5 w-[3px] origin-center rounded-r-full bg-gradient-to-b from-sky-300 to-violet-400 shadow-[0_0_10px_rgba(56,189,248,0.45)]"
+              className="absolute -left-[9px] h-5 w-[3px] origin-center rounded-r-full bg-gradient-to-b from-sky-300 to-blue-400 shadow-[0_0_10px_rgba(56,189,248,0.45)]"
             />
           )}
         </AnimatePresence>

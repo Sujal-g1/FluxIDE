@@ -34,7 +34,7 @@ const Terminal = ({
         className="group absolute inset-x-0 top-0 z-30 flex h-3 cursor-row-resize touch-none items-center justify-center"
         title="Drag to resize terminal"
       >
-        <motion.div className="h-[2px] w-full bg-gradient-to-r from-sky-400 via-violet-500 to-fuchsia-400 opacity-0 shadow-[0_0_10px_rgba(139,92,246,0.6)] transition-opacity duration-300 group-hover:opacity-80" />
+        <motion.div className="h-[2px] w-full bg-gradient-to-r from-sky-400 via-blue-500 to-fuchsia-400 opacity-0 shadow-[0_0_10px_rgba(139,92,246,0.6)] transition-opacity duration-300 group-hover:opacity-80" />
 
         <GripHorizontal
           size={14}
@@ -45,7 +45,7 @@ const Terminal = ({
       {/* Header */}
       <div className="flex h-9 shrink-0 items-center justify-between border-b border-white/[0.06] px-3 pt-1">
         <div className="flex items-center gap-2 text-xs font-medium text-zinc-300">
-          <TerminalIcon size={14} className="text-violet-400" />
+          <TerminalIcon size={14} className="text-blue-400" />
 
           <span>Terminal</span>
 

@@ -22,12 +22,12 @@ const FluxIntro = () => {
       />
 
       {/* Ambient glow */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-amber-500/[0.12] blur-[100px] sm:h-[440px] sm:w-[440px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-blue-600/[0.14] blur-[100px] sm:h-[440px] sm:w-[440px]" />
 
       <section className="relative flex flex-col items-center px-6 text-center">
         {/* Animated logo */}
-        <div className="relative mb-8 flex h-[76px] w-[76px] animate-[introLogo_800ms_ease-out_both] items-center justify-center rounded-[24px] border border-white/10 bg-white/[0.035] shadow-[0_0_60px_rgba(245,158,11,0.08)]">
-          <div className="absolute inset-2 rounded-[18px] border border-amber-300/15" />
+        <div className="relative mb-8 flex h-[76px] w-[76px] animate-[introLogo_800ms_ease-out_both] items-center justify-center rounded-[24px] border border-white/10 bg-white/[0.035] shadow-[0_0_60px_rgba(59,130,246,0.12)]">
+          <div className="absolute inset-2 rounded-[18px] border border-blue-400/20" />
 
           <svg
             viewBox="0 0 24 24"
@@ -36,14 +36,14 @@ const FluxIntro = () => {
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="h-9 w-9 text-amber-200"
+            className="h-9 w-9 text-blue-300"
           >
             <path d="m8 8-4 4 4 4" />
             <path d="m16 8 4 4-4 4" />
             <path d="m14 4-4 16" />
           </svg>
 
-          <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-amber-300 shadow-[0_0_14px_rgba(252,211,77,0.8)]" />
+          <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-blue-400 shadow-[0_0_14px_rgba(96,165,250,0.8)]" />
         </div>
 
         {/* Brand */}
@@ -64,19 +64,19 @@ const FluxIntro = () => {
 
         {/* Loading indicator */}
         <div className="mt-14 flex items-center gap-3">
-          <div className="h-px w-10 bg-gradient-to-r from-transparent to-amber-300/60" />
+          <div className="h-px w-10 bg-gradient-to-r from-transparent to-blue-400/60" />
 
           <div className="flex gap-1.5">
             {[0, 1, 2].map((dot) => (
               <span
                 key={dot}
-                className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-200"
+                className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-300"
                 style={{ animationDelay: `${dot * 180}ms` }}
               />
             ))}
           </div>
 
-          <div className="h-px w-10 bg-gradient-to-l from-transparent to-amber-300/60" />
+          <div className="h-px w-10 bg-gradient-to-l from-transparent to-blue-400/60" />
         </div>
 
         <p className="mt-4 text-[10px] uppercase tracking-[0.22em] text-zinc-600">

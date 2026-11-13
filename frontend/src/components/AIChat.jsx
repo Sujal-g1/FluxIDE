@@ -364,7 +364,7 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
         <div
         className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${isUser
           ? "bg-white/10 text-zinc-300"
-          : "bg-gradient-to-br from-sky-400 to-violet-400 text-white"
+          : "bg-gradient-to-br from-sky-400 to-blue-400 text-white"
         }`}
         >
         { isUser ? <User size={12}/> : <Bot size={12}/>}
@@ -442,7 +442,7 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
       className="group absolute left-0 top-0 z-40 flex h-full w-1 cursor-col-resize touch-none items-center justify-center"
     >
       <motion.div
-        className="h-full w-[2px] bg-gradient-to-b from-sky-400 via-violet-500 to-fuchsia-400 opacity-0 shadow-[0_0_10px_rgba(139,92,246,0.6)] transition-opacity duration-200 group-hover:opacity-80"
+        className="h-full w-[2px] bg-gradient-to-b from-sky-400 via-blue-500 to-fuchsia-400 opacity-0 shadow-[0_0_10px_rgba(139,92,246,0.6)] transition-opacity duration-200 group-hover:opacity-80"
       />
     </div>
 

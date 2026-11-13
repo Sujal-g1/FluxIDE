@@ -1,149 +1,344 @@
-import {motion} from "framer-motion"
-import { X } from "lucide-react"
-import { useState } from "react"
-import { useDispatch } from "react-redux"
-import { addNewProject } from "../redux/projectSlice"
-import { createProject } from "../features/project"
-import { createRootFolder } from "../features/file"
 
-const CreateProjectModel = ({openModel, onClose}) => {
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import {
+  X,
+  FolderPlus,
+  Loader2,
+  AlertCircle,
+  ArrowRight,
+  FileCode2,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { addNewProject } from "../redux/projectSlice";
+import { createProject } from "../features/project";
+import { createRootFolder } from "../features/file";
 
-    const [name, setName] = useState("")
-    const [description, setDescription] = useState("")
-    const [loading, setLoading] = useState(false);  
+const CreateProjectModel = ({ openModel, onClose }) => {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const reduceMotion = useReducedMotion();
+  const inputRef = useRef(null);
 
- 
-const handleCreateProject = async () => {
-    if (!name.trim()) return;
-  
+  useEffect(() => {
+    if (!openModel) return;
+
+    const timer = setTimeout(() => inputRef.current?.focus(), 150);
+    return () => clearTimeout(timer);
+  }, [openModel]);
+
+  useEffect(() => {
+    if (!openModel) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && !loading) onClose();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [openModel, loading, onClose]);
+
+  useEffect(() => {
+    if (!openModel) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [openModel]);
+
+  const handleCreateProject = async (e) => {
+    e.preventDefault();
+
+    if (!name.trim() || loading) return;
+
     setLoading(true);
-  
+    setError("");
+
     try {
-      const data = await createProject(
+      const project = await createProject(
         name.trim(),
-        description.trim() 
+        description.trim()
       );
-  
-      if (!data) {
+
+      if (!project?._id) {
         throw new Error("Project creation failed");
       }
-      const rootFolder = await createRootFolder({projectId:data._id, projectName:data.name})
-      console.log("Created root folder:", rootFolder);
-      onClose();
-      dispatch(addNewProject(data));
+
+      await createRootFolder({
+        projectId: project._id,
+        projectName: project.name,
+      });
+
+      dispatch(addNewProject(project));
+
       setName("");
       setDescription("");
-      setLoading(false)
+      onClose();
+    } catch (err) {
+      console.error("Create project failed:", err);
 
-    } catch (error) {
-      console.error("Create project failed:", error);
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Something went wrong. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
-  
 
   return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center p-4'>
-    
-    <motion.div 
-    onClick={onClose}
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ duration: 0.2, ease: "easeOut"}} 
-    className="fixed inset-0 bg-black/20 backdrop-blur-sm dark:bg-black/60"
-    />
+    <AnimatePresence>
+      {openModel && (
+        <motion.div
+          className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center sm:p-5"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          {/* Backdrop */}
+          <motion.div
+            className="absolute inset-0 bg-black/70 backdrop-blur-[6px]"
+            onClick={() => !loading && onClose()}
+            aria-hidden="true"
+          />
 
-    <div className="pointer-events-none absolute -z-10 h-[460px] w-[460px] rounded-full bg-sky-300/20 blur-[130px] dark:bg-sky-500/40 ">
-    </div>
+          {/* Modal */}
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="create-project-title"
+            initial={
+              reduceMotion
+                ? false
+                : { opacity: 0, y: 30, scale: 0.97 }
+            }
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.97 }}
+            transition={{
+              type: "spring",
+              stiffness: 350,
+              damping: 32,
+            }}
+            className="relative flex max-h-[92dvh] w-full max-w-[470px] flex-col overflow-hidden rounded-t-[24px] border border-white/[0.09] bg-[#111217] shadow-2xl shadow-black/50 sm:rounded-[22px]"
+          >
+            {/* Mobile drag indicator */}
+            <div className="flex justify-center pt-2.5 sm:hidden">
+              <div className="h-1 w-9 rounded-full bg-white/20" />
+            </div>
 
-    {/* new project creation */}
-    <motion.div
-    initial={{
-        y:10,
-        scale:0.90
-    }}
-    animate={{
-        opacity:1,
-        y:0,
-        scale:1
-    }}
-    exit={{
-        opacity:0,
-        y:10,
-        scale:0.90
-    }}
-    transition={{
-        duration:0.28,
-        ease:[0.16,1,0.3,1]
-    }}
-    className="relative w-full max-w-md overflow-hidden rounded-[28px] border border-black/[0.08] bg-white/70 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.25)]
-    backdrop-blur-2xl dark:border-white/[0.1] dark:bg-white/[0.05] dark:shadow-[0_20px_70px_-15px_rgba(0,0,0,0.7)]">
+            {/* Header */}
+            <div className="flex items-start justify-between gap-4 border-b border-white/[0.07] px-5 pb-5 pt-5 sm:px-6 sm:pt-6">
+              <div className="flex min-w-0 items-start gap-3.5">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-blue-400/20 bg-blue-400/[0.10] text-blue-300">
+                  <FolderPlus size={20} strokeWidth={1.8} />
+                </div>
 
-    <div 
-    className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent dark:via-white/30"/>
+                <div className="min-w-0">
+                  <div className="mb-1 flex items-center gap-2">
+                    <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-blue-400">
+                      New workspace
+                    </span>
+                  </div>
 
-    {/* create with cross button */}
-    <div className="flex items-center justify-between border-b border-black/[0.06] px-7 py-6 dark:border-white/[0.08]">
-    <div>
-        <h2 className="text-[17px] font-semibold tracking-tight text-zinc-900 dark:text-white">Create Project</h2> 
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">Set up new workspace in seconds</p>
-    </div>
+                  <h2
+                    id="create-project-title"
+                    className="text-lg font-semibold tracking-tight text-white"
+                  >
+                    Create a project
+                  </h2>
 
-    <button 
-    onClick={onClose}
-    className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-black/[0.05] hover:text-zinc-900 dark:text-zinc-400 dark:bg-white/[0.07] dark:hover:text-white">
-    <X  size={18}/>
-    </button>
+                  <p className="mt-1 text-xs leading-5 text-zinc-500">
+                    Give your next idea a place to grow.
+                  </p>
+                </div>
+              </div>
 
-    </div>
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={loading}
+                aria-label="Close dialog"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/[0.07] hover:text-white disabled:opacity-50"
+              >
+                <X size={17} />
+              </button>
+            </div>
 
-    {/* input , project & description*/}
-    <div className="space-y-6 px-7 py-6">
-    <div>
-        <div className="mb-2 block text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400"> Project Name </div>
-    <input 
-    onChange={(e)=> setName(e.target.value)}
-    placeholder="my project"
-    className="w-full rounded-xl border border-black/[0.08] bg-black/[0.02] px-4 py-3 text-[15px] text-zinc-900 placeholder-zinc-400 outline-none transition-all focus:border-sky-400/60 focus:bg-white focus:ring-1 focus:ring-sky-400/15 dark:border-white/[0.09] dark:bg-white/[0.04] dark:text-white dark:placeholder-zinc-500 dark:focus:bg-white/[0.06] dark:focus:ring-sky-400/70"/>
+            {/* Form */}
+            <form
+              onSubmit={handleCreateProject}
+              className="min-h-0 overflow-y-auto px-5 py-5 sm:px-6"
+            >
+              <div className="space-y-5">
+                {/* Project name */}
+                <div>
+                  <div className="mb-2 flex items-center justify-between">
+                    <label
+                      htmlFor="project-name"
+                      className="text-xs font-medium text-zinc-300"
+                    >
+                      Project name{" "}
+                      <span className="text-blue-400">*</span>
+                    </label>
 
-    </div>
+                    <span className="text-[10px] tabular-nums text-zinc-600">
+                      {name.length}/60
+                    </span>
+                  </div>
 
-    <div>
-        <div className="mb-2 block text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400"> Description </div>
-    <textarea
-      onChange={(e)=> setDescription(e.target.value)}
-    rows={3} 
-    placeholder="write about the project"
-    className="w-full rounded-xl border border-black/[0.08] bg-black/[0.02] px-4 py-3 text-[15px] text-zinc-900 placeholder-zinc-400 outline-none transition-all focus:border-sky-400/60 focus:bg-white focus:ring-1 focus:ring-sky-400/15 dark:border-white/[0.09] dark:bg-white/[0.04] dark:text-white dark:placeholder-zinc-500 dark:focus:bg-white/[0.06] dark:focus:ring-sky-400/70"/>
+                  <div className="group relative">
+                    <FileCode2
+                      size={17}
+                      className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-600 transition-colors group-focus-within:text-blue-400"
+                    />
 
-    </div>
-    </div>
+                    <input
+                      ref={inputRef}
+                      id="project-name"
+                      type="text"
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                        if (error) setError("");
+                      }}
+                      maxLength={60}
+                      placeholder="e.g. my-awesome-project"
+                      disabled={loading}
+                      required
+                      className="h-11 w-full rounded-xl border border-white/[0.09] bg-white/[0.035] pl-11 pr-4 text-[13px] text-white outline-none transition-all placeholder:text-zinc-600 focus:border-blue-400/50 focus:bg-white/[0.05] focus:ring-[3px] focus:ring-blue-400/10 disabled:opacity-50"
+                    />
+                  </div>
 
+                  <p className="mt-2 text-[11px] text-zinc-600">
+                    Choose a recognizable name for your workspace.
+                  </p>
+                </div>
 
-    {/* create and cancel proj */}
-    <div className="flex justify-end gap-3 border-t border-black/[0.06] px-7 py-5 dark:border-white/[0.08]">
-        <button 
-        onClick={onClose}
-        className="rounded-xl border border-black/[0.08] bg-white/[0.02] px-5 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-black/[0.05] hover:text-zinc-900 dark:border-white/[0.01] dark:bg-white/[0.03] dark:text-zinc-300 dark:hover:bg-white/[0.07] dark:hover:text-white">
-            Cancel
-        </button>
+                {/* Description */}
+                <div>
+                  <div className="mb-2 flex items-center justify-between">
+                    <label
+                      htmlFor="project-description"
+                      className="text-xs font-medium text-zinc-300"
+                    >
+                      Description{" "}
+                      <span className="font-normal text-zinc-600">
+                        (optional)
+                      </span>
+                    </label>
 
-        <button 
-        type="button"
-        onClick={handleCreateProject} 
-        disabled={loading || !name.trim()}
-        className="rounded-xl border border-black/[0.08] bg-white/[0.02] px-5 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-black/[0.05] hover:text-zinc-900 dark:border-white/[0.01] dark:bg-white/[0.03] dark:text-zinc-300 dark:hover:bg-white/[0.07] dark:hover:text-white">
-        { loading ? "Creating" : "Create Project" }    
-        </button>
-    </div>
+                    <span className="text-[10px] tabular-nums text-zinc-600">
+                      {description.length}/200
+                    </span>
+                  </div>
 
-    </motion.div> 
+                  <textarea
+                    id="project-description"
+                    value={description}
+                    onChange={(e) =>
+                      setDescription(e.target.value)
+                    }
+                    rows={3}
+                    maxLength={200}
+                    placeholder="A short description of what you're building..."
+                    disabled={loading}
+                    className="w-full resize-none rounded-xl border border-white/[0.09] bg-white/[0.035] px-3.5 py-3 text-[13px] leading-6 text-white outline-none transition-all placeholder:text-zinc-600 focus:border-blue-400/50 focus:bg-white/[0.05] focus:ring-[3px] focus:ring-blue-400/10 disabled:opacity-50"
+                  />
+                </div>
 
-    </div>
-  )
-}
+                {/* Workspace info */}
+                <div className="flex items-start gap-3 rounded-xl border border-white/[0.06] bg-white/[0.025] px-3.5 py-3">
+                  <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-400/10 text-blue-300">
+                    <FolderPlus size={14} />
+                  </div>
 
-export default CreateProjectModel
+                  <div>
+                    <p className="text-[11.5px] font-medium text-zinc-300">
+                      Ready-to-code workspace
+                    </p>
+
+                    <p className="mt-1 text-[11px] leading-[18px] text-zinc-500">
+                      FluxIDE will initialize your project and
+                      create its root folder automatically.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Error */}
+                <AnimatePresence>
+                  {error && (
+                    <motion.div
+                      role="alert"
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="flex items-start gap-2 rounded-xl border border-red-400/20 bg-red-500/[0.08] p-3"
+                    >
+                      <AlertCircle
+                        size={15}
+                        className="mt-0.5 shrink-0 text-red-400"
+                      />
+
+                      <p className="text-xs leading-5 text-red-300">
+                        {error}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Actions */}
+              <div className="mt-6 flex flex-col-reverse gap-2 border-t border-white/[0.07] pt-5 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  disabled={loading}
+                  className="inline-flex h-10 items-center justify-center rounded-xl border border-white/[0.09] px-5 text-xs font-medium text-zinc-300 transition-colors hover:bg-white/[0.06] disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={loading || !name.trim()}
+                  className="group inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-500 px-5 text-xs font-semibold text-white shadow-lg shadow-blue-500/10 transition-all hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2
+                        size={15}
+                        className="animate-spin"
+                      />
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      Create project
+                      <ArrowRight
+                        size={15}
+                        className="transition-transform group-hover:translate-x-0.5"
+                      />
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+
+            {/* Bottom accent */}
+            <div className="h-px bg-gradient-to-r from-transparent via-blue-400/30 to-transparent" />
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+export default CreateProjectModel;
