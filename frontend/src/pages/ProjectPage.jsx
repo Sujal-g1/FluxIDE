@@ -164,10 +164,6 @@ const ProjectPage = () => {
   return (
     <div className="relative flex h-screen flex-col overflow-hidden bg-[#0a0a0c]">
 
-    <div className="pointer-events-none absolute -top-40 left-1/3 h-96 w-96 rounded-full bg-sky-500/10 blur-[140px]"/>
-    
-    <div className="pointer-events-none absolute -top-20 right-1/4 h-80 w-80 rounded-full bg-blue-500/10 blur-[140px]"/>
-
     {/* topbar */}
     <Topbar 
     showPreview={showPreview}
@@ -233,7 +229,7 @@ const ProjectPage = () => {
         animate={{ opacity: 1, scale: 1, x: 0 }}
         exit={{ opacity: 0, scale: 0.82, x: 10 }}
         whileHover={{ scale: 1.06 }}
-        whileTap={{ scale: 0.94 }}
+        whileTap={{ scale: 0.94 }} 
         transition={{ type: "spring", stiffness: 420, damping: 28 }}
         type="button"
         onClick={()=> setIsPreviewFullScreen((v)=>!v)}
@@ -433,24 +429,6 @@ const ProjectPage = () => {
 </div>
   
     </div>
-
-  {/* <div className="flex items-center justify-around border-t border-white/[0.06] bg-[#0f0f12] py-2 md:hidden">
-    <button
-    onClick={()=> setMobilePanel("explorer")}
-    className={`flex flex-col items-center gap-1 px-4 py-1 text-[11px] font-medium transition-colors ${mobilePanel === "explorer" ? "text-white" : "text-zinc-500"}`}
-    > 
-    <File  size={18}/>
-    </button>
-
-    <button>
-
-    </button>
-
-    <button>
-
-    </button>
-  </div> */}
-
 
     </div> 
   )

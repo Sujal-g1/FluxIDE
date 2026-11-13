@@ -24,8 +24,7 @@ const terminal = new XTerminal({
     cursorWidth: 2,
   
     fontSize: 13,
-    fontFamily:
-      '"JetBrains Mono", "SFMono-Regular", Menlo, Monaco, Consolas, monospace',
+    fontFamily:'"JetBrains Mono", "SFMono-Regular", Menlo, Monaco, Consolas, monospace',
     fontWeight: "400",
     fontWeightBold: "600",
   
@@ -45,7 +44,7 @@ const terminal = new XTerminal({
     cursorInactiveStyle: "outline",
   
     theme: {
-      background: "#0B0D10",
+      background: "#000",
       foreground: "#D6D9E0",
   
       cursor: "#A78BFA",
@@ -176,8 +175,8 @@ const terminal = new XTerminal({
 
     <span className="text-[11px] text-zinc-500">
     { connected 
-        ? "terminal-connected"
-        : "terminal-disconnected"
+        ? "connected"
+        : "disconnected"
     }
     </span>
     </div>

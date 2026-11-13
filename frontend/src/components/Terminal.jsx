@@ -34,7 +34,7 @@ const Terminal = ({
         className="group absolute inset-x-0 top-0 z-30 flex h-3 cursor-row-resize touch-none items-center justify-center"
         title="Drag to resize terminal"
       >
-        <motion.div className="h-[2px] w-full bg-gradient-to-r from-sky-400 via-blue-500 to-fuchsia-400 opacity-0 shadow-[0_0_10px_rgba(139,92,246,0.6)] transition-opacity duration-300 group-hover:opacity-80" />
+        <motion.div className="h-[2px] w-full bg-[#0057FF] opacity-0 transition-opacity duration-300 group-hover:opacity-80" />
 
         <GripHorizontal
           size={14}

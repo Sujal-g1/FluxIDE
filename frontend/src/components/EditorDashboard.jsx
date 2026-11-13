@@ -10,7 +10,6 @@ import {
   getEditorLanguage,
 } from "../monaco/monacoConfig";
 
-
 import Editor, { useMonaco } from "@monaco-editor/react";
 import { useEffect } from "react"; 
 
@@ -98,188 +97,136 @@ const EditorDashboard = ({ activeTab,
 
   return (
 
-    <div className="flex flex-1 flex-col bg-[radial-gradient(ellipse_at_top_left,rgba(79,70,229,0.08),transparent_45%),radial-gradient(ellipse_at_bottom_right,rgba(56,189,248,0.04),transparent_40%),linear-gradient(135deg,#0c0c12_0%,#09090d_55%,#10101a_100%)]">
+    <div className="flex flex-1 flex-col bg-[#09090B]">  
 
-    {/* tabs */}
-   {/* <div className="flex h-10 shrink-0 items-center overflow-x-auto border-b border-white/[0.06] bg-[radial-gradient(ellipse_at_top,rgba(79,70,229,0.14),transparent_70%),linear-gradient(135deg,#12121f_0%,#0d0d16_55%,#151522_100%)]">
-    <AnimatePresence initial={false}>
-    {openTabs.map((tab, idx)=>{
-        const active = activeTab?._id == tab?._id
-        const { icon:Icon, color} = getFileIcon(tab?.name)
+    <div className="flex h-10 shrink-0 items-center overflow-x-auto border-b border-white/[0.07] bg-[#09090B] [&::-webkit-scrollbar]:h-0">
+      <AnimatePresence initial={false} mode="popLayout">
+        {openTabs.map((tab, idx) => {
+          const active =
+            String(activeTab?._id) === String(tab?._id);
 
-        return(
+          const { icon: Icon, color } = getFileIcon(tab?.name);
+
+          return (
             <motion.div
-            key={tab._id || `${tab.name}-${idx}`}
-            initial={{ opacity:0, width:0 }}
-            animate={{ opacity:1, width:"auto"}}
-            exit={{opacity:0, width:0}}
-            transition={{duration:0.15}} 
-            onClick={() => setActiveTab(tab)}
-            className={`group relative flex h-full cursor-pointer items-center gap-2 whitespace-nowrap border-r border-white/[0.06] px-3.5 transition-colors ${active ? "bg-[#0a0a0c] text-white" : "text-zinc-500 hover:bg-white/[0.02] hover:text-zinc-300"}`}>
-            <Icon size={14} className={`${color} shrink-0`} />  
-            <span className="text-[13px]"> {tab?.name} </span>
-
-            <button className="rounded p-0.5 text-zinc-500 opacity-0 hover:bg-white/10 hover:text-white group-hover:opacity-100"
-            onClick={(e) => {
-                e.stopPropagation();
-                handleCloseTab(tab._id);
+              key={tab._id || `${tab.name}-${idx}`}
+              layout
+              initial={{ opacity: 0, x: 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -8 }}
+              transition={{
+                duration: 0.14,
+                layout: { type: "spring", stiffness: 400, damping: 32 },
               }}
-              >
-             <X  size={13}/>
-            </button>
-
-        {active && (
-        <motion.div 
-        className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-sky-400 to-blue-400"
-        transition={{ duration:0.2, ease:"easeOut"}}
-        />    
-        )}
-        </motion.div>
-        )
-    })}
-    </AnimatePresence>
-    </div> */}
-
-  
-
-<div className="flex h-10 shrink-0 items-center overflow-x-auto border-b border-white/[0.06] bg-[radial-gradient(ellipse_at_top,rgba(79,70,229,0.14),transparent_70%),linear-gradient(135deg,#12121f_0%,#0d0d16_55%,#151522_100%)]">
-  <AnimatePresence initial={false} mode="popLayout">
-    {openTabs.map((tab, idx) => {
-      const active = String(activeTab?._id) === String(tab?._id);
-      const { icon: Icon, color } = getFileIcon(tab?.name);
-
-      return (
-        <motion.div
-          key={tab._id || `${tab.name}-${idx}`}
-          layout
-          initial={{ opacity: 0, x: 12, width: 0 }}
-          animate={{ opacity: 1, x: 0, width: "auto" }}
-          exit={{ opacity: 0, x: -10, width: 0 }}
-          transition={{
-            opacity: { duration: 0.16 },
-            x: { type: "spring", stiffness: 400, damping: 30 },
-            width: { duration: 0.2, ease: "easeInOut" },
-            layout: { type: "spring", stiffness: 420, damping: 35 },
-          }}
-          onClick={() => setActiveTab(tab)}
-          className={`group relative flex h-full shrink-0 cursor-pointer items-center gap-2 overflow-hidden whitespace-nowrap border-r border-white/[0.06] px-3.5 transition-colors duration-200 ${
-            active
-              ? "bg-[#0a0a0c] text-white"
-              : "text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-300"
-          }`}
-        >
-          <Icon size={14} className={`${color} shrink-0`} />
-
-          <motion.span
-            layout="position"
-            className="text-[13px]"
-          >
-            {tab?.name}
-          </motion.span>
-
-          <motion.button
-            type="button"
-            initial={false}
-            whileHover={{ scale: 1.15 }}
-            whileTap={{ scale: 0.85 }}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleCloseTab(tab._id);
-            }}
-            className="rounded p-0.5 text-zinc-500 opacity-0 transition-colors hover:bg-white/10 hover:text-white group-hover:opacity-100"
-            aria-label={`Close ${tab.name}`}
-            title={`Close ${tab.name}`}
-          >
-            <X size={13} />
-          </motion.button>
-
-          <AnimatePresence>
-            {active && (
-              <motion.div
-                layoutId="active-tab-indicator"
-                className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-sky-400 to-blue-400"
-                transition={{
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 35,
-                }}
+              onClick={() => setActiveTab(tab)}
+              className={`group relative flex h-full shrink-0 cursor-pointer items-center gap-2 overflow-hidden whitespace-nowrap border-r border-white/[0.06] px-3 transition-colors ${
+                active
+                  ? "bg-[#111113] text-zinc-100"
+                  : "text-zinc-500 hover:bg-white/[0.035] hover:text-zinc-300"
+              }`}
+            >
+              <Icon
+                size={14}
+                strokeWidth={1.8}
+                className={`${color} shrink-0`}
               />
-            )}
-          </AnimatePresence>
-        </motion.div>
-      );
-    })}
-  </AnimatePresence>
-</div>
 
+              <span className="max-w-[180px] truncate text-xs">
+                {tab?.name}
+              </span>
 
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCloseTab(tab._id);
+                }}
+                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded transition-colors hover:bg-white/[0.08] hover:text-zinc-100 ${
+                  active
+                    ? "text-zinc-500"
+                    : "text-zinc-600 opacity-0 group-hover:opacity-100"
+                }`}
+                aria-label={`Close ${tab.name}`}
+                title={`Close ${tab.name}`}
+              >
+                <X size={12} />
+              </button>
+
+              {active && (
+                <motion.div
+                  layoutId="active-tab-indicator"
+                  className="absolute inset-x-0 bottom-0 h-[2px] bg-[#0057FF]"
+                  transition={{
+                    type: "spring",
+                    stiffness: 450,
+                    damping: 35,
+                  }}
+                />
+              )}
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
+    </div>
 
     {/* save button */}
-   <div className="flex h-10 shrink-0 items-center gap-4 border-b border-white/[0.06] px-4">
-
-   {activeTab && (
-    <div className="flex items-center gap-2 text-zinc-400">
-    <ActiveIcon size={14} className={`${activeColor}`} />
-    <span className="text-[13px]"> {activeTab?.name} </span>
-    </div>
-   )}
-
-    {activeTab && (
-    <motion.div 
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
+    <div className="flex h-10 shrink-0 items-center justify-between border-b border-white/[0.07] bg-[#09090B] px-3 sm:px-4">
+  <div className="flex min-w-0 items-center gap-2">
+  {activeTab && (
+  <motion.button
+    type="button"
+    whileTap={{ scale: 0.96 }}
     onClick={save}
     disabled={saving}
-    className={`flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-b text-white shadow-[0_1px_0_rgba(255,255,255,0.2)_inset] transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
-      justSaved 
-        ? "from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500" 
-        : "from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500"
-    }`}
+    title={saving ? "Saving..." : justSaved ? "Saved" : "Save changes"}
+    aria-label="Save changes"
+    className="flex h-7 items-center gap-2 rounded-md px-2.5 text-[11px] font-medium text-zinc-400 transition-colors hover:bg-white/[0.05] hover:text-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
   >
+    {/* Green status dot */}
+    <span className={`h-1.5 w-1.5 rounded-full transition-colors ${
+        justSaved
+          ? "bg-emerald-400"
+          : saving
+            ? "animate-pulse bg-amber-400"
+            : "bg-emerald-400"
+      }`}
+    />
 
-    <AnimatePresence mode="wait" initial={false} >
-    {
-    (
-        saving?
-        (
-            <motion.span
-            key="saving"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            className="flex items-center justify-center"
-          >
-        <Loader2 size={10} className="animate-spin" />
+    <AnimatePresence mode="wait" initial={false}>
+      {saving ? (
+        <motion.span
+          key="saving"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          Saving...
         </motion.span>
-        ):
-        justSaved?(
-            <motion.span
-            key="saved"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            className="flex items-center justify-center"
-          >
-            <Check size={10} strokeWidth={2.5} />
+      ) : justSaved ? (
+        <motion.span
+          key="saved"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          Saved
         </motion.span>
-        ):(
+      ) : (
         <motion.span
           key="save"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          className="flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
         >
-         </motion.span>
-        )
-     )
-    }
+          Save
+        </motion.span>
+      )}
     </AnimatePresence>
+  </motion.button>
+)}
+  </div>
 
- 
-    </motion.div>
-    )}
-   </div>
+  </div>
 
    {/* editor area */}
    

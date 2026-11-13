@@ -1,12 +1,23 @@
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Bot, Code2, FileMinus, FilePen, FilePlus2, FolderPlus, Loader2, Send, Sparkles, User, } from "lucide-react";
+import {
+  Bot,
+  Code2,
+  FileMinus,
+  FilePen,
+  FilePlus2,
+  FolderPlus,
+  Loader2,
+  Send,
+  Sparkles,
+  User,
+} from "lucide-react";
 import { useState } from "react";
 
 const TOOL_META = {
   folder_created: {
     icon: FolderPlus,
-    color: "text-sky-400",
+    color: "text-zinc-300",
     label: "Created folder",
   },
   file_created: {
@@ -16,7 +27,7 @@ const TOOL_META = {
   },
   file_updated: {
     icon: FilePen,
-    color: "text-amber-400",
+    color: "text-blue-400",
     label: "Updated file",
   },
   file_deleted: {
@@ -31,7 +42,7 @@ const TOOL_META = {
   },
   tool_start: {
     icon: Loader2,
-    color: "text-sky-400",
+    color: "text-blue-400",
     label: "Running",
   },
   tool_result: {
@@ -41,43 +52,61 @@ const TOOL_META = {
   },
 };
 
-const ToolBadge = ({toolType, detail})=>{
-  const meta = TOOL_META[toolType]
-  if(!meta) return null;
-  const Icon = meta.icon
-  return(
+const ToolBadge = ({ toolType, detail }) => {
+  const meta = TOOL_META[toolType];
+
+  if (!meta) return null;
+
+  const Icon = meta.icon;
+
+  return (
     <motion.div
-    initial={{ opacity:0, y:-4 }}
-    animate={{opacity:1, y:0}}
-    className="flex items-center justify-center"
-    > 
-      <div
-      className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-[11.5px] text-zinc-400">
-        <Icon size={14} className={`${meta.color}`} /> 
-        <span>{meta.label}</span>
-        {detail && 
-        <span className="text-zinc-600"> 
-          &middot; {detail}
+      initial={{ opacity: 0, y: -4 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex items-center gap-2 py-1"
+    >
+      <div className="flex min-w-0 items-center gap-2 rounded-md border border-white/[0.07] bg-[#111113] px-2.5 py-1.5">
+        <Icon
+          size={13}
+          className={`${meta.color} shrink-0 ${
+            toolType === "tool_start" ? "animate-spin" : ""
+          }`}
+        />
+
+        <span className="shrink-0 text-[11px] font-medium text-zinc-400">
+          {meta.label}
         </span>
-        }
+
+        {detail && (
+          <>
+            <span className="text-zinc-700">·</span>
+            <span className="max-w-[150px] truncate text-[11px] text-zinc-500">
+              {detail}
+            </span>
+          </>
+        )}
       </div>
-
     </motion.div>
-  ) 
-}
+  );
+};
 
-const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart, }) => {
-
-    const [messages, setMessages] = useState([])
-    const [message, setMessage] = useState("")
-    const [loading, setLoading] = useState(false)
+const AIChat = ({
+  projectId,
+  history = [],
+  reloadTree,
+  width = 320,
+  onResizeStart,
+}) => {
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const onEvent = async ({ toolType, data }) => {
     const normalizedType = toolType.replaceAll("-", "_");
-  
+
     switch (normalizedType) {
       case "file_created":
-       await reloadTree?.();
+        await reloadTree?.();
         setMessages((prev) => [
           ...prev,
           {
@@ -87,7 +116,7 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
           },
         ]);
         break;
-  
+
       case "folder_created":
         reloadTree?.();
         setMessages((prev) => [
@@ -99,7 +128,7 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
           },
         ]);
         break;
-  
+
       case "file_updated":
         reloadTree?.();
         setMessages((prev) => [
@@ -111,7 +140,7 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
           },
         ]);
         break;
-  
+
       case "file_deleted":
         reloadTree?.();
         setMessages((prev) => [
@@ -123,7 +152,7 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
           },
         ]);
         break;
-  
+
       case "folder_deleted":
         reloadTree?.();
         setMessages((prev) => [
@@ -135,7 +164,7 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
           },
         ]);
         break;
-  
+
       case "tool_start":
         setMessages((prev) => [
           ...prev,
@@ -146,7 +175,7 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
           },
         ]);
         break;
-  
+
       case "tool_result":
         setMessages((prev) => [
           ...prev,
@@ -157,15 +186,16 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
           },
         ]);
         break;
-  
+
       case "message": {
         const content = data?.content;
+
         if (!content) break;
-  
+
         setMessages((prev) => {
           const copy = [...prev];
           const last = copy[copy.length - 1];
-  
+
           if (last?.role === "assistant") {
             copy[copy.length - 1] = {
               ...last,
@@ -177,12 +207,12 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
               content,
             });
           }
-  
+
           return copy;
         });
         break;
       }
-  
+
       case "error":
         setMessages((prev) => [
           ...prev,
@@ -193,15 +223,17 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
           },
         ]);
         break;
-  
+
       default:
         console.log("Unhandled AI event:", toolType, data);
     }
   };
 
-  
   const handleChat = async () => {
-    setLoading(true)
+    if (!message.trim() || loading) return;
+
+    setLoading(true);
+
     try {
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/api/ai/chat`,
@@ -235,7 +267,7 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
       const decoder = new TextDecoder();
       let buffer = "";
 
-      try { 
+      try {
         while (true) {
           const { value, done } = await reader.read();
 
@@ -273,182 +305,218 @@ const AIChat = ({ projectId, history=[], reloadTree, width = 320, onResizeStart,
             }
 
             await onEvent({ toolType: eventType, data });
-
-            // console.log("AI Event:", eventType, data);
-            // console.log("EventType", eventType);
-            // console.log("data", data);
           }
-          
         }
 
         setMessage("");
 
-        // Process any remaining buffered event
-        if (buffer.trim())  console.log("Remaining stream data:", buffer);
-
+        if (buffer.trim()) {
+          console.log("Remaining stream data:", buffer);
+        }
       } finally {
         reader.releaseLock();
-        setLoading(false)
       }
     } catch (error) {
       console.error("AI chat request failed:", error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <motion.div
-    initial={{ width: 0, opacity: 0, x: 16 }}
-    animate={{ width, opacity: 1, x: 0 }}
-    exit={{ width: 0, opacity: 0, x: 12 }}
-    transition={{ duration: 0.2, ease: "easeOut" }}
-    className="relative isolate flex h-full min-w-0 shrink-0 flex-col items-center gap-2 overflow-hidden rounded-l-4xl border-l border-white/10 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.035),transparent_55%),linear-gradient(160deg,#111113_0%,#09090b_50%,#050506_100%)] backdrop-blur-xl"
-  >
-
-      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
-
-      {/* <div className="flex shrink-0 items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-500/15">
-            <Code2 size={17} className="text-indigo-400" />
+      initial={{ width: 0, opacity: 0, x: 16 }}
+      animate={{ width, opacity: 1, x: 0 }}
+      exit={{ width: 0, opacity: 0, x: 12 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className="relative flex h-full min-w-0 shrink-0 flex-col overflow-hidden border-l border-white/[0.07] bg-[#09090B]"
+    >
+      {/* Header */}
+      <div className="flex h-11 w-full shrink-0 items-center justify-between border-b border-white/[0.07] px-4">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md border border-white/[0.08] bg-[#18181B]">
+            <Sparkles size={13} className="text-blue-400" />
           </div>
 
-          <span className="text-base font-semibold tracking-tight text-white">
-            flux<span className="text-indigo-400">.ide</span>
+          <span className="text-[12px] font-semibold text-zinc-200">
+            Motion-AI
           </span>
-       </div> */}
-
-    <div className="flex h-10 w-full shrink-0 items-center justify-end border-b border-white/[0.06] px-3">
-        <span className="text-[11px] font-semibold tracking-wider text-zinc-500">
-        Motion-AI
-        </span>
-    </div>
-
-   {/* chats */}
-   <div className="flex-1 space-y-3 overflow-y-auto p-3">
-   { messages.length==0 && (
-    <div className="mt-10 text-center">
-
-    <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.06] bg-white/[0.02]">
-     <Sparkles size={22} className="text-zinc-600" />
-    </div>
-
-    <p className="text-sm font-medium text-zinc-400">
-        What do you want to build?
-    </p>
-
-    <p className="mt-1.5 text-xs text-zinc-600">
-        Ask Motion-AI to create or modify files.
-    </p>
-
-     </div>
-    )}
-
-    <AnimatePresence initial={false}>
-    {messages.map((msg, idx)=>{
-      if(msg.role=="tool"){
-        return(
-          <ToolBadge
-          key={`${idx}-${msg.toolType}`}
-          toolType={msg.toolType} 
-          detail={msg.detail} />
-        )
-      }
-      const isUser = msg.role=="user"
-      return (
-        <motion.div
-        key={idx}
-        initial={{opacity:0, y:6}}
-        animate={{ opacity:1, y:0}}
-        transition={{ duration:0.15}}
-        className={`flex items-start gap-2 ${isUser ? "flex-row-reverse": ""}`}
-        >
-        <div
-        className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${isUser
-          ? "bg-white/10 text-zinc-300"
-          : "bg-gradient-to-br from-sky-400 to-blue-400 text-white"
-        }`}
-        >
-        { isUser ? <User size={12}/> : <Bot size={12}/>}
-          </div>
-
-        <div className={`max-w-[85%] rounded-xl px-3 py-2 text-[13px] ${
-        isUser
-        ? "bg-gradient-to-br from-sky-500 to-sky-600 te xt-white"
-        : msg.error
-        ? "border border-red-500/20 bg-red-500/10 text-red-300"
-        : "border border-white/[0.06] bg-white/[0.03] text-zinc-300"
-        }`} >
-        <p className="whitespace-pre-wrap leading-relaxed">
-        {msg.content}</p>
         </div>
 
-        </motion.div>
-      )
-
-    })}
-
-    </AnimatePresence>
-
-    {loading && (
-      <div className="flex items-center gap-2 pl-8 text-xs text-zinc-500">
-          <Loader2 size={13} className="animate-spin" />
-          <span>"working..."</span>
+        <span className="rounded-full border border-white/[0.08] px-2 py-0.5 text-[10px] font-medium text-zinc-500">
+          Assistant
+        </span>
       </div>
-    )}
 
+      {/* Messages */}
+      <div
+        className="flex-1 space-y-4 overflow-y-auto p-3.5
+          [&::-webkit-scrollbar]:w-1
+          [&::-webkit-scrollbar-track]:bg-transparent
+          [&::-webkit-scrollbar-thumb]:rounded-full
+          [&::-webkit-scrollbar-thumb]:bg-white/[0.08]
+          hover:[&::-webkit-scrollbar-thumb]:bg-white/[0.16]"
+        style={{
+          scrollbarWidth: "thin",
+          scrollbarColor: "rgba(255,255,255,0.1) transparent",
+        }}
+      >
+        {/* Empty state */}
+        {messages.length === 0 && (
+          <div className="mt-14 flex flex-col items-center px-4 text-center">
+            <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-[#111113]">
+              <Sparkles size={19} className="text-blue-400" />
+            </div>
 
+            <h3 className="text-[13px] font-medium text-zinc-200">
+              What do you want to build?
+            </h3>
 
-   </div>
+            <p className="mt-2 max-w-[230px] text-[11px] leading-5 text-zinc-500">
+              Ask Motion-AI to create, modify, or manage files in your
+              workspace.
+            </p>
 
-    {/* input */}
-    
-<div className="border-t w-full min-w-0 border-white/[0.07] bg-gradient-to-b from-[#111111]/40 to-[#080808]/80 p-3">
-  <div className="group relative rounded-xl bg-gradient-to-br from-white/[0.10] via-white/[0.04] to-white/[0.02] p-px transition-all duration-300 focus-within:from-white/20 focus-within:via-white/10 focus-within:to-white/[0.04]">
-    <div className="rounded-xl bg-[#111112]/95 backdrop-blur-2xl">
-      <textarea
-        placeholder="Ask Motion-AI ..."
-        rows={2}
-        onChange={(e)=> setMessage(e.target.value)}
-        value={message}
-        className="block max-h-40 min-h-[60px] w-full resize-none bg-transparent px-3.5 pt-3 text-[13px] leading-5 text-zinc-100 outline-none placeholder:text-zinc-500"
-      />
+            <div className="mt-6 w-full space-y-2 text-left">
+              {[
+                "Create a new component",
+                "Explain this project",
+                "Fix a bug in my code",
+              ].map((suggestion) => (
+                <button
+                  key={suggestion}
+                  type="button"
+                  onClick={() => setMessage(suggestion)}
+                  className="w-full rounded-md border border-white/[0.07] bg-[#111113] px-3 py-2.5 text-left text-[11px] text-zinc-400 transition-colors hover:border-white/[0.14] hover:bg-[#18181B] hover:text-zinc-200"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
-      <div className="flex items-center justify-between gap-3 px-2.5 pb-2.5">
+        {/* Message list */}
+        <AnimatePresence initial={false}>
+          {messages.map((msg, idx) => {
+            if (msg.role === "tool") {
+              return (
+                <ToolBadge
+                  key={`${idx}-${msg.toolType}`}
+                  toolType={msg.toolType}
+                  detail={msg.detail}
+                />
+              );
+            }
 
-        <motion.button
-          type="button"
-          whileHover={{ scale: 1.06, y: -1 }}
-          whileTap={{ scale: 0.94 }}
-          transition={{ type: "spring", stiffness: 400, damping: 22 }}
-          className="group/send relative flex h-7 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-white/15 bg-gradient-to-b from-[#f5f5f5] to-[#c9c9c9] text-black shadow-[0_2px_8px_rgba(0,0,0,0.3)] transition-all duration-200 hover:from-white hover:to-[#e5e5e5] disabled:cursor-not-allowed disabled:opacity-40"
-          disabled={loading}
-          onClick={handleChat}
-        >
-          <span className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/50 to-transparent opacity-0 transition-opacity group-hover/send:opacity-100" />
+            const isUser = msg.role === "user";
 
-          { loading ? <Loader2 size={13} className="animate-spin" /> :
-          <Send size={13}
-          className="relative transition-transform duration-200 group-hover/send:translate-x-0.5 group-hover/send:-translate-y-0.5" />
-          }
-        </motion.button>
+            return (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.15 }}
+                className={`flex items-start gap-2.5 ${
+                  isUser ? "flex-row-reverse" : ""
+                }`}
+              >
+                <div
+                  className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border ${
+                    isUser
+                      ? "border-white/[0.08] bg-[#18181B] text-zinc-400"
+                      : "border-blue-500/20 bg-blue-500/[0.08] text-blue-400"
+                  }`}
+                >
+                  {isUser ? (
+                    <User size={12} />
+                  ) : (
+                    <Bot size={13} />
+                  )}
+                </div>
+
+                <div
+                  className={`max-w-[85%] rounded-lg border px-3 py-2.5 text-[12px] ${
+                    isUser
+                      ? "border-blue-500/20 bg-blue-500/[0.10] text-zinc-200"
+                      : msg.error
+                      ? "border-red-500/20 bg-red-500/[0.06] text-red-300"
+                      : "border-white/[0.07] bg-[#111113] text-zinc-300"
+                  }`}
+                >
+                  <p className="whitespace-pre-wrap break-words leading-[1.7]">
+                    {msg.content}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+
+        {/* Loading indicator */}
+        {loading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex items-center gap-2 pl-8"
+          >
+            <Loader2 size={13} className="animate-spin text-blue-400" />
+            <span className="text-[11px] text-zinc-500">
+              Working...
+            </span>
+          </motion.div>
+        )}
       </div>
-    </div>
-  </div>
-</div>
 
+      {/* Composer */}
+      <div className="w-full shrink-0 border-t border-white/[0.07] bg-[#09090B] p-3">
+        <div className="overflow-hidden rounded-lg border border-white/[0.09] bg-[#111113] transition-colors focus-within:border-blue-500/50">
+          <textarea
+            placeholder="Ask Motion-AI..."
+            rows={2}
+            onChange={(e) => setMessage(e.target.value)}
+            value={message}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleChat();
+              }
+            }}
+            className="block max-h-40 min-h-[64px] w-full resize-none bg-transparent px-3.5 pt-3 text-[12px] leading-5 text-zinc-200 outline-none placeholder:text-zinc-600"
+          />
 
-    {/* Horizontal resize handle */}
-    <div
-      onPointerDown={onResizeStart}
-      className="group absolute left-0 top-0 z-40 flex h-full w-1 cursor-col-resize touch-none items-center justify-center"
-    >
-      <motion.div
-        className="h-full w-[2px] bg-gradient-to-b from-sky-400 via-blue-500 to-fuchsia-400 opacity-0 shadow-[0_0_10px_rgba(139,92,246,0.6)] transition-opacity duration-200 group-hover:opacity-80"
-      />
-    </div>
+          <div className="flex items-center justify-between border-t border-white/[0.05] px-2.5 py-2">
+            <span className="text-[10px] text-zinc-600">
+              Enter to send · Shift + Enter for new line
+            </span>
 
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.94 }}
+              transition={{ duration: 0.15 }}
+              disabled={loading || !message.trim()}
+              onClick={handleChat}
+              aria-label="Send message"
+              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#0057FF] text-white transition-colors hover:bg-[#174FE0] disabled:cursor-not-allowed disabled:bg-[#202024] disabled:text-zinc-600"
+            >
+              {loading ? (
+                <Loader2 size={13} className="animate-spin" />
+              ) : (
+                <Send size={13} />
+              )}
+            </motion.button>
+          </div>
+        </div>
+      </div>
 
-
-    
+      {/* Resize handle */}
+      <div
+        onPointerDown={onResizeStart}
+        className="group absolute left-0 top-0 z-40 flex h-full w-1 cursor-col-resize touch-none items-center justify-center"
+      >
+        <div className="h-full w-[2px] bg-[#0057FF] opacity-0 transition-opacity duration-150 group-hover:opacity-70" />
+      </div>
     </motion.div>
   );
 };
