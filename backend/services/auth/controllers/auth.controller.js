@@ -48,8 +48,8 @@ export const login = async ( req, res) => {
 
         res.cookie("session", sessionId,{
             httpOnly: true,
-            secure:false,
-            samesite:"strict",
+            secure:process.env.NODE_ENV ==="production",
+            samesite:process.env.NODE_ENV ==="production" ? "none" :  "strict",
             maxAge:3*24*60*60*1000
         })
 
@@ -99,7 +99,7 @@ export const deductCredits = async(req,res)=>{
         name: user.name,
         _id: user._id,
         email:user.email,
-        avatar:user.avatar,
+        avatar:user.avatar, 
         credits: user.credits
     }), "EX",3*24*60*60)
     return res.status(200).json({credits: user.credits})
