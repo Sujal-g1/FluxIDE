@@ -373,3 +373,157 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+
+/* --------------- */
+.new-project-btn {
+  position: relative;
+  isolation: isolate;
+}
+
+.new-project-btn::before {
+  content: "";
+  position: absolute;
+  inset: -100%;
+  z-index: -1;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 300deg,
+    #3b82f6 330deg,
+    #93c5fd 345deg,
+    transparent 360deg
+  );
+  opacity: 0;
+  animation: new-project-beam 2s linear infinite;
+  transition: opacity 250ms ease;
+}
+
+.new-project-btn:hover::before {
+  opacity: 1;
+}
+
+.new-project-btn::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: #09090b;
+}
+
+@keyframes new-project-beam {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------  pricing */ 
+
+@property --pricing-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.pricing-card {
+  --pricing-angle: 0deg;
+
+  border: 1.5px solid transparent;
+
+  /* Solid surface inside, neutral border outside */
+  background:
+    linear-gradient(#111113, #111113) padding-box,
+    #27272a border-box;
+
+  transition: border-color 250ms ease;
+}
+
+/* Popular card's default border */
+.pricing-card-popular {
+  background:
+    linear-gradient(#111113, #111113) padding-box,
+    rgba(0, 87, 255, 0.4) border-box;
+}
+
+/* Animate only the border background */
+.pricing-card:hover {
+  animation: pricing-border-beam 4s linear infinite;
+
+  background:
+    linear-gradient(#111113, #111113) padding-box,
+    conic-gradient(
+      from var(--pricing-angle),
+      transparent 0deg,
+      transparent 200deg,
+      #0057ff 290deg,
+      #60a5fa 320deg,
+      #93c5fd 340deg,
+      #0057ff 350deg,
+      transparent 360deg
+    ) border-box;
+}
+
+@keyframes pricing-border-beam {
+  from {
+    --pricing-angle: 0deg;
+  }
+
+  to {
+    --pricing-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pricing-card:hover {
+    animation: none;
+  }
+}
+
+.pricing-card > * {
+  transition: transform 300ms ease;
+}
+
+.pricing-card:hover > * {
+  transform: translateY(-2px);
+}
+
+/* -------- */
+
+@property --navbar-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.navbar-beam {
+  --navbar-angle: 0deg;
+
+  border: 1.5px solid #27272a00 !important;
+  background: #09090b !important;
+}
+
+.navbar-beam:hover {
+  border-color: transparent !important;
+
+  background:
+    linear-gradient(#09090b, #09090b) padding-box,
+    conic-gradient(
+      from var(--navbar-angle),
+      transparent 0deg,
+      transparent 200deg,
+      #0057ff 290deg,
+      #60a5fa 320deg,
+      #93c5fd 340deg,
+      #0057ff 350deg,
+      transparent 360deg
+    ) border-box !important;
+
+  animation: navbar-border-beam 4s linear infinite;
+}
+
+@keyframes navbar-border-beam {
+  to {
+    --navbar-angle: 360deg;
+  }
+}

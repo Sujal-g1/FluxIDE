@@ -92,8 +92,7 @@ const ProjectCard = ({ project }) => {
   };
 
   // Updated date
-  const updatedLabel = project.updatedAt
-    ? new Date(project.updatedAt).toLocaleDateString(undefined, {
+  const updatedLabel = project.updatedAt  ? new Date(project.updatedAt).toLocaleDateString(undefined, {
         month: "short",
         day: "numeric",
         year: "numeric",
@@ -298,7 +297,7 @@ const ProjectCard = ({ project }) => {
 
               {/* Delete */}
               <button
-                type="button"
+                type="button"   
                 onClick={handleDelete}
                 disabled={loadingDelete}
                 aria-label="Delete project"

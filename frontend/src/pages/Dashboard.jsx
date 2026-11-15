@@ -168,33 +168,32 @@ const Dashboard = () => {
       }}
       className="relative isolate min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden bg-[#090A0C]"
 >
-  {/* Subtle dotted background */}
-  <div  aria-hidden="true"
-    className="pointer-events-none absolute inset-0 z-0"
-    style={{
-      backgroundImage:
-        "radial-gradient(circle, rgba(255, 255, 255, 0) 1px, transparent 1.2px)",
-      backgroundSize: "13px 13px",
-    }}
-  />
+    {/* Subtle dotted background */}
+      <div  aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(255, 255, 255, 0) 1px, transparent 1.2px)",
+          backgroundSize: "13px 13px",
+        }}
+      />
 
- {/* Blue dots revealed only on hover */}
-<div
-  aria-hidden="true"
-  className={`pointer-events-none absolute inset-0 z-0 transition-opacity duration-200 ${
-    isBackgroundHovered ? "opacity-40" : "opacity-0"
-  }`}
-  style={{
-    backgroundImage:
-      "radial-gradient(circle, rgba(59, 131, 246, 0.73) 1px, transparent 1.5px)",
-    backgroundSize: "15px 15px",
-    maskImage:
-  "radial-gradient(140px circle at var(--mouse-x, 50%) var(--mouse-y, 30%), black 0%, transparent 100%)",
-WebkitMaskImage:
-  "radial-gradient(140px circle at var(--mouse-x, 50%) var(--mouse-y, 30%), black 0%, transparent 100%)",
-    
-  }}
-/>
+    {/* Blue dots revealed only on hover */}
+    <div aria-hidden="true"
+      className={`pointer-events-none absolute inset-0 z-0 transition-opacity duration-200 ${
+        isBackgroundHovered ? "opacity-40" : "opacity-0"
+      }`}
+      style={{
+        backgroundImage:
+          "radial-gradient(circle, rgba(59, 131, 246, 0.73) 1px, transparent 1.5px)",
+        backgroundSize: "15px 15px",
+        maskImage:
+      "radial-gradient(140px circle at var(--mouse-x, 50%) var(--mouse-y, 30%), black 0%, transparent 100%)",
+    WebkitMaskImage:
+      "radial-gradient(140px circle at var(--mouse-x, 50%) var(--mouse-y, 30%), black 0%, transparent 100%)",
+        
+      }}
+    />
           <motion.div
             variants={pageVariants}
             initial={reduceMotion ? "visible" : "hidden"}
@@ -237,20 +236,21 @@ WebkitMaskImage:
               </div>
 
               <motion.button
-                type="button"
-                onClick={() => setOpenModel(true)}
-                whileHover={{ y: -1 }}
-                whileTap={{ scale: 0.97 }}
-                transition={{ duration: 0.15, ease: EASE }}
-                className="group inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#3B82F6] px-4 py-2.5 text-[13px] font-medium text-white transition-colors hover:bg-transparent hover:border-1 sm:w-auto"
-              >
-                <Plus
-                  size={16}
-                  strokeWidth={2}
-                  className="transition-transform duration-300 group-hover:rotate-90"
-                />
-                New project
-              </motion.button>
+            type="button"
+            onClick={() => setOpenModel(true)}
+            whileHover={{ y: -1 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ duration: 0.15, ease: EASE }}
+            className="new-project-btn group relative isolate inline-flex shrink-0 items-center justify-center gap-2 overflow-hidden rounded-full bg-[#3B82F6] px-4 py-2.5 text-[13px] font-medium text-white transition-colors duration-300 hover:bg-transparent sm:w-auto"
+          >
+            <Plus
+              size={16}
+              strokeWidth={2}
+              className="relative z-10 transition-transform duration-300 group-hover:rotate-90"
+            />
+            <span className="relative z-10">New project</span>
+          </motion.button>
+
             </motion.section>
 
           

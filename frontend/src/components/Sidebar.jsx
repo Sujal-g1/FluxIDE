@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Folder, Star, Sparkles, ChevronRight, X, Settings, Coins, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { EASE } from "../lib/motion";
 
 const Sidebar = ({ activeSession, setActiveSession, onClose }) => {
   const navigate = useNavigate();
@@ -144,31 +145,37 @@ const Sidebar = ({ activeSession, setActiveSession, onClose }) => {
 
       {/* Upgrade */}
       <div className="relative rounded-lg border border-[#262626] bg-[#141414] p-4">
-        <div className="mb-3 flex items-center justify-between">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#3B82F6] text-white">
-            <Sparkles size={16} strokeWidth={1.75} />
-          </div>
-          <span className="rounded-full bg-[#3B82F6]/15 px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-wider text-[#60A5FA]">
-            Pro
-          </span>
-        </div>
+  <div className="mb-3 flex items-center justify-between">
+    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#3B82F6] text-white">
+      <Sparkles size={16} strokeWidth={1.75} />
+    </div>
 
-        <h3 className="text-[13px] font-medium tracking-tight text-[#FAFAFA]">
-          Unlock your potential
-        </h3>
-        <p className="mt-1 text-[11px] leading-relaxed text-[#8B8B8B]">
-          More AI credits, unlimited projects, and powerful tools.
-        </p>
+    <span className="rounded-full bg-[#3B82F6]/15 px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-wider text-[#60A5FA]">
+      Pro
+    </span>
+  </div>
 
-        <button
-          type="button"
-          onClick={() => navigate("/plan")}
-          className="mt-3.5 flex w-full items-center justify-center gap-2 rounded-full bg-[#3B82F6] px-3 py-2.5 text-[12px] font-medium text-white transition-colors hover:bg-[#60A5FA]"
-        >
-          <Zap size={13} strokeWidth={1.75} />
-          Upgrade to Pro
-        </button>
-      </div>
+  <h3 className="text-[13px] font-medium tracking-tight text-[#FAFAFA]">
+    Unlock your potential
+  </h3>
+
+  <p className="mt-1 text-[11px] leading-relaxed text-[#8B8B8B]">
+    More AI credits, unlimited projects, and powerful tools.
+  </p>
+
+  <motion.button
+    type="button"
+    onClick={() => navigate("/plan")}
+    whileHover={{ y: -1 }}
+    whileTap={{ scale: 0.97 }}
+    transition={{ duration: 0.15, ease: EASE }}
+    className="new-project-btn group relative isolate mt-4 flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-[#3B82F6] px-4 py-2.5 text-[13px] font-medium text-white transition-colors duration-300 hover:bg-transparent"
+  >
+    <Zap size={13} strokeWidth={1.75}
+    className="relative z-10 transition-transform duration-300 group-hover:rotate-180" />
+    Upgrade to Pro
+  </motion.button>
+</div>
 
       <div className="relative mt-4 flex items-center justify-center gap-2 px-2">
         <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
