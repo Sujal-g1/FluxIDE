@@ -23,6 +23,7 @@ import {
   Monitor,
   MousePointer2,
   PanelLeft,
+  Play,
   Rocket,
   Sparkles,
   Terminal,
@@ -30,6 +31,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { EASE } from "../lib/motion";
 
 const sections = [
   { id: "introduction", label: "Introduction" },
@@ -76,7 +78,7 @@ const capabilities = [
     title: "AI workspace",
     description:
       "Explore the AI-assisted development capabilities available in Flux.",
-    status: "In development",
+    status: "Available",
   },
 ];
 
@@ -116,6 +118,13 @@ const roadmap = [
       "More flexibility to configure the development environment around individual preferences.",
     category: "Experience",
   },
+  {
+    number: "06",
+    title: "Performance and responsiveness",
+    description:
+      "Faster startup times, smoother interactions and lower resource usage across larger projects.",
+    category: "Foundation",
+  },
 ];
 
 const tutorials = [
@@ -144,6 +153,11 @@ const tutorials = [
     title: "Getting started with AI",
     description: "Explore the available AI-assisted workflow.",
   },
+  {
+    icon: Play,
+    title: "Running and previewing apps",
+    description: "Test and view your output directly in Flux.",
+  },
 ];
 
 const fadeUp = {
@@ -161,6 +175,46 @@ const stagger = {
     transition: { staggerChildren: 0.1 },
   },
 };
+
+const workspaceItems = [
+  {
+    number: "01",
+    title: "Explorer",
+    subtitle: "Your project structure",
+    description:
+      "Keep your entire project organized. Browse directories, create files and folders, and move between different parts of your codebase.",
+    icon: FolderOpen,
+    detail: "FILES / FOLDERS / PROJECTS",
+  },
+  {
+    number: "02",
+    title: "Editor",
+    subtitle: "Where code comes to life",
+    description:
+      "Open files and work directly in your codebase with a focused editing environment designed for your development workflow.",
+    icon: Code2,
+    detail: "WRITE / EDIT / NAVIGATE",
+  },
+  {
+    number: "03",
+    title: "Terminal",
+    subtitle: "Your command center",
+    description:
+      "Run scripts, install packages, execute commands and manage your development environment without leaving Flux.",
+    icon: Terminal,
+    detail: "COMMANDS / SCRIPTS / OUTPUT",
+  },
+  {
+    number: "04",
+    title: "AI Assistant",
+    subtitle: "An extra layer of assistance",
+    description:
+      "Access AI-powered development assistance to help you understand code, explore solutions and work through coding tasks.",
+    icon: Sparkles,
+    detail: "ASK / UNDERSTAND / BUILD",
+  },
+];
+
 
 function Reveal({ children, className = "", delay = 0 }) {
   const reducedMotion = useReducedMotion();
@@ -214,11 +268,26 @@ function SectionHeading({ eyebrow, title, description }) {
 
 function Navbar() {
     const navigate = useNavigate()
-  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#222] bg-[#0A0A0A]/90 backdrop-blur-xl">
-      <div className="mx-auto flex h-[68px] max-w-[1440px] items-center justify-between px-5 sm:px-8 lg:px-12">
+    <header className="mx-45 mt-10 rounded-md px-3 sticky z-50 ">
+      <div className=" flex flex-col h-[50px]  px-20 sm:px-8 lg:px-12 gap-12">
+
+      <motion.button
+        type="button"
+        whileHover={{ x: -3 }}
+        whileTap={{ scale: 0.97 }}
+        onClick={() => navigate(-1)}
+         className="navbar-beam relative group inline-flex items-center gap-2 rounded-md bg-[#111113] py-2 px-3 text-xs font-medium text-[#A1A1AA] transition-colors self-start"
+        aria-label="Flux IDE home"
+      >
+       <ArrowLeft
+         size={15}
+         strokeWidth={2}
+         className="relative z-10 transition-transform duration-300 group-hover:rotate-360 "
+          />
+          Back to workspace
+      </motion.button>
 
       <button
         type="button"
@@ -238,34 +307,19 @@ function Navbar() {
         </span>
       </button>
 
-      <motion.button
-        type="button"
-        whileHover={{ x: -3 }}
-        whileTap={{ scale: 0.97 }}
-        onClick={() => navigate(-1)}
-         className="group inline-flex items-center gap-2 rounded-md bg-[#111113] px-3.5 py-2.5 text-xs font-medium text-[#A1A1AA] transition-colors"
-        aria-label="Flux IDE home"
-      >
-       <ArrowLeft
-            size={15}
-            className="transition-transform group-hover:-translate-x-0.5"
-          />
-          Back to workspace
-      </motion.button>
-
       </div>
-
-     
+      
     </header>
   );
 }
 
 function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden border-b border-[#202020]">
-      <div className="pointer-events-none absolute right-[-180px] top-[-230px] h-[500px] w-[500px] rounded-full bg-blue-500/[0.06] blur-[120px]" />
+    <section id="top" 
+    className="overflow-hidden border-b border-[#202020]">
+    <div className="pointer-events-none absolute right-[-180px] top-[-230px] h-[500px] w-[500px] rounded-full " />
 
-      <div className="relative mx-auto grid max-w-[1440px] items-center gap-14 px-5 py-24 sm:px-8 sm:py-32 lg:grid-cols-[1.05fr_0.95fr] lg:px-12 lg:py-36">
+      <div className="relative mx-auto grid max-w-[1440px] items-center gap-14 px-5 py-24 sm:px-8 sm:py-32 lg:grid-cols-[1.05fr_0.95fr] lg:px-55 lg:py-36">
         <Reveal className="relative z-10">
           <div className="mb-8 flex items-center gap-3">
             <span className="h-px w-8 bg-blue-500" />
@@ -288,23 +342,36 @@ function Hero() {
             started with Flux.
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center gap-4">
+          <div className="mt-12 flex flex-wrap items-center gap-4">
             <a
               href="#introduction"
-              className="group flex items-center gap-3 rounded-lg bg-blue-500 px-5 py-3.5 text-sm font-medium text-white transition hover:bg-blue-400"
+              className="group flex items-center gap-3 rounded-full bg-blue-600 px-5 py-3.5 text-sm font-medium text-white transition hover:bg-blue-800"
             >
               Explore the guide
               <ArrowDown
-                size={16}
-                className="transition-transform group-hover:translate-y-1"
+              size={16}
+              strokeWidth={2}
+              className="relative z-10 transition-transform duration-300 group-hover:rotate-180"
               />
             </a>
-            <a
-              href="#workspace"
-              className="flex items-center gap-2 px-3 py-3 text-sm text-[#AAA] transition hover:text-white"
-            >
-              Meet the workspace <ArrowRight size={15} />
-            </a>
+
+            <motion.button
+            href="#workspace"
+            type="button"
+            whileHover={{ y: -1 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ duration: 0.15, ease: EASE }}
+            className="new-project-btn group relative isolate inline-flex shrink-0 items-center justify-center gap-2 overflow-hidden rounded-full bg-[#3B82F6] px-4 py-2.5 text-[13px] font-medium text-white transition-colors duration-300 hover:bg-transparent sm:w-auto"
+          >
+            <ArrowLeft
+              size={16}
+              strokeWidth={2}
+              className="relative z-10 transition-transform duration-300 group-hover:rotate-360"
+            />
+            <span className="relative z-10">meet the Workspace</span>
+          </motion.button>
+
+          
           </div>
 
           <div className="mt-14 flex items-center gap-6 border-t border-[#252525] pt-6">
@@ -325,134 +392,14 @@ function Hero() {
           </div>
         </Reveal>
 
-        <Reveal delay={0.15}>
-          <div className="relative mx-auto w-full max-w-[570px]">
-            <div className="absolute -inset-4 rounded-2xl border border-[#252525]" />
-
-            <div className="relative overflow-hidden rounded-xl border border-[#303030] bg-[#111] shadow-2xl shadow-black/50">
-              <div className="flex h-11 items-center justify-between border-b border-[#292929] bg-[#171717] px-4">
-                <div className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#F87171]" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#EAB308]" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#4ADE80]" />
-                </div>
-                <span className="font-mono text-[10px] text-[#777]">
-                  flux — workspace
-                </span>
-                <Command size={14} className="text-[#666]" />
-              </div>
-
-              <div className="grid min-h-[300px] grid-cols-[112px_1fr] sm:grid-cols-[145px_1fr]">
-                <div className="border-r border-[#292929] bg-[#141414] p-3">
-                  <div className="mb-5 flex items-center gap-2 text-[10px] font-medium uppercase tracking-wider text-[#777]">
-                    <PanelLeft size={12} /> Explorer
-                  </div>
-
-                  {[
-                    ["folder", "src"],
-                    ["file", "App.jsx"],
-                    ["file", "main.jsx"],
-                    ["folder", "components"],
-                    ["file", "Navbar.jsx"],
-                    ["file", "Hero.jsx"],
-                    ["folder", "public"],
-                    ["file", "index.html"],
-                  ].map(([type, name], i) => (
-                    <div
-                      key={i}
-                      className={`mb-2 flex items-center gap-2 rounded px-1.5 py-1 text-[10px] ${
-                        name === "App.jsx"
-                          ? "bg-blue-500/10 text-blue-400"
-                          : "text-[#858585]"
-                      }`}
-                    >
-                      {type === "folder" ? (
-                        <FolderOpen size={12} />
-                      ) : (
-                        <FileCode2 size={12} />
-                      )}
-                      <span>{name}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="min-w-0">
-                  <div className="flex h-9 items-center gap-3 border-b border-[#292929] bg-[#161616] px-3">
-                    <span className="flex h-full items-center gap-2 border-b border-blue-400 px-2 text-[10px] text-[#DDD]">
-                      <FileCode2 size={12} /> App.jsx
-                    </span>
-                  </div>
-
-                  <div className="space-y-2 overflow-hidden p-4 font-mono text-[10px] leading-5 sm:text-xs">
-                    <div className="text-[#666]">{"// Welcome to Flux"}</div>
-                    <div>
-                      <span className="text-[#C084FC]">import</span>{" "}
-                      <span className="text-[#E5E5E5]">React</span>{" "}
-                      <span className="text-[#C084FC]">from</span>{" "}
-                      <span className="text-[#86EFAC]">'react'</span>;
-                    </div>
-                    <div className="pt-2">
-                      <span className="text-[#C084FC]">function</span>{" "}
-                      <span className="text-[#60A5FA]">App</span>() {"{"}
-                    </div>
-                    <div className="pl-4 text-[#C084FC]">
-                      return <span className="text-[#E5E5E5]">(</span>
-                    </div>
-                    <div className="pl-8 text-[#E5E5E5]">
-                      <span className="text-[#60A5FA]">{"<main"}</span>
-                    </div>
-                    <div className="pl-12 text-[#FBBF24]">
-                      className=
-                      <span className="text-[#86EFAC]">"workspace"</span>
-                    </div>
-                    <div className="pl-8 text-[#60A5FA]">{">"}</div>
-                    <div className="pl-12 text-[#E5E5E5]">
-                      Build something{" "}
-                      <span className="text-[#60A5FA]">great.</span>
-                    </div>
-                    <div className="pl-8 text-[#60A5FA]">
-                      {"</main>"}
-                    </div>
-                    <div className="pl-4 text-[#E5E5E5]">);</div>
-                    <div className="text-[#E5E5E5]">{"}"}</div>
-                    <div className="pt-2 text-[#C084FC]">
-                      export default App;
-                    </div>
-                    <div className="mt-3 h-4 w-1 animate-pulse bg-blue-400" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex h-9 items-center justify-between border-t border-[#292929] bg-[#151515] px-4">
-                <div className="flex items-center gap-2 text-[9px] text-[#777]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
-                  Ready
-                </div>
-                <span className="font-mono text-[9px] text-[#666]">
-                  JavaScript · UTF-8
-                </span>
-              </div>
-            </div>
-
-            <div className="absolute -bottom-5 -left-5 hidden items-center gap-3 rounded-lg border border-[#303030] bg-[#171717] p-3 shadow-xl sm:flex">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
-                <Sparkles size={18} />
-              </div>
-              <div>
-                <p className="text-xs font-medium text-white">Code in motion.</p>
-                <p className="mt-1 text-[10px] text-[#777]">
-                  A new way to build
-                </p>
-              </div>
-            </div>
-          </div>
-        </Reveal>
+       
       </div>
     </section>
   );
 }
 
 function Introduction() {
+   
   return (
     <section id="introduction" className="scroll-mt-24 border-b border-[#202020]">
       <div className="mx-auto max-w-[1440px] px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
@@ -460,7 +407,7 @@ function Introduction() {
           <SectionLabel number="01">The idea</SectionLabel>
           <SectionHeading
             title="Not just another place to write code."
-            description="Flux is an AI-powered development environment that brings your coding workspace and AI-assisted development into one place."
+            description="flux is an AI-powered development environment that brings your coding workspace and AI-assisted development into one place."
           />
         </Reveal>
 
@@ -472,154 +419,314 @@ function Introduction() {
               part of their development process.
             </p>
             <p className="mt-5 text-sm leading-8 text-[#929292] sm:text-base">
-              Flux is still evolving. It doesn't aim to offer every capability
+              flux.ide is still evolving. It doesn't aim to offer every capability
               of established development environments today. Instead, it is
               being built step by step, with a focus on creating a useful and
               intuitive development experience.
             </p>
           </Reveal>
 
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-3 gap-3"
-          >
-            {[
-              {
-                icon: Code2,
-                title: "Write",
-                text: "Work with your code.",
-              },
-              {
-                icon: Terminal,
-                title: "Build",
-                text: "Run your projects.",
-              },
-              {
-                icon: Sparkles,
-                title: "Explore",
-                text: "Use AI assistance.",
-              },
-            ].map((item) => (
-              <motion.div
-                key={item.title}
-                variants={fadeUp}
-                className="rounded-xl border border-[#292929] bg-[#111] p-4 sm:p-5"
-              >
-                <item.icon size={21} className="mb-8 text-blue-400" />
-                <h3 className="text-sm font-medium text-white">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-xs leading-5 text-[#777]">
-                  {item.text}
-                </p>
-              </motion.div>
-            ))}
-          </motion.div>
+          
+<motion.div
+  variants={stagger}
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true }}
+  className="grid grid-cols-1 gap-3 sm:grid-cols-3"
+>
+  {[
+    {
+      icon: Code2,
+      title: "Write",
+      text: "Work with your code.",
+      number: "01",
+    },
+    {
+      icon: Terminal,
+      title: "Build",
+      text: "Run your projects.",
+      number: "02",
+    },
+    {
+      icon: Sparkles,
+      title: "Explore",
+      text: "Use AI assistance.",
+      number: "03",
+    },
+  ].map((item) => (
+    <motion.article
+      key={item.title}
+      variants={fadeUp}
+      whileHover={{ y: -5 }}
+      onPointerEnter={(e) => {
+        if (e.pointerType === "touch") return;
+
+        const rect = e.currentTarget.getBoundingClientRect();
+
+        e.currentTarget.style.setProperty(
+          "--flux-x",
+          `${e.clientX - rect.left}px`
+        );
+
+        e.currentTarget.style.setProperty(
+          "--flux-y",
+          `${e.clientY - rect.top}px`
+        );
+      }}
+      style={{
+        "--flux-x": "50%",
+        "--flux-y": "50%",
+      }}
+      className="flux-energy-card group min-h-[220px] rounded-xl border border-[#292929] p-5 transition-colors duration-500 hover:border-blue-500/40"
+    >
+      {/* Card content */}
+      <div className="relative z-[2] flex h-full min-h-[180px] flex-col justify-between">
+
+        {/* Header */}
+        <div className="flex items-start justify-between">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-[#303030] bg-[#151515] text-blue-400 transition-all duration-300 group-hover:border-blue-400/40 group-hover:bg-blue-500/10">
+            <item.icon size={21} strokeWidth={1.7} />
+          </div>
+
+          <span className="font-mono text-[10px] tracking-widest text-[#555] transition-colors group-hover:text-blue-400">
+            /{item.number}
+          </span>
+        </div>
+
+        {/* Text */}
+        <div className="mt-10">
+          <h3 className="text-sm font-medium text-white transition-colors duration-300 group-hover:text-blue-300">
+            {item.title}
+          </h3>
+
+          <p className="mt-2 text-xs leading-5 text-[#777] transition-colors duration-300 group-hover:text-[#A3A3A3]">
+            {item.text}
+          </p>
+        </div>
+
+      </div>
+    </motion.article>
+  ))}
+</motion.div>
+
         </div>
       </div>
     </section>
   );
 }
 
+
 function Workspace() {
-  const workspaceItems = [
-    {
-      number: "01",
-      title: "Project Explorer",
-      description:
-        "Navigate your project structure, browse folders and access the files you are working on.",
-      icon: FolderOpen,
-      image: "/images/guide/explorer.png",
-      alt: "Flux project explorer",
-    },
-    {
-      number: "02",
-      title: "Code Editor",
-      description:
-        "Your primary coding area. Open files, write code and work on your project.",
-      icon: Code2,
-      image: "/images/guide/editor.png",
-      alt: "Flux code editor",
-    },
-    {
-      number: "03",
-      title: "Integrated Terminal",
-      description:
-        "Execute development commands, install dependencies and interact with your project environment.",
-      icon: Terminal,
-      image: "/images/guide/terminal.png",
-      alt: "Flux integrated terminal",
-    },
-    {
-      number: "04",
-      title: "AI Assistant",
-      description:
-        "Interact with the AI capabilities available in Flux to assist with your development tasks.",
-      icon: Sparkles,
-      image: "/images/guide/assistant.png",
-      alt: "Flux AI assistant",
-    },
-  ];
+
 
   return (
-    <section id="workspace" className="scroll-mt-24 border-b border-[#202020]">
+    <section
+      id="workspace"
+      className="scroll-mt-24 border-b border-[#202020]"
+    >
       <div className="mx-auto max-w-[1440px] px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
         <Reveal>
-          <SectionLabel number="02">The workspace</SectionLabel>
+          <SectionLabel number="02">Inside Flux</SectionLabel>
+
           <SectionHeading
-            title="Everything starts here."
-            description="Get familiar with the different parts of your development environment before starting your first project."
+            title="One workspace. Your entire workflow."
+            description="Everything you need to move from an idea to working code, organized in one development environment."
           />
         </Reveal>
 
-        <div className="mt-16 grid gap-5 sm:grid-cols-2">
-          {workspaceItems.map((item, index) => (
-            <Reveal key={item.number} delay={index * 0.04}>
-              <div className="group h-full overflow-hidden rounded-xl border border-[#292929] bg-[#111] transition duration-300 hover:border-[#444]">
-                <div className="relative flex aspect-[16/9] items-center justify-center overflow-hidden border-b border-[#292929] bg-[#151515]">
-                  <img
-                    src={item.image}
-                    alt={item.alt}
-                    loading="lazy"
-                    className="h-full w-full object-cover opacity-80 transition duration-500 group-hover:scale-[1.025] group-hover:opacity-100"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-[#555]">
-                    <item.icon size={30} strokeWidth={1.2} />
-                    <span className="text-xs">Add Flux screenshot</span>
+        <div className="mt-16 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+          {/* Main workspace preview */}
+          <Reveal>
+            <div className="flux-workspace-preview group relative flex h-full min-h-[420px] flex-col overflow-hidden rounded-xl border border-[#292929] bg-[#101010]">
+              <div className="flex items-center justify-between border-b border-[#292929] px-5 py-4">
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-blue-500" />
+                  <span className="text-xs font-medium text-[#ccc]">
+                    FLUX WORKSPACE
+                  </span>
+                </div>
+                <span className="font-mono text-[10px] text-[#555]">
+                  DEVELOPMENT ENVIRONMENT
+                </span>
+              </div>
+
+              <div className="flex flex-1 flex-col justify-between p-7 sm:p-10">
+                <div>
+                  <span className="font-mono text-xs text-blue-400">
+                    YOUR DEVELOPMENT SPACE
+                  </span>
+
+                  <h3 className="mt-5 max-w-md text-3xl font-medium leading-tight tracking-tight text-white sm:text-4xl">
+                    Everything in its place.
+                    <span className="text-[#666]">
+                      {" "}Nothing in your way.
+                    </span>
+                  </h3>
+
+                  <p className="mt-5 max-w-md text-sm leading-7 text-[#888]">
+                    Your files, editor, terminal and AI tools work together
+                    in one connected environment, keeping your development
+                    workflow in one place.
+                  </p>
+                </div>
+
+                {/* Workspace visual */}
+                <div className="mt-12 overflow-hidden rounded-lg border border-[#292929] bg-[#0B0B0B] transition duration-500 group-hover:border-blue-500/30">
+                  <div className="flex items-center gap-2 border-b border-[#252525] px-4 py-3">
+                    <div className="h-2 w-2 rounded-full bg-[#444]" />
+                    <div className="h-2 w-2 rounded-full bg-[#444]" />
+                    <div className="h-2 w-2 rounded-full bg-[#444]" />
+                    <span className="ml-2 font-mono text-[10px] text-[#666]">
+                      my-project
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-[85px_1fr] sm:grid-cols-[115px_1fr]">
+                    <div className="space-y-4 border-r border-[#252525] p-3">
+                      <div className="flex items-center gap-2 text-[10px] text-blue-400">
+                        <FolderOpen size={12} />
+                        Explorer
+                      </div>
+                      <div className="space-y-3 pl-1 font-mono text-[9px] text-[#666]">
+                        <p>src/</p>
+                        <p className="pl-2">components/</p>
+                        <p className="pl-2">pages/</p>
+                        <p>public/</p>
+                        <p>package.json</p>
+                      </div>
+                    </div>
+
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 border-b border-[#252525] px-3 py-3">
+                        <Code2 size={12} className="text-blue-400" />
+                        <span className="font-mono text-[10px] text-[#aaa]">
+                          App.jsx
+                        </span>
+                      </div>
+
+                      <div className="space-y-2 p-4 font-mono text-[10px] leading-5 sm:text-xs">
+                        <p className="text-[#777]">01 <span className="text-purple-400">import</span> React <span className="text-purple-400">from</span> "react";</p>
+                        <p className="text-[#777]">02</p>
+                        <p className="text-[#777]">03 <span className="text-purple-400">function</span> <span className="text-blue-400">App</span>() {"{"}</p>
+                        <p className="text-[#777]">04 <span className="pl-4 text-purple-400">return</span> (</p>
+                        <p className="text-[#777]">05 <span className="pl-8 text-[#ddd]">{"<"}<span className="text-blue-400">main</span>{">"}Build something great{"</"}<span className="text-blue-400">main</span>{">"}</span></p>
+                        <p className="text-[#777]">06 <span className="pl-4">);</span></p>
+                        <p className="text-[#777]">07 {"}"}</p>
+                        <p className="text-blue-400">08 <span className="inline-block h-3 w-1 animate-pulse bg-blue-400 align-middle" /></p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 border-t border-[#252525] px-4 py-3">
+                    <Terminal size={12} className="text-[#888]" />
+                    <span className="font-mono text-[10px] text-[#777]">
+                      Terminal
+                    </span>
+                    <span className="ml-auto text-[10px] text-[#555]">
+                      Ready
+                    </span>
                   </div>
                 </div>
 
-                <div className="p-6 sm:p-7">
-                  <div className="mb-5 flex items-center justify-between">
-                    <span className="font-mono text-xs text-blue-400">
-                      {item.number}
-                    </span>
-                    <item.icon
-                      size={17}
-                      className="text-[#777] transition group-hover:text-blue-400"
-                    />
-                  </div>
-                  <h3 className="text-lg font-medium text-white">
-                    {item.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-7 text-[#888]">
-                    {item.description}
-                  </p>
+                <div className="mt-7 flex flex-wrap gap-2">
+                  {["Explorer", "Editor", "Terminal", "AI Assistant"].map(
+                    (name) => (
+                      <span
+                        key={name}
+                        className="rounded-md border border-[#292929] bg-[#151515] px-3 py-2 text-[10px] text-[#888] transition hover:border-blue-500/40 hover:text-blue-400"
+                      >
+                        {name}
+                      </span>
+                    )
+                  )}
                 </div>
               </div>
-            </Reveal>
-          ))}
+            </div>
+          </Reveal>
+
+          {/* Workspace components */}
+          <div className="flex flex-col gap-3 [perspective:1100px]">
+  {workspaceItems.map((item, index) => (
+    <Reveal key={item.number} delay={index * 0.06}>
+      <div
+        tabIndex={0}
+        onPointerMove={(e) => {
+          if (
+            e.pointerType === "touch" ||
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ) return;
+
+          const card = e.currentTarget;
+          const rect = card.getBoundingClientRect();
+
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+
+          const rotateY = (x - 0.5) * 12;
+          const rotateX = (0.5 - y) * 12;
+
+          card.style.transform = `
+            perspective(1100px)
+            rotateX(${rotateX}deg)
+            rotateY(${rotateY}deg)
+            scale3d(1.015, 1.015, 1.015)
+          `;
+
+          card.style.setProperty("--glow-x", `${x * 100}%`);
+          card.style.setProperty("--glow-y", `${y * 100}%`);
+        }}
+        onPointerLeave={(e) => {
+          e.currentTarget.style.transform =
+            "perspective(1100px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.transform =
+            "perspective(1100px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+        }}
+        className="flux-tilt-card group relative overflow-hidden rounded-xl border border-[#292929] bg-[#111] p-5 outline-none transition-[transform,border-color,box-shadow] duration-150 ease-out hover:border-blue-500/40 hover:shadow-[0_15px_35px_rgba(0,0,0,0.3)] focus-visible:border-blue-500/50 sm:p-6"
+      >
+        {/* Cursor-following light */}
+        <div className="flux-tilt-glow pointer-events-none absolute inset-0 z-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+        <div className="relative z-10 flex items-start gap-4 [transform-style:preserve-3d]">
+          <div className="flux-tilt-icon flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#303030] bg-[#171717] text-[#888] transition-all duration-300 group-hover:border-blue-500/40 group-hover:bg-blue-500/10 group-hover:text-blue-400">
+            <item.icon size={18} />
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <h3 className="text-base font-medium text-white transition-colors duration-300 group-hover:text-blue-400">
+                {item.title}
+              </h3>
+
+              <span className="font-mono text-[10px] text-[#555]">
+                {item.number}
+              </span>
+            </div>
+
+            <p className="text-xs font-medium text-[#aaa]">
+              {item.subtitle}
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-[#777]">
+              {item.description}
+            </p>
+
+            <p className="mt-4 font-mono text-[9px] tracking-wider text-[#555] transition-colors duration-300 group-hover:text-blue-400/70">
+              {item.detail}
+            </p>
+          </div>
+        </div>
+      </div>
+    </Reveal>
+  ))}
+        </div>
         </div>
       </div>
     </section>
   );
 }
+
 
 function GettingStarted() {
   const steps = [
@@ -676,61 +783,91 @@ function GettingStarted() {
         </Reveal>
 
         <div className="mt-16 grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
+         
           <Reveal className="flex flex-col justify-between">
-            <div className="rounded-xl border border-[#292929] bg-[#111] p-6 sm:p-8">
-              <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-xl border border-blue-500/20 bg-blue-500/10 text-blue-400">
-                <Rocket size={23} />
+            <div className="flux-peel-card p-6 sm:p-8">
+
+              {/* Revealed corner */}
+              <div className="flux-peel-secret">
+                {/* <span>FLUX</span> */}
               </div>
-              <h3 className="text-xl font-medium text-white">
-                Ready to get started?
-              </h3>
-              <p className="mt-3 text-sm leading-7 text-[#888]">
-                Start with a project, explore the tools and get comfortable
-                with your workspace.
-              </p>
-              <a
-                href="/"
-                className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-blue-400 transition hover:text-blue-300"
-              >
-                Open Flux <ArrowUpRight size={16} />
-              </a>
+
+              {/* Folded flap */}
+              <div className="flux-peel-flap" />
+
+              {/* Card content */}
+              <div className="relative z-[4]">
+
+                <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-xl border border-blue-500/20 bg-blue-500/10 text-blue-400 transition-all duration-500 group-hover:scale-105">
+                  <Rocket size={23} />
+                </div>
+
+                <h3 className="text-xl font-medium text-white">
+                  Ready to get started?
+                </h3>
+
+                <p className="mt-3 text-sm leading-7 text-[#888]">
+                  Start with a project, explore the tools and get comfortable
+                  with your workspace.
+                </p>
+
+                <a
+                  href="/"
+                  className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-blue-400 transition-all duration-300 hover:gap-3 hover:text-blue-300"
+                >
+                  Open Flux
+                  <ArrowUpRight size={16} />
+                </a>
+
+              </div>
             </div>
           </Reveal>
 
           <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="relative space-y-0"
-          >
-            <div className="absolute bottom-9 left-[17px] top-9 w-px bg-[#303030]" />
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="relative space-y-0"
+        >
+          {steps.map((step, index) => (
+            <motion.div
+              key={step.title}
+              variants={fadeUp}
+              className="flux-timeline-step relative flex gap-5 pb-9 last:pb-0"
+            >
+              {/* Connector to the next icon */}
+              {index !== steps.length - 1 && (
+                <div className="absolute left-[17px] top-9 h-[calc(100%-36px)] w-px bg-[#303030]">
+                  <div className="flux-timeline-progress" />
+                </div>
+              )}
 
-            {steps.map((step, index) => (
-              <motion.div
-                key={step.title}
-                variants={fadeUp}
-                className="relative flex gap-5 pb-9 last:pb-0"
-              >
-                <div className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[#333] bg-[#111] text-blue-400">
-                  <step.icon size={16} />
+              {/* Icon */}
+              <div className="flux-timeline-icon relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[#333] bg-[#111] text-blue-400 transition-colors duration-300">
+                <step.icon size={16} />
+              </div>
+
+              {/* Content */}
+              <div className="relative z-10 pt-0.5">
+                <div className="mb-2 flex items-center gap-3">
+                  <h3 className="text-base font-medium text-white">
+                    {step.title}
+                  </h3>
+
+                  <span className="font-mono text-[10px] text-[#555]">
+                    STEP {String(index + 1).padStart(2, "0")}
+                  </span>
                 </div>
-                <div className="pt-0.5">
-                  <div className="mb-2 flex items-center gap-3">
-                    <h3 className="text-base font-medium text-white">
-                      {step.title}
-                    </h3>
-                    <span className="font-mono text-[10px] text-[#555]">
-                      STEP {String(index + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-                  <p className="max-w-lg text-sm leading-7 text-[#858585]">
-                    {step.description}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+
+                <p className="max-w-lg text-sm leading-7 text-[#858585]">
+                  {step.description}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+         
         </div>
       </div>
     </section>
@@ -814,12 +951,20 @@ function Roadmap() {
         <div className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {roadmap.map((item, index) => (
             <Reveal key={item.number} delay={index * 0.05}>
-              <div className="group h-full rounded-xl border border-[#292929] bg-[#111] p-6 transition duration-300 hover:-translate-y-1 hover:border-[#444]">
+
+              <div className="group h-full rounded-xl border border-[#292929] bg-[#111] p-6 transition duration-300 hover:-translate-y-1 hover:border-[#444] flux-peel-card ">
+                             {/* Revealed corner */}
+                <div className="flux-peel-secret"> </div>
+
+                {/* Folded flap */}
+                <div className="flux-peel-flap" />
+
                 <div className="mb-9 flex items-center justify-between">
+                  
                   <span className="font-mono text-xs text-blue-400">
                     {item.number}
                   </span>
-                  <span className="rounded-full border border-[#303030] px-2.5 py-1 text-[10px] text-[#777]">
+                  <span className="rounded-full border border-[#303030] px-2.5 py-1 text-[10px] text-[#777] z-30">
                     {item.category}
                   </span>
                 </div>
@@ -837,6 +982,7 @@ function Roadmap() {
                 </div>
               </div>
             </Reveal>
+
           ))}
         </div>
 
@@ -872,7 +1018,7 @@ function Limitations() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="rounded-xl border border-[#292929] bg-[#111] p-6 sm:p-8">
+        <div className="flux-animated-border rounded-xl bg-[#111] p-6 sm:p-8">
             <div className="mb-7 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#493B25] bg-[#302719] text-[#E8BD70]">
                 <Lightbulb size={19} />
@@ -960,20 +1106,59 @@ function Feedback() {
   const [feedbackType, setFeedbackType] = useState("Suggestion");
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("");
+  const [statusType, setStatusType] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const subject = encodeURIComponent(`Flux ${feedbackType}`);
-    const body = encodeURIComponent(
-      `Type: ${feedbackType}\n\n${message}\n\nContact: ${email || "Not provided"}`
-    );
-
-    window.location.href = `mailto:feedback@flux.dev?subject=${subject}&body=${body}`;
+  
+    if (!message.trim()) return;
+  
+    setLoading(true);
+    setStatus("");
+  
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL || "http://localhost:5003"}/api/notification/feedback`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: `Type: ${feedbackType}\n\n${message.trim()}`,
+            email: email.trim() || null,
+            anonymous: false,
+          }),
+        }
+      );
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to submit feedback");
+      }
+  
+      setStatus("Thank you! Your feedback has been submitted.");
+      setStatusType("success");
+  
+      setMessage("");
+      setEmail("");
+      setFeedbackType("Suggestion");
+    } catch (error) {
+      console.error("Feedback submission error:", error);
+  
+      setStatus(error.message || "Something went wrong. Please try again.");
+      setStatusType("error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <section id="feedback" className="scroll-mt-24 border-b border-[#202020]">
+    <section id="feedback" className="scroll-mt-24 border-b border-[#202020] ">
       <div className="mx-auto max-w-[1440px] px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
         <div className="grid gap-14 lg:grid-cols-2 lg:gap-24">
           <Reveal>
@@ -1025,9 +1210,9 @@ function Feedback() {
           <Reveal delay={0.1}>
             <form
               onSubmit={handleSubmit}
-              className="rounded-xl border border-[#292929] bg-[#111] p-6 sm:p-8"
+              className="rounded-xl border border-[#292929] bg-[#111] p-6 sm:p-8 "
             >
-              <h3 className="text-lg font-medium text-white">
+              <h3 className="text-lg font-medium text-white ">
                 Send us your feedback
               </h3>
               <p className="mt-2 text-sm text-[#777]">
@@ -1060,8 +1245,8 @@ function Feedback() {
               >
                 Your message
               </label>
-              <textarea
-                id="feedback-message"
+
+              <textarea  id="feedback-message"
                 required
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -1076,8 +1261,8 @@ function Feedback() {
               >
                 Email address <span className="text-[#666]">(optional)</span>
               </label>
-              <input
-                id="feedback-email"
+
+              <input id="feedback-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -1085,17 +1270,29 @@ function Feedback() {
                 className="mt-3 w-full rounded-lg border border-[#303030] bg-[#0C0C0C] px-4 py-3 text-sm text-white outline-none transition placeholder:text-[#555] focus:border-blue-500/60"
               />
 
-              <button
-                type="submit"
-                className="mt-7 flex w-full items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-3.5 text-sm font-medium text-white transition hover:bg-blue-400"
-              >
-                Send feedback <ArrowUpRight size={16} />
-              </button>
+            <button
+            type="submit"
+            disabled={loading}
+            className="mt-7 flex w-full items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-3.5 text-sm font-medium text-white transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+            {loading ? "Sending..." : "Send feedback"}
+            {!loading && <ArrowUpRight size={16} />}
+            </button>
 
-              <p className="mt-4 text-center text-[10px] leading-5 text-[#666]">
-                This opens your email application. Configure the feedback
-                address before publishing.
-              </p>
+            {status && (
+            <p
+                className={`mt-4 text-center text-xs ${
+                statusType === "success" ? "text-green-400" : "text-red-400"
+                }`}
+            >
+                {status}
+            </p>
+            )}
+
+            {/* <p className="mx-27 mt-2 text-[11px] text-[#777] ">
+               service down temporarily
+            </p> */}
+
             </form>
           </Reveal>
         </div>
@@ -1105,11 +1302,12 @@ function Feedback() {
 }
 
 function Footer() {
+  const navigate = useNavigate();
+
   return (
     <>
       <section className="relative overflow-hidden bg-[#0D0D0D]">
         <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 rounded-full bg-blue-500/[0.06] blur-[100px]" />
-
         <div className="relative mx-auto max-w-[1440px] px-5 py-24 text-center sm:px-8 lg:px-12 lg:py-32">
           <Reveal>
             <p className="mb-5 font-mono text-xs uppercase tracking-[0.2em] text-blue-400">
@@ -1125,39 +1323,59 @@ function Footer() {
               headed. Now make something of your own.
             </p>
 
-            <a
-              href="/"
-              className="mt-10 inline-flex items-center gap-3 rounded-lg bg-white px-6 py-3.5 text-sm font-medium text-black transition hover:bg-[#DDD]"
-            >
-              Open Flux <ArrowUpRight size={16} />
-            </a>
-
-            <p className="mt-12 font-mono text-xs tracking-[0.2em] text-[#555]">
-              CODE IN MOTION.
-            </p>
+            {/* Centered Display Typography */}
+            <div className="mt-16 flex w-full justify-center">
+              <h1 className="flux-reveal flux-delay-1 mx-auto max-w-[1200px] text-center font-['Rethink_Sans'] font-normal tracking-[-0.035em] text-white">
+                <span className="flux-dot-line flex justify-center text-[clamp(5rem,10vw,10rem)] leading-[1]">
+                  {"CODE.IN MOTION".split("").map((char, index) => (
+                    <span
+                      key={`line1-${index}`}
+                      className={`flux-dot-letter ${char === " " ? "flux-space" : ""}`}
+                      style={{ "--letter-index": index }}
+                    >
+                      {char === " " ? "\u00A0" : char}
+                    </span>
+                  ))}
+                </span>
+                {/* <span className="flux-dot-line mt-2 flex justify-center text-[clamp(3rem,11vw,8rem)] leading-[0.95] tracking-[-0.04em] text-[#2563EB]">
+                  {"MOTION".split("").map((char, index) => (
+                    <span
+                      key={`line2-${index}`}
+                      className="flux-dot-letter"
+                      style={{ "--letter-index": index + 7 }}
+                    >
+                      {char}
+                    </span>
+                  ))}
+                </span> */}
+              </h1>
+            </div>
           </Reveal>
         </div>
       </section>
 
       <footer className="border-t border-[#222] bg-[#0A0A0A]">
         <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-5 px-5 py-7 sm:flex-row sm:px-8 lg:px-12">
-          <a href="#top" className="flex items-center gap-2">
-            <Zap size={17} className="text-blue-400" />
-            <span className="text-sm font-semibold text-white">flux.</span>
-          </a>
-
+          <button
+            onClick={() => navigate("/")}
+            type="button"
+            className="flex shrink-0 items-center gap-2.5"
+            aria-label="Flux IDE home"
+          >
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#3B82F6]">
+              <img
+                src={logo}
+                alt="Flux"
+                className="h-7 w-7 object-contain"
+              />
+            </div>
+            <span className="text-[15px] font-medium tracking-tight text-[#FAFAFA]">
+              flux<span className="text-blue-500">.ide</span>
+            </span>
+          </button>
           <p className="text-xs text-[#666]">
-            Built with curiosity. Designed for developers.
+            Built with curiosity | Designed for developers.
           </p>
-
-          <div className="flex items-center gap-5 text-xs text-[#777]">
-            <a href="/" className="transition hover:text-white">
-              Home
-            </a>
-            <a href="/behind-flux" className="transition hover:text-white">
-              Behind Flux
-            </a>
-          </div>
         </div>
       </footer>
     </>
@@ -1280,13 +1498,54 @@ function TableOfContents() {
   );
 }
 
-export default function FluxGuide() {
-  useEffect(() => {
-    document.title = "Flux Guide — Code in Motion";
-  }, []);
+const FluxGuide =() => {
+    const [isBackgroundHovered, setIsBackgroundHovered] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] font-sans text-[#FAFAFA] selection:bg-blue-500/30 selection:text-white">
+    <div 
+    onMouseEnter={() => setIsBackgroundHovered(true)}
+    onMouseLeave={() => setIsBackgroundHovered(false)}
+    onMouseMove={(e) => { const rect = e.currentTarget.getBoundingClientRect();
+
+      e.currentTarget.style.setProperty(
+        "--mouse-x",
+        `${e.clientX - rect.left}px`
+      );
+
+      e.currentTarget.style.setProperty(
+        "--mouse-y",
+        `${e.clientY - rect.top}px`
+      );
+    }}
+    // className="min-h-screen bg-[#0A0A0A] font-sans text-[#FAFAFA] selection:bg-blue-500/30 selection:text-white"
+    className="relative isolate min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden bg-[#090A0C]">
+
+             {/* Subtle dotted background */}
+        <div  aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(255, 255, 255, 0) 1px, transparent 1.2px)",
+          backgroundSize: "13px 13px",
+        }}
+      />
+
+    {/* Blue dots revealed only on hover */}
+    <div aria-hidden="true"
+      className={`pointer-events-none absolute inset-0 z-0 transition-opacity duration-200 ${
+        isBackgroundHovered ? "opacity-40" : "opacity-0"
+      }`}
+      style={{
+        backgroundImage:
+          "radial-gradient(circle, rgba(59, 131, 246, 0.73) 1px, transparent 1.5px)",
+        backgroundSize: "15px 15px",
+        maskImage:
+      "radial-gradient(140px circle at var(--mouse-x, 50%) var(--mouse-y, 30%), black 0%, transparent 100%)",
+    WebkitMaskImage:
+      "radial-gradient(140px circle at var(--mouse-x, 50%) var(--mouse-y, 30%), black 0%, transparent 100%)",
+        
+      }}
+    />
       <Navbar />
 
       <Hero />
@@ -1310,3 +1569,5 @@ export default function FluxGuide() {
     </div>
   );
 }
+
+export default FluxGuide

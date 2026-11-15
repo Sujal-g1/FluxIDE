@@ -44,6 +44,12 @@ app.use(
     protect,
     proxyWithHeader(process.env.PAYMENT_SERVICE)
   );
+  app.use(
+    "/api/notification",
+    protect,
+    proxyWithHeader(process.env.NOTIFICATION_SERVICE)
+  );
+  
 app.get("/api/me",protect, getCurrentUser)
 
 app.get("/",(req, res)=>{

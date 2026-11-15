@@ -1,11 +1,10 @@
-
 import proxy from "express-http-proxy";
 
 export const proxyWithHeader = (serviceUrl) => {
   return proxy(serviceUrl, {
     proxyReqPathResolver: (req) => {
       const path = req.originalUrl.replace(
-        /^\/api\/(?:project|file|ai)/,
+        /^\/api\/(?:project|file|ai|payment|terminal|notification)(?=\/|$)/,
         ""
       );
 
@@ -17,6 +16,8 @@ export const proxyWithHeader = (serviceUrl) => {
     },
 
     proxyReqOptDecorator: (proxyReqOpts, req) => {
+      delete proxyReqOpts.headers["x-user-id"];
+
       if (req.user?._id) {
         proxyReqOpts.headers["x-user-id"] = String(req.user._id);
       }

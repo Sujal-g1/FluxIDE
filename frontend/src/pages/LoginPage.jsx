@@ -159,8 +159,7 @@ const LoginPage = () => {
             <div className="absolute inset-[7px] rounded-xl border border-blue-300/[0.15] bg-gradient-to-br from-blue-300/[0.08] to-transparent" />
 
             {/* Flux logo */}
-            <motion.img
-            src={logo}
+            <motion.img src={logo}
             alt="Flux"
             className="relative z-10 h-11 w-11 object-contain"
             animate={{ rotate: 40 }}

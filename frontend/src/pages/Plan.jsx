@@ -250,7 +250,8 @@ WebkitMaskImage:
         >
           <ArrowLeft
             size={15}
-            className="transition-transform group-hover:-translate-x-0.5"
+            strokeWidth={2}
+            className="relative z-10 transition-transform duration-300 group-hover:rotate-360"
           />
           Back to workspace
         </motion.button>
