@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Folder, Star, Sparkles, ChevronRight, X, Settings, Coins, Zap, BookOpen } from "lucide-react";
+import { Folder, Star, Sparkles, ChevronRight, X, Settings, Coins, Zap, BookOpen, Blocks } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { EASE } from "../lib/motion";
@@ -123,6 +123,15 @@ const Sidebar = ({ activeSession, setActiveSession, onClose }) => {
         >
           <Settings size={14} strokeWidth={1.75} />
           Settings
+        </button>
+
+        <button
+          type="button"
+          onClick={()=>navigate("/library")}
+          className="flex w-full items-center gap-2.5 rounded-full px-3 py-2 text-[12px] font-medium text-[#8B8B8B] transition-colors hover:bg-[#1C1C1C] hover:text-[#FAFAFA]"
+        >
+          <Blocks size={14} strokeWidth={1.75} />
+          Library
         </button>
 
         <button

@@ -515,7 +515,6 @@ function Introduction() {
   );
 }
 
-
 function Workspace() {
 
 
@@ -571,7 +570,7 @@ function Workspace() {
                 </div>
 
                 {/* Workspace visual */}
-                <div className="mt-12 overflow-hidden rounded-lg border border-[#292929] bg-[#0B0B0B] transition duration-500 group-hover:border-blue-500/30">
+                <div className="navbar-beam relative mt-12 overflow-hidden rounded-lg border border-[#292929] bg-[#0B0B0B] transition duration-500 group-hover:border-blue-500/30">
                   <div className="flex items-center gap-2 border-b border-[#252525] px-4 py-3">
                     <div className="h-2 w-2 rounded-full bg-[#444]" />
                     <div className="h-2 w-2 rounded-full bg-[#444]" />
@@ -1271,12 +1270,17 @@ function Feedback() {
               />
 
             <button
-            type="submit"
-            disabled={loading}
-            className="mt-7 flex w-full items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-3.5 text-sm font-medium text-white transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-50"
+              type="submit"
+              disabled={loading}
+              className="navbar-beam group relative isolate flex mt-4 w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-[#3B82F6] px-4.5 py-3 text-[13px] font-medium text-white transition-colors duration-300 hover:bg-transparent "
             >
-            {loading ? "Sending..." : "Send feedback"}
-            {!loading && <ArrowUpRight size={16} />}
+              {loading ? "Sending..." : "Send feedback"}
+              {!loading && (
+                <ArrowUpRight
+                  size={16}
+                  className="relative z-10 transition-transform duration-300 group-hover:rotate-360"
+                />
+              )}
             </button>
 
             {status && (

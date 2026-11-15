@@ -12,6 +12,8 @@ import NotFound from "./pages/NotFound";
 import Plan from "./pages/Plan";
 import ProjectCardSkeleton from "./components/ProjectCardSkeleton";
 import FluxGuide from "./components/FluxGuide";
+import TemplateCategories from "./components/TemplateCategories";
+import ContributePage from "./components/ContributePage";
 
 
 const App = () => {
@@ -70,6 +72,9 @@ const App = () => {
         <Route path="*" element={<NotFound />} />
         <Route path="/plan" element={<Plan />} />
         <Route path="/guide" element={<FluxGuide />} />
+        <Route path="/library" element={<TemplateCategories />} />
+        <Route path="/library/contribute" element={<ContributePage />} />
+
         {/* <Route path="/intro" element={<FluxIntro />} /> */}
         {/* <Route path="/skel" element={<ProjectCardSkeleton />} /> */}
       </Routes>
