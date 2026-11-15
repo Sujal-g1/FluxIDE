@@ -11,6 +11,7 @@ import ProjectPage from "./pages/ProjectPage";
 import NotFound from "./pages/NotFound";
 import Plan from "./pages/Plan";
 import ProjectCardSkeleton from "./components/ProjectCardSkeleton";
+import FluxGuide from "./components/FluxGuide";
 
 
 const App = () => {
@@ -68,6 +69,7 @@ const App = () => {
         <Route path="/project/:id" element={<ProjectPage />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/plan" element={<Plan />} />
+        <Route path="/guide" element={<FluxGuide />} />
         {/* <Route path="/intro" element={<FluxIntro />} /> */}
         {/* <Route path="/skel" element={<ProjectCardSkeleton />} /> */}
       </Routes>
