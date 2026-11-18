@@ -255,117 +255,59 @@ const Dashboard = () => {
 
           
        {/* Stats */}
-<motion.section
-  variants={sectionVariants}
-  className="mb-8 grid grid-cols-2 gap-3 sm:mb-12"
->
-  {/* Total Projects */}
-  <motion.div
-    onHoverStart={() => setIsHovered(true)}
-    onHoverEnd={() => setIsHovered(false)}
-    className="group relative isolate overflow-hidden rounded-xl p-[1px]"
-  >
+    <motion.section
+      variants={sectionVariants}
+      className="mb-8 grid grid-cols-2 gap-3 sm:mb-12 "
+    >
+      {/* Total Projects */}
+      <motion.div
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        className="navbar-beam group relative isolate overflow-hidden rounded-xl p-[1px]"
+      >
 
-  <motion.div aria-hidden="true"
-            className="pointer-events-none absolute -inset-[100%] z-0"
-            style={{
-              background:
-                "conic-gradient(from 0deg, transparent 0deg, transparent 290deg, #2563eb 315deg, #60a5fa 325deg, #ffffff 330deg, #2563eb 338deg, transparent 355deg)",
-            }}
-            animate={
-              reduceMotion || !isHovered
-                ? {
-                    rotate: 0,
-                    opacity: 0,
-                  }
-                : {
-                    rotate: 360,
-                    opacity: 1,
-                  }
-            }
-            transition={{
-              rotate: {
-                duration: 3,
-                repeat: Infinity,
-                ease: "linear",
-              },
-              opacity: {
-                duration: 0.25,
-              },
-            }}
-          />
+        <div className="relative z-10 flex h-full min-h-[110px] flex-col justify-between rounded-[11px] border border-[#292929] bg-[#141414] p-4 transition-colors duration-300 ">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-400 group-hover:text-blue-300">
+              Total projects
+            </span>
+            <Code2
+              size={16}
+              strokeWidth={1.75}
+              className="text-gray-500 transition-colors group-hover:text-blue-400"
+            />
+          </div>
 
-    <div className="relative z-10 flex h-full min-h-[110px] flex-col justify-between rounded-[11px] border border-[#292929] bg-[#141414] p-4 transition-colors duration-300 ">
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-gray-400 group-hover:text-blue-300">
-          Total projects
-        </span>
-        <Code2
-          size={16}
-          strokeWidth={1.75}
-          className="text-gray-500 transition-colors group-hover:text-blue-400"
-        />
-      </div>
+          <span className="text-2xl font-semibold tracking-tight text-white">
+            {projects.length}
+          </span>
+        </div>
+      </motion.div>
 
-      <span className="text-2xl font-semibold tracking-tight text-white">
-        {projects.length}
-      </span>
-    </div>
-  </motion.div>
+      {/* Starred Projects */}
+      <motion.div
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        className="group relative isolate overflow-hidden rounded-xl p-[1px] navbar-beam"
+      >
+        <div className="relative z-10 flex h-full min-h-[110px] flex-col justify-between rounded-[11px] border border-[#292929] bg-[#141414] p-4 transition-colors duration-300">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-400 group-hover:text-blue-300">
+              Starred
+            </span>
+            <Star
+              size={16}
+              strokeWidth={1.75}
+              className="text-gray-500 transition-colors group-hover:text-blue-400"
+            />
+          </div>
 
-  {/* Starred Projects */}
-  <motion.div
-    onHoverStart={() => setIsHovered(true)}
-    onHoverEnd={() => setIsHovered(false)}
-    className="group relative isolate overflow-hidden rounded-xl p-[1px]"
-  >
-   <motion.div aria-hidden="true"
-          className="pointer-events-none absolute -inset-[100%] z-0"
-          style={{
-            background:
-              "conic-gradient(from 0deg, transparent 0deg, transparent 290deg, #2563eb 315deg, #60a5fa 325deg, #ffffff 330deg, #2563eb 338deg, transparent 355deg)",
-          }}
-          animate={
-            reduceMotion || !isHovered
-              ? {
-                  rotate: 0,
-                  opacity: 0,
-                }
-              : {
-                  rotate: 360,
-                  opacity: 1,
-                }
-          }
-          transition={{
-            rotate: {
-              duration: 3,
-              repeat: Infinity,
-              ease: "linear",
-            },
-            opacity: {
-              duration: 0.25,
-            },
-          }}
-        />
-
-    <div className="relative z-10 flex h-full min-h-[110px] flex-col justify-between rounded-[11px] border border-[#292929] bg-[#141414] p-4 transition-colors duration-300">
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-gray-400 group-hover:text-blue-300">
-          Starred
-        </span>
-        <Star
-          size={16}
-          strokeWidth={1.75}
-          className="text-gray-500 transition-colors group-hover:text-blue-400"
-        />
-      </div>
-
-      <span className="text-2xl font-semibold tracking-tight text-white">
-        {starredProjects.length}
-      </span>
-    </div>
-  </motion.div>
-</motion.section>
+          <span className="text-2xl font-semibold tracking-tight text-white">
+            {starredProjects.length}
+          </span>
+        </div>
+      </motion.div>
+    </motion.section>
 
 
             {/* Mobile tabs */}
@@ -544,7 +486,7 @@ const Dashboard = () => {
               <div className="mt-12 flex items-center justify-center gap-2 border-t border-[#262626] pt-6">
                 <Sparkles size={11} strokeWidth={2} className="text-[#3B82F6]" />
                 <p className="text-[10px] tracking-[0.14em] text-[#8B8B8B]">
-                  BUILT FOR CREATORS · POWERED BY FLUX
+                  BUILT FOR LEARNERS · POWERED BY FLUX
                 </p>
               </div>
             )}

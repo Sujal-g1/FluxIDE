@@ -124,17 +124,17 @@ const LoginPage = () => {
               type="button"
               onClick={handleLogin}
               disabled={loading}
-              className="group flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.045] px-4 py-2.5 text-xs text-zinc-200 shadow-[0_4px_25px_rgba(0,0,0,.15)] backdrop-blur-xl transition-all duration-300 hover:border-white/25 hover:bg-white/[0.09] disabled:opacity-60"
+              className="navbar-beam2 group flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.045] px-4 py-2.5 text-xs text-zinc-200 shadow-[0_4px_25px_rgba(0,0,0,.15)] backdrop-blur-xl transition-all duration-300 hover:border-white/25 hover:bg-white/[0.09] disabled:opacity-60"
             >
               {loading ? (
                 <Icon name="loader" className="h-3.5 w-3.5 animate-spin" />
               ) : (
-                <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,.8)]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,.8)] animate-pulse" />
               )}
               {loading ? "Opening..." : "Enter workspace"}
               <Icon
                 name="arrow"
-                className="h-3.5 w-3.5 text-zinc-500 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                className="h-3.5 w-3.5 text-zinc-500 transition-transform duration-300 group-hover:rotate-360"
               />
             </button>
           </header>
@@ -202,7 +202,7 @@ const LoginPage = () => {
         </h1>
     
             <p className="flux-reveal flux-delay-2 mt-7 max-w-[330px] text-[12px] leading-6 text-zinc-400 sm:mt-9 sm:max-w-md sm:text-base sm:leading-7">
-              Your ideas, accelerated by AI.
+              Your learning, accelerated by AI.
             </p>
     
             {/* Main CTA */}

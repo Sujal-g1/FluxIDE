@@ -624,16 +624,30 @@ WebkitMaskImage:
         </motion.section>
 
         {/* Footer */}
-        <footer className="flex z-20 bg-[#09090B] flex-col items-center justify-between gap-3 border-t border-[#27272A] py-6 text-[10px] text-[#71717A] sm:flex-row">
-          <p>
-            © {new Date().getFullYear()} flux.ide | Built for developers.
+        <footer className="border-t border-[#222] bg-[#0A0A0A]">
+        <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-5 px-5 py-7 sm:flex-row sm:px-8 lg:px-12">
+          <button
+            onClick={() => navigate("/")}
+            type="button"
+            className="flex shrink-0 items-center gap-2.5"
+            aria-label="Flux IDE home"
+          >
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#3B82F6]">
+              <img
+                src={logo}
+                alt="Flux"
+                className="h-7 w-7 object-contain"
+              />
+            </div>
+            <span className="text-[15px] font-medium tracking-tight text-[#FAFAFA]">
+              flux<span className="text-blue-500">.ide</span>
+            </span>
+          </button>
+          <p className="text-xs text-[#666]">
+            Built with curiosity | Designed for developers.
           </p>
-
-          <div className="flex items-center gap-2">
-            <Infinity size={13} />
-            <span>Keep building. Keep shipping.</span>
-          </div>
-        </footer>
+        </div>
+      </footer>
 
       </div>
     </div>

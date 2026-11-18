@@ -183,10 +183,10 @@ const ProjectCard = ({ project }) => {
         role="button"
         tabIndex={0}
         aria-label={`Open project ${project.name}`}
-        className="group relative isolate flex min-h-[200px] cursor-pointer flex-col overflow-hidden rounded-lg border border-[#292929] bg-[#141414] p-5 transition-shadow duration-300 hover:shadow-[0_0_30px_rgba(37,99,235,0.10)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3B82F6]"
+        className="navbar-beam group relative isolate flex min-h-[200px] cursor-pointer flex-col overflow-hidden rounded-lg border border-[#292929] bg-[#141414] p-5 transition-shadow duration-300 hover:shadow-[0_0_30px_rgba(37,99,235,0.10)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3B82F6]"
       >
-        {/* Animated blue border beam */}
-        <motion.div aria-hidden="true"
+         {/* Animated blue border beam */}
+        {/* <motion.div aria-hidden="true"
           className="pointer-events-none absolute -inset-[100%] z-0"
           style={{
             background:
@@ -213,11 +213,10 @@ const ProjectCard = ({ project }) => {
               duration: 0.25,
             },
           }}
-        />
+        />  */}
 
  {/* Sparkle dot that follows the cursor */}
-        <div
-          ref={glowRef}
+        <div ref={glowRef}
           aria-hidden
           className="pointer-events-none absolute left-0 top-0 z-10 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#60A5FA] opacity-0 transition-opacity duration-300"
           style={{

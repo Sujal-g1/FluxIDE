@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, replace } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import Dashboard from "./pages/Dashboard";
@@ -69,7 +69,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/project/:id" element={<ProjectPage />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<NotFound />}  />
         <Route path="/plan" element={<Plan />} />
         <Route path="/guide" element={<FluxGuide />} />
         <Route path="/library" element={<TemplateCategories />} />

@@ -388,15 +388,15 @@ body {
   z-index: -1;
   background: conic-gradient(
     from 0deg,
-    transparent 0deg,
-    transparent 300deg,
+    transparent 20deg,
+    transparent 150deg,
     #3b82f6 330deg,
     #93c5fd 345deg,
     transparent 360deg
   );
   opacity: 0;
-  animation: new-project-beam 2s linear infinite;
-  transition: opacity 250ms ease;
+  animation: new-project-beam 3s linear infinite;
+  transition: opacity 350ms ease;
 }
 
 .new-project-btn:hover::before {
@@ -868,5 +868,47 @@ body {
   .flux-tilt-card {
     transition: none !important;
     transform: none !important;
+  }
+}
+
+
+
+/* -------- navbar beam animation with border */
+
+@property --navbar-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.navbar-beam2 {
+  --navbar-angle: 0deg;
+
+  border: 1.5px solid #27272a68 !important;
+  background: #09090b !important;
+}
+
+.navbar-beam2:hover {
+  border-color: transparent !important;
+
+  background:
+    linear-gradient(#09090b, #09090b) padding-box,
+    conic-gradient(
+      from var(--navbar-angle),
+      transparent 0deg,
+      transparent 200deg,
+      #0057ff 290deg,
+      #60a5fa 320deg,
+      #93c5fd 340deg,
+      #0057ff 350deg,
+      transparent 360deg
+    ) border-box !important;
+
+  animation: navbar-border-beam 4s linear infinite;
+}
+
+@keyframes navbar-border-beam {
+  to {
+    --navbar-angle: 360deg;
   }
 }

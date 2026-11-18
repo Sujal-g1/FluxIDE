@@ -123,7 +123,7 @@ const NotFound = () => {
 
             <button
               type="button"
-              onClick={() => navigate(-1)}
+              onClick={()=> navigate("/", {replace:true})}
               className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/[0.025] px-5 py-3 text-sm text-zinc-300 transition hover:border-amber-200/20 hover:bg-white/[0.05] hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-200/60"
             >
               <ArrowLeft size={15} />
